@@ -1,0 +1,2390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The AI Infrastructure & Security Playbook 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0a0c10;--card:#12151c;--border:#1e2330;--text:#e8eaf0;--muted:#7b8299;
+  --green:#22c55e;--red:#ef4444;--amber:#f59e0b;--blue:#3b82f6;--purple:#a855f7;
+  --purple-dim:rgba(168,85,247,.12);--purple-border:rgba(168,85,247,.28);
+  --cyan:#06b6d4;--cyan-dim:rgba(6,182,212,.1);--cyan-border:rgba(6,182,212,.25);}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.6}
+.mono{font-family:'JetBrains Mono',monospace}
+.page{max-width:1280px;margin:0 auto;padding:28px 20px 80px}
+.fade-in{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s ease}
+.fade-in.visible{opacity:1;transform:none}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#0d0f1b,#0c1018);border:1px solid var(--border);
+  border-radius:20px;padding:40px;margin-bottom:28px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-80px;right:-80px;width:440px;height:440px;border-radius:50%;
+  background:radial-gradient(circle,rgba(6,182,212,.1),transparent 60%);pointer-events:none}
+.hero::after{content:'';position:absolute;bottom:-60px;left:200px;width:300px;height:300px;border-radius:50%;
+  background:radial-gradient(circle,rgba(168,85,247,.08),transparent 65%);pointer-events:none}
+.hero-tags{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.htag{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase}
+.htag-infra{background:var(--cyan-dim);border:1px solid var(--cyan-border);color:var(--cyan)}
+.htag-sec{background:var(--purple-dim);border:1px solid var(--purple-border);color:var(--purple)}
+.hero h1{font-family:'Playfair Display',serif;font-size:36px;font-weight:700;line-height:1.2;margin-bottom:10px}
+.hero h1 .infra{color:var(--cyan)}.hero h1 .sec{color:var(--purple)}
+.hero-sub{color:var(--muted);font-size:13px;max-width:720px;line-height:1.7}
+.hero-meta{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+.hm{background:#1a1e2a;border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-size:12px;color:var(--muted)}
+.hm b{color:var(--text)}
+
+/* NAV */
+.nav-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px;padding:16px 20px;
+  background:var(--card);border:1px solid var(--border);border-radius:14px}
+.nav-bar-lbl{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;width:100%}
+.nav-chip{display:inline-flex;align-items:center;gap:6px;text-decoration:none;padding:5px 12px;
+  border-radius:8px;border:1px solid var(--border);background:#0d0f1a;transition:all .2s}
+.nav-chip:hover{background:#1e2330;transform:translateY(-1px)}
+.nr{font-size:10px;font-family:'JetBrains Mono',monospace;padding:2px 6px;border-radius:10px;font-weight:700}
+
+/* SEC TITLE */
+.sec-title{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;margin-bottom:16px}
+.sec-title .inf{color:var(--cyan)}.sec-title .sec{color:var(--purple)}
+.seg-divider{display:flex;align-items:center;gap:14px;margin:36px 0 20px}
+.seg-divider-line{flex:1;height:1px;background:var(--border)}
+.seg-divider-label{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;white-space:nowrap}
+
+/* ANALYST SUMMARY TABLE */
+.analyst-summary{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px;margin-bottom:28px;overflow-x:auto}
+.analyst-summary h2{font-family:'Playfair Display',serif;font-size:18px;margin-bottom:4px}
+.analyst-summary .desc{color:var(--muted);font-size:11px;margin-bottom:16px}
+
+/* PROFILE CARDS */
+.profile-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-bottom:28px}
+.profile-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;
+  position:relative;overflow:hidden;border-top:3px solid var(--accent,#6366f1)}
+.pc-seg{font-size:10px;text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;color:var(--muted)}
+.pc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.pc-ticker{font-family:'Playfair Display',serif;font-size:22px;font-weight:700}
+.pc-name{font-size:12px;font-weight:600;color:var(--text);margin-top:1px}
+.pc-sub{font-size:10px;color:var(--muted)}
+.pc-price .val{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:500;text-align:right}
+.pc-price .chg{font-size:10px;font-family:'JetBrains Mono',monospace;text-align:right}
+.chg.up{color:var(--green)}.chg.down{color:var(--red)}
+.pc-stats{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px}
+.pc-stat{background:#0d0f1a;border-radius:6px;padding:7px 9px}
+.pc-stat .lbl{color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
+.pc-stat .val{font-family:'JetBrains Mono',monospace;font-size:13px}
+.persona-row{display:flex;gap:5px;flex-wrap:wrap}
+.persona{background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.2);
+  color:#c084fc;border-radius:16px;padding:2px 9px;font-size:10px;font-weight:600}
+
+/* AI REV BARS */
+.rev-section{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px;margin-bottom:28px}
+.rev-section h2{font-family:'Playfair Display',serif;font-size:17px;margin-bottom:4px}
+.rev-desc{color:var(--muted);font-size:11px;margin-bottom:18px}
+.rev-bar-row{margin-bottom:11px}
+.rbr-head{display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px}
+.rbr-track{height:20px;background:#0d0f1a;border-radius:5px;overflow:hidden}
+.rbr-fill{height:100%;border-radius:5px;display:flex;align-items:center;padding-left:8px;
+  font-size:9px;font-weight:700;font-family:'JetBrains Mono',monospace;color:rgba(255,255,255,.65);
+  white-space:nowrap;transition:width 1.3s cubic-bezier(.4,0,.2,1)}
+
+/* CHARTS ROW */
+.charts-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:28px}
+@media(max-width:900px){.charts-row{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.charts-row{grid-template-columns:1fr}}
+.chart-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px}
+.chart-card h3{font-family:'Playfair Display',serif;font-size:15px;margin-bottom:4px}
+.chart-desc{color:var(--muted);font-size:10px;margin-bottom:12px}
+.chart-wrap{position:relative;height:200px}
+
+/* STOCK SECTION */
+.stock-section{margin-bottom:20px}
+.s-topbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:14px}
+.s-logo{width:46px;height:46px;border-radius:10px;display:flex;align-items:center;justify-content:center;
+  font-family:'Playfair Display',serif;font-weight:700;font-size:17px;color:#fff;flex-shrink:0}
+.s-name{font-family:'Playfair Display',serif;font-size:19px;font-weight:700}
+.s-name span{color:var(--muted);font-weight:400;font-size:13px}
+.s-sub{color:var(--muted);font-size:11px;display:block}
+.seg-badge{display:inline-block;font-size:10px;padding:2px 8px;border-radius:10px;margin-left:6px;vertical-align:middle}
+.infra-badge{background:var(--cyan-dim);color:var(--cyan);border:1px solid var(--cyan-border)}
+.sec-badge{background:var(--purple-dim);color:var(--purple);border:1px solid var(--purple-border)}
+.s-price{font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:500}
+.s-chg{font-family:'JetBrains Mono',monospace;font-size:12px;text-align:right}
+.s-pblock{text-align:right}
+
+/* PANELS */
+.row3{display:grid;grid-template-columns:220px 1fr 1fr;gap:12px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:900px){.row3{grid-template-columns:1fr 1fr}.row2{grid-template-columns:1fr}}
+@media(max-width:600px){.row3{grid-template-columns:1fr}}
+.panel{background:rgba(18,21,28,.9);border:1px solid var(--border);border-radius:12px;padding:16px}
+.ptitle{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:10px;font-weight:600}
+.kpi-v .kv{display:flex;justify-content:space-between;align-items:center;padding:4px 0;
+  border-bottom:1px solid rgba(30,35,48,.5);font-size:11px}
+.kpi-v .kv:last-child{border-bottom:none}
+.kpi-v .kv>span:first-child{color:var(--muted)}
+
+/* ANALYST PANEL */
+.analyst-panel{background:linear-gradient(135deg,rgba(168,85,247,.06),rgba(6,182,212,.04))!important;
+  border-color:var(--purple-border)!important}
+.ap-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:4px}
+@media(max-width:700px){.ap-grid{grid-template-columns:1fr}}
+.ap-right ul{list-style:none;display:flex;flex-direction:column;gap:5px}
+.ap-right ul li{font-size:11px;color:#b0bcd4;display:flex;gap:6px}
+.ap-right ul li::before{content:'→';color:var(--purple);flex-shrink:0}
+
+/* SCORE BARS */
+.br-row{margin-bottom:8px}
+.br-hd{display:flex;justify-content:space-between;font-size:10px;margin-bottom:3px;color:var(--muted)}
+.br-hd b{color:var(--text)}
+.br-track{height:6px;background:#1a1e2a;border-radius:3px;overflow:hidden}
+.br-fill{height:100%;border-radius:3px}
+.fill-g{background:var(--green)}.fill-a{background:var(--amber)}.fill-r{background:var(--red)}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse;font-size:11px}
+th{color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.04em;padding:6px 8px;text-align:left;border-bottom:1px solid var(--border)}
+td{padding:7px 8px;font-family:'JetBrains Mono',monospace;font-size:10px;border-bottom:1px solid rgba(30,35,48,.4)}
+tr:last-child td{border-bottom:none}
+.beat-cell{color:var(--green)}.miss-cell{color:var(--red)}.caution-cell{color:var(--amber)}
+.badge{font-size:9px;font-weight:700;padding:2px 7px;border-radius:16px}
+.badge.beat{background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.3)}
+.badge.miss{background:rgba(239,68,68,.15);color:var(--red);border:1px solid rgba(239,68,68,.3)}
+.badge.caution{background:rgba(245,158,11,.15);color:var(--amber);border:1px solid rgba(245,158,11,.3)}
+
+/* BULL BEAR */
+.blist{list-style:none;display:flex;flex-direction:column;gap:5px}
+.blist li{font-size:11px;color:#b0bcd4;display:flex;gap:6px}
+.bull li::before{content:'▲';color:var(--green);flex-shrink:0}
+.bear li::before{content:'▼';color:var(--red);flex-shrink:0}
+
+/* VERDICT */
+.rating-bar{height:10px;border-radius:5px;background:linear-gradient(to right,var(--green),#84cc16,var(--amber),#f97316,var(--red));
+  position:relative;margin:12px 0 4px}
+.rating-pin{position:absolute;top:-5px;width:20px;height:20px;border-radius:50%;background:#fff;
+  border:2px solid var(--purple);transform:translateX(-50%);box-shadow:0 0 0 3px var(--purple-dim)}
+.rating-lbs{display:flex;justify-content:space-between;font-size:8px;color:var(--muted);margin-bottom:10px}
+.vbadge{display:inline-block;padding:6px 14px;border-radius:20px;font-weight:700;font-size:12px;letter-spacing:.06em;border:1.5px solid;margin-bottom:8px}
+.vsummary{color:#a0b0c8;font-size:11px;line-height:1.8}
+
+/* EXPLAINER */
+.explainer{background:var(--purple-dim);border:1px solid var(--purple-border);border-radius:10px;
+  padding:12px 16px;margin-bottom:14px;display:flex;gap:10px}
+.expl-icon{font-size:15px;flex-shrink:0;margin-top:1px}
+.explainer h4{color:var(--purple);font-size:11px;font-weight:700;margin-bottom:3px}
+.explainer p{color:#c4b5fd;font-size:10px;line-height:1.6}
+
+#btt{position:fixed;bottom:24px;right:24px;width:40px;height:40px;border-radius:50%;
+  background:linear-gradient(135deg,var(--cyan),var(--purple));color:#fff;border:none;cursor:pointer;
+  font-size:16px;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 14px rgba(6,182,212,.35);z-index:99}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- HERO -->
+<div class="hero fade-in">
+  <div class="hero-tags">
+    <span class="htag htag-infra">🏗️ AI Infrastructure</span>
+    <span class="htag htag-sec">🔒 AI Security</span>
+    <span class="htag" style="background:#1a1e2a;border:1px solid var(--border);color:var(--muted)">May 2026 · 10 Stocks · Analyst Predictions</span>
+  </div>
+  <h1>The AI <span class="infra">Infrastructure</span> &<br><span class="sec">Security</span> Playbook</h1>
+  <p class="hero-sub">A deep-dive research report covering 10 stocks across AI Infrastructure (ANET, VRT, EQIX, DELL) and AI Security (CRWD, PANW, ZS, NET, FTNT, OKTA). Each stock includes analyst consensus, 12-month price targets, risk scores, quarterly earnings, bull/bear cases, and verdicts — all with real May 2026 data.</p>
+  <div class="hero-meta">
+    <div class="hm"><b>4</b> Infrastructure Stocks</div>
+    <div class="hm"><b>6</b> Security Stocks</div>
+    <div class="hm">Biggest Upside: <b>VRT +186%</b></div>
+    <div class="hm">Safest: <b>EQIX (Risk 38)</b></div>
+    <div class="hm">Most Bullish: <b>CRWD (69 analysts)</b></div>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav-bar fade-in">
+  <div class="nav-bar-lbl">Jump to Stock ↓</div>
+  <a href="#ANET" class="nav-chip" style="--nc:#06b6d4"><span style="color:#06b6d4;font-weight:700">ANET</span><span class="nr" style="background:#22c55e22;color:var(--green);">42</span></a><a href="#VRT" class="nav-chip" style="--nc:#f97316"><span style="color:#f97316;font-weight:700">VRT</span><span class="nr" style="background:#f59e0b22;color:var(--amber);">45</span></a><a href="#EQIX" class="nav-chip" style="--nc:#ef4444"><span style="color:#ef4444;font-weight:700">EQIX</span><span class="nr" style="background:#22c55e22;color:var(--green);">38</span></a><a href="#DELL" class="nav-chip" style="--nc:#2563eb"><span style="color:#2563eb;font-weight:700">DELL</span><span class="nr" style="background:#f59e0b22;color:var(--amber);">49</span></a><a href="#CRWD" class="nav-chip" style="--nc:#ef4444"><span style="color:#ef4444;font-weight:700">CRWD</span><span class="nr" style="background:#f59e0b22;color:var(--amber);">58</span></a><a href="#PANW" class="nav-chip" style="--nc:#f59e0b"><span style="color:#f59e0b;font-weight:700">PANW</span><span class="nr" style="background:#f59e0b22;color:var(--amber);">50</span></a><a href="#ZS" class="nav-chip" style="--nc:#6366f1"><span style="color:#6366f1;font-weight:700">ZS</span><span class="nr" style="background:#f59e0b22;color:var(--amber);">55</span></a><a href="#NET" class="nav-chip" style="--nc:#f97316"><span style="color:#f97316;font-weight:700">NET</span><span class="nr" style="background:#f59e0b22;color:var(--amber);">56</span></a><a href="#FTNT" class="nav-chip" style="--nc:#ef4444"><span style="color:#ef4444;font-weight:700">FTNT</span><span class="nr" style="background:#22c55e22;color:var(--green);">40</span></a><a href="#OKTA" class="nav-chip" style="--nc:#00aeff"><span style="color:#00aeff;font-weight:700">OKTA</span><span class="nr" style="background:#f59e0b22;color:var(--amber);">52</span></a>
+</div>
+
+<!-- ── ANALYST SUMMARY TABLE ── -->
+<div class="analyst-summary fade-in">
+  <h2>📊 Analyst Predictions — All 10 Stocks</h2>
+  <p class="desc">Consensus ratings, 12-month price targets, and implied upside vs current prices · May 2026</p>
+  <div class="explainer" style="margin-bottom:14px"><div class="expl-icon">💡</div><div>
+    <h4>How to read analyst targets</h4>
+    <p>Analyst <b style="color:#e8eaf0">average targets</b> are the median of all Wall Street 12-month price forecasts. <b style="color:#e8eaf0">Implied upside</b> = how much the stock would need to rise to hit the average target. High upside often means the stock has been sold off hard — not always a buy signal. Always combine with fundamentals and risk score.</p>
+  </div></div>
+  <table>
+    <thead><tr>
+      <th>Ticker</th><th>Segment</th><th>Price</th><th>Avg Target</th><th>High</th><th>Low</th><th>Upside</th><th>Consensus</th><th>Ratings</th>
+    </tr></thead>
+    <tbody><tr>
+      <td><b style="color:#06b6d4">ANET</b></td>
+      <td style="color:var(--muted);font-size:10px">🏗️ Infra</td>
+      <td class="mono">$95.80</td>
+      <td class="mono" style="color:var(--purple)">$176</td>
+      <td class="mono" style="color:var(--green)">$220</td>
+      <td class="mono" style="color:var(--muted)">$140</td>
+      <td class="mono" style="color:#22c55e">+84.2%</td>
+      <td><span style="font-size:9px;padding:2px 7px;border-radius:10px;background:#22c55e20;color:#22c55e;border:1px solid #22c55e40;font-weight:700">Strong Buy</span></td>
+      <td class="mono" style="font-size:10px">27B / 3H / 0S</td>
+    </tr>
+<tr>
+      <td><b style="color:#f97316">VRT</b></td>
+      <td style="color:var(--muted);font-size:10px">🏗️ Infra</td>
+      <td class="mono">$94.30</td>
+      <td class="mono" style="color:var(--purple)">$269</td>
+      <td class="mono" style="color:var(--green)">$310</td>
+      <td class="mono" style="color:var(--muted)">$140</td>
+      <td class="mono" style="color:#22c55e">+185.7%</td>
+      <td><span style="font-size:9px;padding:2px 7px;border-radius:10px;background:#86efac20;color:#86efac;border:1px solid #86efac40;font-weight:700">Buy</span></td>
+      <td class="mono" style="font-size:10px">16B / 1H / 1S</td>
+    </tr>
+<tr>
+      <td><b style="color:#ef4444">EQIX</b></td>
+      <td style="color:var(--muted);font-size:10px">🏗️ Infra</td>
+      <td class="mono">$906.00</td>
+      <td class="mono" style="color:var(--purple)">$1,009</td>
+      <td class="mono" style="color:var(--green)">$1,250</td>
+      <td class="mono" style="color:var(--muted)">$804</td>
+      <td class="mono" style="color:#f59e0b">+11.4%</td>
+      <td><span style="font-size:9px;padding:2px 7px;border-radius:10px;background:#86efac20;color:#86efac;border:1px solid #86efac40;font-weight:700">Buy</span></td>
+      <td class="mono" style="font-size:10px">24B / 4H / 0S</td>
+    </tr>
+<tr>
+      <td><b style="color:#2563eb">DELL</b></td>
+      <td style="color:var(--muted);font-size:10px">🏗️ Infra</td>
+      <td class="mono">$104.50</td>
+      <td class="mono" style="color:var(--purple)">$166</td>
+      <td class="mono" style="color:var(--green)">$205</td>
+      <td class="mono" style="color:var(--muted)">$101</td>
+      <td class="mono" style="color:#22c55e">+58.6%</td>
+      <td><span style="font-size:9px;padding:2px 7px;border-radius:10px;background:#86efac20;color:#86efac;border:1px solid #86efac40;font-weight:700">Buy</span></td>
+      <td class="mono" style="font-size:10px">18B / 7H / 1S</td>
+    </tr>
+<tr>
+      <td><b style="color:#ef4444">CRWD</b></td>
+      <td style="color:var(--muted);font-size:10px">🔒 Security</td>
+      <td class="mono">$432.00</td>
+      <td class="mono" style="color:var(--purple)">$494</td>
+      <td class="mono" style="color:var(--green)">$706</td>
+      <td class="mono" style="color:var(--muted)">$368</td>
+      <td class="mono" style="color:#f59e0b">+14.5%</td>
+      <td><span style="font-size:9px;padding:2px 7px;border-radius:10px;background:#22c55e20;color:#22c55e;border:1px solid #22c55e40;font-weight:700">Strong Buy</span></td>
+      <td class="mono" style="font-size:10px">41B / 12H / 0S</td>
+    </tr>
+<tr>
+      <td><b style="color:#f59e0b">PANW</b></td>
+      <td style="color:var(--muted);font-size:10px">🔒 Security</td>
+      <td class="mono">$215.40</td>
+      <td class="mono" style="color:var(--purple)">$217</td>
+      <td class="mono" style="color:var(--green)">$248</td>
+      <td class="mono" style="color:var(--muted)">$135</td>
+      <td class="mono" style="color:#a0b0c8">+0.8%</td>
+      <td><span style="font-size:9px;padding:2px 7px;border-radius:10px;background:#f59e0b20;color:#f59e0b;border:1px solid #f59e0b40;font-weight:700">Moderate Buy</span></td>
+      <td class="mono" style="font-size:10px">30B / 11H / 2S</td>
+    </tr>
+<tr>
+      <td><b style="color:#6366f1">ZS</b></td>
+      <td style="color:var(--muted);font-size:10px">🔒 Security</td>
+      <td class="mono">$197.50</td>
+      <td class="mono" style="color:var(--purple)">$268</td>
+      <td class="mono" style="color:var(--green)">$340</td>
+      <td class="mono" style="color:var(--muted)">$155</td>
+      <td class="mono" style="color:#22c55e">+35.6%</td>
+      <td><span style="font-size:9px;padding:2px 7px;border-radius:10px;background:#f59e0b20;color:#f59e0b;border:1px solid #f59e0b40;font-weight:700">Moderate Buy</span></td>
+      <td class="mono" style="font-size:10px">31B / 8H / 1S</td>
+    </tr>
+<tr>
+      <td><b style="color:#f97316">NET</b></td>
+      <td style="color:var(--muted);font-size:10px">🔒 Security</td>
+      <td class="mono">$127.80</td>
+      <td class="mono" style="color:var(--purple)">$238</td>
+      <td class="mono" style="color:var(--green)">$300</td>
+      <td class="mono" style="color:var(--muted)">$111</td>
+      <td class="mono" style="color:#22c55e">+85.9%</td>
+      <td><span style="font-size:9px;padding:2px 7px;border-radius:10px;background:#86efac20;color:#86efac;border:1px solid #86efac40;font-weight:700">Buy</span></td>
+      <td class="mono" style="font-size:10px">20B / 5H / 0S</td>
+    </tr>
+<tr>
+      <td><b style="color:#ef4444">FTNT</b></td>
+      <td style="color:var(--muted);font-size:10px">🔒 Security</td>
+      <td class="mono">$83.20</td>
+      <td class="mono" style="color:var(--purple)">$89</td>
+      <td class="mono" style="color:var(--green)">$120</td>
+      <td class="mono" style="color:var(--muted)">$68</td>
+      <td class="mono" style="color:#f59e0b">+6.5%</td>
+      <td><span style="font-size:9px;padding:2px 7px;border-radius:10px;background:#a0b0c820;color:#a0b0c8;border:1px solid #a0b0c840;font-weight:700">Hold</span></td>
+      <td class="mono" style="font-size:10px">9B / 20H / 2S</td>
+    </tr>
+<tr>
+      <td><b style="color:#00aeff">OKTA</b></td>
+      <td style="color:var(--muted);font-size:10px">🔒 Security</td>
+      <td class="mono">$89.50</td>
+      <td class="mono" style="color:var(--purple)">$99</td>
+      <td class="mono" style="color:var(--green)">$128</td>
+      <td class="mono" style="color:var(--muted)">$69</td>
+      <td class="mono" style="color:#f59e0b">+10.6%</td>
+      <td><span style="font-size:9px;padding:2px 7px;border-radius:10px;background:#f59e0b20;color:#f59e0b;border:1px solid #f59e0b40;font-weight:700">Moderate Buy</span></td>
+      <td class="mono" style="font-size:10px">15B / 10H / 2S</td>
+    </tr>
+</tbody>
+  </table>
+</div>
+
+<!-- ── STOCK PROFILES ── -->
+<div id="profiles" class="fade-in">
+<div class="sec-title">Stock <span class="inf">Profiles</span></div>
+<div class="explainer"><div class="expl-icon">💡</div><div>
+  <h4>AI Infrastructure vs AI Security — What's the difference?</h4>
+  <p><b style="color:#e8eaf0">AI Infrastructure</b> = the physical/network layer powering AI (servers, networking, power, data centers). <b style="color:#e8eaf0">AI Security</b> = software protecting AI systems, cloud workloads, and identities from attacks. Infrastructure is more cyclical; security offers more recurring subscription revenue.</p>
+</div></div>
+<div class="seg-divider"><div class="seg-divider-line"></div><div class="seg-divider-label" style="color:var(--cyan)">🏗️ AI Infrastructure</div><div class="seg-divider-line"></div></div>
+<div class="profile-grid">
+<div class="profile-card pc-anet fade-in" style="--accent:#06b6d4">
+  <div class="pc-seg">AI Infrastructure</div>
+  <div class="pc-top">
+    <div><div class="pc-ticker" style="color:#06b6d4">ANET</div>
+    <div class="pc-name">Arista Networks</div>
+    <div class="pc-sub">AI Networking / Ethernet</div></div>
+    <div class="pc-price"><div class="val">$95.80</div>
+    <div class="chg down">▼ -28% YTD</div></div>
+  </div>
+  <div class="pc-stats">
+    <div class="pc-stat"><div class="lbl">Market Cap</div><div class="val mono">$118B</div></div>
+    <div class="pc-stat"><div class="lbl">P/E (TTM)</div><div class="val mono" style="color:var(--amber)">48×</div></div>
+    <div class="pc-stat"><div class="lbl">Revenue (TTM)</div><div class="val mono">$9.0B</div></div>
+    <div class="pc-stat"><div class="lbl">Rev Growth</div><div class="val mono" style="color:var(--green)">+29%</div></div>
+    <div class="pc-stat"><div class="lbl">EPS</div><div class="val mono">$2.40</div></div>
+    <div class="pc-stat"><div class="lbl">FCF Margin</div><div class="val mono">35%</div></div>
+  </div>
+  <div class="persona-row"><span class="persona">🌐 Cloud Infra Bulls</span><span class="persona">🤖 AI Data Center Plays</span><span class="persona">📡 Networking Purists</span><span class="persona">💹 Quality Compounder Fans</span></div>
+</div>
+<div class="profile-card pc-vrt fade-in" style="--accent:#f97316">
+  <div class="pc-seg">AI Infrastructure</div>
+  <div class="pc-top">
+    <div><div class="pc-ticker" style="color:#f97316">VRT</div>
+    <div class="pc-name">Vertiv Holdings</div>
+    <div class="pc-sub">Data Center Power & Cooling</div></div>
+    <div class="pc-price"><div class="val">$94.30</div>
+    <div class="chg down">▼ -26% YTD</div></div>
+  </div>
+  <div class="pc-stats">
+    <div class="pc-stat"><div class="lbl">Market Cap</div><div class="val mono">$36B</div></div>
+    <div class="pc-stat"><div class="lbl">P/E (TTM)</div><div class="val mono" style="color:var(--amber)">45×</div></div>
+    <div class="pc-stat"><div class="lbl">Revenue (TTM)</div><div class="val mono">$9.7B</div></div>
+    <div class="pc-stat"><div class="lbl">Rev Growth</div><div class="val mono" style="color:var(--green)">+22%</div></div>
+    <div class="pc-stat"><div class="lbl">EPS</div><div class="val mono">$2.10</div></div>
+    <div class="pc-stat"><div class="lbl">FCF Margin</div><div class="val mono">12%</div></div>
+  </div>
+  <div class="persona-row"><span class="persona">⚡ Power Infra Bulls</span><span class="persona">🌡️ Cooling Tech Fans</span><span class="persona">🏗️ Data Center REITs</span><span class="persona">💰 Infrastructure Income</span></div>
+</div>
+<div class="profile-card pc-eqix fade-in" style="--accent:#ef4444">
+  <div class="pc-seg">AI Infrastructure</div>
+  <div class="pc-top">
+    <div><div class="pc-ticker" style="color:#ef4444">EQIX</div>
+    <div class="pc-name">Equinix Inc.</div>
+    <div class="pc-sub">Data Center REIT / Colocation</div></div>
+    <div class="pc-price"><div class="val">$906.00</div>
+    <div class="chg up">▲ +8% YTD</div></div>
+  </div>
+  <div class="pc-stats">
+    <div class="pc-stat"><div class="lbl">Market Cap</div><div class="val mono">$80B</div></div>
+    <div class="pc-stat"><div class="lbl">P/E (TTM)</div><div class="val mono" style="color:var(--red)">87×</div></div>
+    <div class="pc-stat"><div class="lbl">Revenue (TTM)</div><div class="val mono">$9.0B</div></div>
+    <div class="pc-stat"><div class="lbl">Rev Growth</div><div class="val mono" style="color:var(--green)">+9%</div></div>
+    <div class="pc-stat"><div class="lbl">EPS</div><div class="val mono">$10.43</div></div>
+    <div class="pc-stat"><div class="lbl">FCF Margin</div><div class="val mono">18%</div></div>
+  </div>
+  <div class="persona-row"><span class="persona">🏢 REIT Dividend Investors</span><span class="persona">☁️ Cloud On-ramp Believers</span><span class="persona">🏦 Institutional Allocators</span><span class="persona">🌍 Global Infra Holders</span></div>
+</div>
+<div class="profile-card pc-dell fade-in" style="--accent:#2563eb">
+  <div class="pc-seg">AI Infrastructure</div>
+  <div class="pc-top">
+    <div><div class="pc-ticker" style="color:#2563eb">DELL</div>
+    <div class="pc-name">Dell Technologies</div>
+    <div class="pc-sub">AI Servers / Edge Infrastructure</div></div>
+    <div class="pc-price"><div class="val">$104.50</div>
+    <div class="chg down">▼ -21% YTD</div></div>
+  </div>
+  <div class="pc-stats">
+    <div class="pc-stat"><div class="lbl">Market Cap</div><div class="val mono">$72B</div></div>
+    <div class="pc-stat"><div class="lbl">P/E (TTM)</div><div class="val mono" style="color:var(--green)">16×</div></div>
+    <div class="pc-stat"><div class="lbl">Revenue (TTM)</div><div class="val mono">$95.6B</div></div>
+    <div class="pc-stat"><div class="lbl">Rev Growth</div><div class="val mono" style="color:var(--green)">+8%</div></div>
+    <div class="pc-stat"><div class="lbl">EPS</div><div class="val mono">$6.55</div></div>
+    <div class="pc-stat"><div class="lbl">FCF Margin</div><div class="val mono">8%</div></div>
+  </div>
+  <div class="persona-row"><span class="persona">💎 Deep Value Investors</span><span class="persona">🖥️ Enterprise IT Bulls</span><span class="persona">🤖 AI Server Accumulation</span><span class="persona">📈 Dividend Growers</span></div>
+</div></div>
+<div class="seg-divider"><div class="seg-divider-line"></div><div class="seg-divider-label" style="color:var(--purple)">🔒 AI Security</div><div class="seg-divider-line"></div></div>
+<div class="profile-grid">
+<div class="profile-card pc-crwd fade-in" style="--accent:#ef4444">
+  <div class="pc-seg">AI Security</div>
+  <div class="pc-top">
+    <div><div class="pc-ticker" style="color:#ef4444">CRWD</div>
+    <div class="pc-name">CrowdStrike Holdings</div>
+    <div class="pc-sub">AI-Native Endpoint / Cloud Security</div></div>
+    <div class="pc-price"><div class="val">$432.00</div>
+    <div class="chg up">▲ +48% YTD</div></div>
+  </div>
+  <div class="pc-stats">
+    <div class="pc-stat"><div class="lbl">Market Cap</div><div class="val mono">$105B</div></div>
+    <div class="pc-stat"><div class="lbl">P/E (TTM)</div><div class="val mono" style="color:var(--red)">N/A (loss)</div></div>
+    <div class="pc-stat"><div class="lbl">Revenue (TTM)</div><div class="val mono">$4.77B</div></div>
+    <div class="pc-stat"><div class="lbl">Rev Growth</div><div class="val mono" style="color:var(--green)">+24%</div></div>
+    <div class="pc-stat"><div class="lbl">EPS</div><div class="val mono">-$0.14</div></div>
+    <div class="pc-stat"><div class="lbl">FCF Margin</div><div class="val mono">26%</div></div>
+  </div>
+  <div class="persona-row"><span class="persona">🔒 Cyber Security Bulls</span><span class="persona">🤖 AI-Native Platform Fans</span><span class="persona">📈 Momentum Traders</span><span class="persona">🦅 Falcon Platform Believers</span></div>
+</div>
+<div class="profile-card pc-panw fade-in" style="--accent:#f59e0b">
+  <div class="pc-seg">AI Security</div>
+  <div class="pc-top">
+    <div><div class="pc-ticker" style="color:#f59e0b">PANW</div>
+    <div class="pc-name">Palo Alto Networks</div>
+    <div class="pc-sub">AI-Integrated Network Security</div></div>
+    <div class="pc-price"><div class="val">$215.40</div>
+    <div class="chg up">▲ +12% YTD</div></div>
+  </div>
+  <div class="pc-stats">
+    <div class="pc-stat"><div class="lbl">Market Cap</div><div class="val mono">$140B</div></div>
+    <div class="pc-stat"><div class="lbl">P/E (TTM)</div><div class="val mono" style="color:var(--red)">98×</div></div>
+    <div class="pc-stat"><div class="lbl">Revenue (TTM)</div><div class="val mono">$9.0B</div></div>
+    <div class="pc-stat"><div class="lbl">Rev Growth</div><div class="val mono" style="color:var(--green)">+14%</div></div>
+    <div class="pc-stat"><div class="lbl">EPS</div><div class="val mono">$2.20</div></div>
+    <div class="pc-stat"><div class="lbl">FCF Margin</div><div class="val mono">31%</div></div>
+  </div>
+  <div class="persona-row"><span class="persona">🛡️ Enterprise Security Buyers</span><span class="persona">🤖 Platformization Believers</span><span class="persona">📊 FCF Growth Investors</span><span class="persona">🌐 Zero-Trust Advocates</span></div>
+</div>
+<div class="profile-card pc-zs fade-in" style="--accent:#6366f1">
+  <div class="pc-seg">AI Security</div>
+  <div class="pc-top">
+    <div><div class="pc-ticker" style="color:#6366f1">ZS</div>
+    <div class="pc-name">Zscaler Inc.</div>
+    <div class="pc-sub">Zero Trust / Cloud Security</div></div>
+    <div class="pc-price"><div class="val">$197.50</div>
+    <div class="chg down">▼ -8% YTD</div></div>
+  </div>
+  <div class="pc-stats">
+    <div class="pc-stat"><div class="lbl">Market Cap</div><div class="val mono">$30B</div></div>
+    <div class="pc-stat"><div class="lbl">P/E (TTM)</div><div class="val mono" style="color:var(--red)">N/A (loss)</div></div>
+    <div class="pc-stat"><div class="lbl">Revenue (TTM)</div><div class="val mono">$3.28B</div></div>
+    <div class="pc-stat"><div class="lbl">Rev Growth</div><div class="val mono" style="color:var(--green)">+26%</div></div>
+    <div class="pc-stat"><div class="lbl">EPS</div><div class="val mono">-$0.40</div></div>
+    <div class="pc-stat"><div class="lbl">FCF Margin</div><div class="val mono">22%</div></div>
+  </div>
+  <div class="persona-row"><span class="persona">🛡️ Zero Trust Champions</span><span class="persona">☁️ Cloud-First IT Teams</span><span class="persona">🔐 SASE Believers</span><span class="persona">📊 ARR Growth Investors</span></div>
+</div>
+<div class="profile-card pc-net fade-in" style="--accent:#f97316">
+  <div class="pc-seg">AI Security</div>
+  <div class="pc-top">
+    <div><div class="pc-ticker" style="color:#f97316">NET</div>
+    <div class="pc-name">Cloudflare Inc.</div>
+    <div class="pc-sub">Network Security / AI Edge</div></div>
+    <div class="pc-price"><div class="val">$127.80</div>
+    <div class="chg down">▼ -2% YTD</div></div>
+  </div>
+  <div class="pc-stats">
+    <div class="pc-stat"><div class="lbl">Market Cap</div><div class="val mono">$41B</div></div>
+    <div class="pc-stat"><div class="lbl">P/E (TTM)</div><div class="val mono" style="color:var(--red)">N/A (loss)</div></div>
+    <div class="pc-stat"><div class="lbl">Revenue (TTM)</div><div class="val mono">$2.09B</div></div>
+    <div class="pc-stat"><div class="lbl">Rev Growth</div><div class="val mono" style="color:var(--green)">+27%</div></div>
+    <div class="pc-stat"><div class="lbl">EPS</div><div class="val mono">-$0.30</div></div>
+    <div class="pc-stat"><div class="lbl">FCF Margin</div><div class="val mono">12%</div></div>
+  </div>
+  <div class="persona-row"><span class="persona">🌐 Internet Infrastructure Bulls</span><span class="persona">🤖 AI Workers / Edge AI</span><span class="persona">🔐 DDoS/Bot Protection</span><span class="persona">🚀 Developer-Led Growth</span></div>
+</div>
+<div class="profile-card pc-ftnt fade-in" style="--accent:#ef4444">
+  <div class="pc-seg">AI Security</div>
+  <div class="pc-top">
+    <div><div class="pc-ticker" style="color:#ef4444">FTNT</div>
+    <div class="pc-name">Fortinet Inc.</div>
+    <div class="pc-sub">Network Security / FortiAI</div></div>
+    <div class="pc-price"><div class="val">$83.20</div>
+    <div class="chg down">▼ -22% YTD</div></div>
+  </div>
+  <div class="pc-stats">
+    <div class="pc-stat"><div class="lbl">Market Cap</div><div class="val mono">$60B</div></div>
+    <div class="pc-stat"><div class="lbl">P/E (TTM)</div><div class="val mono" style="color:var(--amber)">34×</div></div>
+    <div class="pc-stat"><div class="lbl">Revenue (TTM)</div><div class="val mono">$6.8B</div></div>
+    <div class="pc-stat"><div class="lbl">Rev Growth</div><div class="val mono" style="color:var(--green)">+14%</div></div>
+    <div class="pc-stat"><div class="lbl">EPS</div><div class="val mono">$2.42</div></div>
+    <div class="pc-stat"><div class="lbl">FCF Margin</div><div class="val mono">27%</div></div>
+  </div>
+  <div class="persona-row"><span class="persona">🛡️ Network Security Traditionalists</span><span class="persona">💹 Value-Oriented Cyber</span><span class="persona">🤖 FortiAI-Assist Fans</span><span class="persona">🏭 OT/IoT Security Buyers</span></div>
+</div>
+<div class="profile-card pc-okta fade-in" style="--accent:#00aeff">
+  <div class="pc-seg">AI Security</div>
+  <div class="pc-top">
+    <div><div class="pc-ticker" style="color:#00aeff">OKTA</div>
+    <div class="pc-name">Okta Inc.</div>
+    <div class="pc-sub">Identity Security / AI Access</div></div>
+    <div class="pc-price"><div class="val">$89.50</div>
+    <div class="chg down">▼ -15% YTD</div></div>
+  </div>
+  <div class="pc-stats">
+    <div class="pc-stat"><div class="lbl">Market Cap</div><div class="val mono">$15.7B</div></div>
+    <div class="pc-stat"><div class="lbl">P/E (TTM)</div><div class="val mono" style="color:var(--red)">107×</div></div>
+    <div class="pc-stat"><div class="lbl">Revenue (TTM)</div><div class="val mono">$2.76B</div></div>
+    <div class="pc-stat"><div class="lbl">Rev Growth</div><div class="val mono" style="color:var(--green)">+15%</div></div>
+    <div class="pc-stat"><div class="lbl">EPS</div><div class="val mono">$0.84</div></div>
+    <div class="pc-stat"><div class="lbl">FCF Margin</div><div class="val mono">28%</div></div>
+  </div>
+  <div class="persona-row"><span class="persona">🔑 Identity-First Security</span><span class="persona">🤖 AI Access Control</span><span class="persona">🏢 Enterprise IT Security</span><span class="persona">☁️ Zero Trust Adopters</span></div>
+</div></div>
+</div>
+
+<!-- ── AI REVENUE EXPOSURE ── -->
+<div id="airev" class="fade-in">
+<div class="sec-title">AI Revenue <span class="sec">Exposure</span></div>
+<div class="explainer"><div class="expl-icon">💡</div><div>
+  <h4>AI Revenue Exposure</h4>
+  <p>Percentage of each company's revenue directly AI-driven. Security companies score near 100% as their entire product is AI-native protection. Infrastructure varies — DELL includes legacy PC business so AI is ~35% of total revenue despite massive AI server demand.</p>
+</div></div>
+<div class="rev-section">
+  <h2>AI Revenue % by Stock</h2>
+  <p class="rev-desc">Bright = this cohort · Faded = Mag 7 reference</p>
+  <div class="seg-divider" style="margin:0 0 12px"><div class="seg-divider-line"></div><span style="font-size:11px;color:var(--cyan);white-space:nowrap;padding:0 8px">Infrastructure</span><div class="seg-divider-line"></div></div>
+  
+<div class="rev-bar-row" data-pct="75" style="margin-bottom:12px">
+  <div class="rbr-head">
+    <span class="ticker" style="color:#06b6d4;opacity:1">ANET — Arista Networks</span>
+    <span class="pct" style="opacity:1">75% AI · $9.0B</span>
+  </div>
+  <div class="rbr-track">
+    <div class="rbr-fill" style="width:0%;background:linear-gradient(90deg,#06b6d4,#06b6d488);opacity:1">
+      AI Networking / Ethernet
+    </div>
+  </div>
+</div>
+<div class="rev-bar-row" data-pct="80" style="margin-bottom:12px">
+  <div class="rbr-head">
+    <span class="ticker" style="color:#f97316;opacity:1">VRT — Vertiv Holdings</span>
+    <span class="pct" style="opacity:1">80% AI · $9.7B</span>
+  </div>
+  <div class="rbr-track">
+    <div class="rbr-fill" style="width:0%;background:linear-gradient(90deg,#f97316,#f9731688);opacity:1">
+      Data Center Power & Cooling
+    </div>
+  </div>
+</div>
+<div class="rev-bar-row" data-pct="40" style="margin-bottom:12px">
+  <div class="rbr-head">
+    <span class="ticker" style="color:#ef4444;opacity:1">EQIX — Equinix Inc.</span>
+    <span class="pct" style="opacity:1">40% AI · $9.0B</span>
+  </div>
+  <div class="rbr-track">
+    <div class="rbr-fill" style="width:0%;background:linear-gradient(90deg,#ef4444,#ef444488);opacity:1">
+      Data Center REIT / Colocation
+    </div>
+  </div>
+</div>
+<div class="rev-bar-row" data-pct="35" style="margin-bottom:12px">
+  <div class="rbr-head">
+    <span class="ticker" style="color:#2563eb;opacity:1">DELL — Dell Technologies</span>
+    <span class="pct" style="opacity:1">35% AI · $95.6B</span>
+  </div>
+  <div class="rbr-track">
+    <div class="rbr-fill" style="width:0%;background:linear-gradient(90deg,#2563eb,#2563eb88);opacity:1">
+      AI Servers / Edge Infrastructure
+    </div>
+  </div>
+</div>
+  <div class="seg-divider" style="margin:12px 0"><div class="seg-divider-line"></div><span style="font-size:11px;color:var(--purple);white-space:nowrap;padding:0 8px">Security</span><div class="seg-divider-line"></div></div>
+  
+<div class="rev-bar-row" data-pct="100" style="margin-bottom:12px">
+  <div class="rbr-head">
+    <span class="ticker" style="color:#ef4444;opacity:1">CRWD — CrowdStrike Holdings</span>
+    <span class="pct" style="opacity:1">100% AI · $4.77B</span>
+  </div>
+  <div class="rbr-track">
+    <div class="rbr-fill" style="width:0%;background:linear-gradient(90deg,#ef4444,#ef444488);opacity:1">
+      AI-Native Endpoint / Cloud Security
+    </div>
+  </div>
+</div>
+<div class="rev-bar-row" data-pct="90" style="margin-bottom:12px">
+  <div class="rbr-head">
+    <span class="ticker" style="color:#f59e0b;opacity:1">PANW — Palo Alto Networks</span>
+    <span class="pct" style="opacity:1">90% AI · $9.0B</span>
+  </div>
+  <div class="rbr-track">
+    <div class="rbr-fill" style="width:0%;background:linear-gradient(90deg,#f59e0b,#f59e0b88);opacity:1">
+      AI-Integrated Network Security
+    </div>
+  </div>
+</div>
+<div class="rev-bar-row" data-pct="95" style="margin-bottom:12px">
+  <div class="rbr-head">
+    <span class="ticker" style="color:#6366f1;opacity:1">ZS — Zscaler Inc.</span>
+    <span class="pct" style="opacity:1">95% AI · $3.28B</span>
+  </div>
+  <div class="rbr-track">
+    <div class="rbr-fill" style="width:0%;background:linear-gradient(90deg,#6366f1,#6366f188);opacity:1">
+      Zero Trust / Cloud Security
+    </div>
+  </div>
+</div>
+<div class="rev-bar-row" data-pct="70" style="margin-bottom:12px">
+  <div class="rbr-head">
+    <span class="ticker" style="color:#f97316;opacity:1">NET — Cloudflare Inc.</span>
+    <span class="pct" style="opacity:1">70% AI · $2.09B</span>
+  </div>
+  <div class="rbr-track">
+    <div class="rbr-fill" style="width:0%;background:linear-gradient(90deg,#f97316,#f9731688);opacity:1">
+      Network Security / AI Edge
+    </div>
+  </div>
+</div>
+<div class="rev-bar-row" data-pct="70" style="margin-bottom:12px">
+  <div class="rbr-head">
+    <span class="ticker" style="color:#ef4444;opacity:1">FTNT — Fortinet Inc.</span>
+    <span class="pct" style="opacity:1">70% AI · $6.8B</span>
+  </div>
+  <div class="rbr-track">
+    <div class="rbr-fill" style="width:0%;background:linear-gradient(90deg,#ef4444,#ef444488);opacity:1">
+      Network Security / FortiAI
+    </div>
+  </div>
+</div>
+<div class="rev-bar-row" data-pct="85" style="margin-bottom:12px">
+  <div class="rbr-head">
+    <span class="ticker" style="color:#00aeff;opacity:1">OKTA — Okta Inc.</span>
+    <span class="pct" style="opacity:1">85% AI · $2.76B</span>
+  </div>
+  <div class="rbr-track">
+    <div class="rbr-fill" style="width:0%;background:linear-gradient(90deg,#00aeff,#00aeff88);opacity:1">
+      Identity Security / AI Access
+    </div>
+  </div>
+</div>
+  <div class="seg-divider" style="margin:12px 0"><div class="seg-divider-line"></div><span style="font-size:11px;color:var(--muted);white-space:nowrap;padding:0 8px">Mag 7 Reference (faded)</span><div class="seg-divider-line"></div></div>
+  
+<div class="rev-bar-row mag7-row" data-pct="15" style="margin-bottom:12px">
+  <div class="rbr-head">
+    <span class="ticker" style="color:#7b8299;opacity:0.38">GOOGL — Alphabet</span>
+    <span class="pct" style="opacity:0.38">15% AI · $350B</span>
+  </div>
+  <div class="rbr-track">
+    <div class="rbr-fill" style="width:0%;background:linear-gradient(90deg,#7b8299,#7b829988);opacity:0.38">
+      Cloud AI / Search AI
+    </div>
+  </div>
+</div>
+<div class="rev-bar-row mag7-row" data-pct="20" style="margin-bottom:12px">
+  <div class="rbr-head">
+    <span class="ticker" style="color:#7b8299;opacity:0.38">MSFT — Microsoft</span>
+    <span class="pct" style="opacity:0.38">20% AI · $282B</span>
+  </div>
+  <div class="rbr-track">
+    <div class="rbr-fill" style="width:0%;background:linear-gradient(90deg,#7b8299,#7b829988);opacity:0.38">
+      Copilot / Azure AI
+    </div>
+  </div>
+</div>
+<div class="rev-bar-row mag7-row" data-pct="18" style="margin-bottom:12px">
+  <div class="rbr-head">
+    <span class="ticker" style="color:#7b8299;opacity:0.38">AMZN — Amazon</span>
+    <span class="pct" style="opacity:0.38">18% AI · $638B</span>
+  </div>
+  <div class="rbr-track">
+    <div class="rbr-fill" style="width:0%;background:linear-gradient(90deg,#7b8299,#7b829988);opacity:0.38">
+      AWS / Bedrock AI
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- ── COMPARISON CHARTS ── -->
+<div id="charts" class="fade-in">
+<div class="sec-title"><span class="inf">Infra</span> & <span class="sec">Security</span> vs Mag 7</div>
+<div class="explainer"><div class="expl-icon">💡</div><div>
+  <h4>P/E Gap & Growth Rate</h4>
+  <p>Security stocks command premium P/E (30–100×) due to recurring ARR. Infrastructure trades lower (16–87×) given hardware economics. The right question: are growth rates and analyst targets justifying those premiums?</p>
+</div></div>
+<div class="charts-row">
+  <div class="chart-card fade-in">
+    <h3>P/E Ratios (TTM)</h3>
+    <p class="chart-desc">0 = GAAP net loss</p>
+    <div class="chart-wrap"><canvas id="peChart"></canvas></div>
+  </div>
+  <div class="chart-card fade-in">
+    <h3>Revenue Growth YoY %</h3>
+    <p class="chart-desc">vs Mag 7 avg ~14%</p>
+    <div class="chart-wrap"><canvas id="growthChart"></canvas></div>
+  </div>
+  <div class="chart-card fade-in">
+    <h3>Analyst Implied Upside %</h3>
+    <p class="chart-desc">Avg 12-month target vs current price</p>
+    <div class="chart-wrap"><canvas id="upsideChart"></canvas></div>
+  </div>
+</div>
+</div>
+
+<!-- ── INDIVIDUAL DEEP DIVES ── -->
+<div id="deepdive" class="fade-in">
+<div class="sec-title">Individual <span class="inf">Deep Dives</span></div>
+<div class="seg-divider"><div class="seg-divider-line"></div><div class="seg-divider-label" style="color:var(--cyan)">🏗️ AI Infrastructure</div><div class="seg-divider-line"></div></div>
+
+<section id="ANET" class="stock-section fade-in" style="background:rgba(6,182,212,.04);border:1px solid rgba(6,182,212,.15);border-radius:20px;padding:24px;margin-bottom:20px">
+  <div class="s-topbar">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="s-logo" style="background:linear-gradient(135deg,#06b6d4,#0a0c10)">A</div>
+      <div>
+        <h2 class="s-name">Arista Networks <span>(ANET)</span></h2>
+        <span class="s-sub">AI Networking / Ethernet</span>
+        <span class="seg-badge infra-badge">🏗️ AI Infrastructure</span>
+      </div>
+    </div>
+    <div class="s-pblock">
+      <div class="s-price">$95.80</div>
+      <div class="s-chg down">▼ -28% YTD</div>
+    </div>
+  </div>
+
+  <div class="row3">
+    <div class="panel" style="display:flex;flex-direction:column;align-items:center;padding:16px">
+      <div style="font-size:11px;text-transform:uppercase;color:var(--muted);letter-spacing:.06em;margin-bottom:10px">Risk Score</div>
+      <svg viewBox="0 0 200 120" width="180" height="120">
+        <defs><linearGradient id="grdANET" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:#22c55e"/>
+          <stop offset="40%" style="stop-color:#f59e0b"/>
+          <stop offset="100%" style="stop-color:#ef4444"/>
+        </linearGradient></defs>
+        <path d="M 10 100 A 90 90 0 0 1 190 100" fill="none" stroke="#1e2330" stroke-width="14" stroke-linecap="round"/>
+        <path d="M 10 100 A 90 90 0 0 1 190 100" fill="none" stroke="url(#grdANET)" stroke-width="14" stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="164.1"/>
+        <line x1="100" y1="100" x2="100" y2="22" stroke="white" stroke-width="2" stroke-linecap="round" transform="rotate(-14.4 100 100)"/>
+        <circle cx="100" cy="100" r="5" fill="#06b6d4"/>
+        <text x="100" y="88" fill="#22c55e" font-size="20" font-weight="bold" font-family="JetBrains Mono" text-anchor="middle">42</text>
+        <text x="100" y="112" fill="#7b8299" font-size="8" font-family="DM Sans" text-anchor="middle">LOW RISK</text>
+      </svg>
+      <div style="width:100%;margin-top:6px">
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Valuation</b><span class="mono" style="font-size:10px">48/100</span></div>
+          <div class="br-track"><div class="br-fill fill-a" style="width:48%"></div></div></div>
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Execution</b><span class="mono" style="font-size:10px">35/100</span></div>
+          <div class="br-track"><div class="br-fill fill-g" style="width:35%"></div></div></div>
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Macro</b><span class="mono" style="font-size:10px">50/100</span></div>
+          <div class="br-track"><div class="br-fill fill-a" style="width:50%"></div></div></div>
+      </div>
+    </div>
+    <div class="panel kpi-v">
+      <div class="ptitle">Key Metrics</div>
+      <div class="kv"><span>Market Cap</span><span class="mono">$118B</span></div>
+      <div class="kv"><span>P/E (TTM)</span><span class="mono">48×</span></div>
+      <div class="kv"><span>Revenue (TTM)</span><span class="mono">$9.0B</span></div>
+      <div class="kv"><span>Rev Growth</span><span class="mono" style="color:var(--green)">+29%</span></div>
+      <div class="kv"><span>EPS</span><span class="mono">$2.40</span></div>
+      <div class="kv"><span>FCF Margin</span><span class="mono">35%</span></div>
+      <div class="kv"><span>Op Margin</span><span class="mono">41.5%</span></div>
+      <div class="kv"><span>AI Revenue %</span><span class="mono" style="color:var(--purple)">75%</span></div>
+      <div class="kv" style="background:var(--purple-dim);border-radius:4px;margin-top:4px;padding:4px 6px">
+        <span style="color:var(--purple);font-weight:600">Analyst Target</span>
+        <span class="mono" style="color:var(--purple)">$176</span>
+      </div>
+      <div class="kv"><span style="color:var(--muted)">Implied Upside</span>
+        <span class="mono" style="color:var(--green)">+84.2%</span>
+      </div>
+    </div>
+    <div class="panel" style="padding:16px">
+      <div class="ptitle">12-Month Price Chart</div>
+      <div style="position:relative;height:200px"><canvas id="c_ANET"></canvas></div>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top:14px;overflow-x:auto">
+    <div class="ptitle">Quarterly Trend</div>
+    <table><thead><tr><th>Quarter</th><th>Rev Act</th><th>Rev Est</th><th>Rev B/M</th><th>EPS Act</th><th>EPS Est</th><th>EPS B/M</th><th>Result</th></tr></thead>
+    <tbody><tr><td>Q4 2025 (Dec)</td><td>$1.93B</td><td>$1.90B</td><td class='beat-cell'>+1.6%</td><td>$0.65</td><td>$0.62</td><td class='beat-cell'>+$0.03</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q3 2025 (Sep)</td><td>$1.81B</td><td>$1.76B</td><td class='beat-cell'>+2.8%</td><td>$0.60</td><td>$0.57</td><td class='beat-cell'>+$0.03</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q2 2025 (Jun)</td><td>$1.69B</td><td>$1.63B</td><td class='beat-cell'>+3.7%</td><td>$0.55</td><td>$0.51</td><td class='beat-cell'>+$0.04</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q1 2025 (Mar)</td><td>$1.57B</td><td>$1.56B</td><td class='beat-cell'>+0.6%</td><td>$0.51</td><td>$0.50</td><td class='beat-cell'>+$0.01</td><td><span class="badge beat">BEAT</span></td></tr>
+</tbody></table>
+  </div>
+
+  
+<div class="panel analyst-panel" style="margin-top:14px">
+  <div class="ptitle" style="color:#a855f7">📊 Analyst Predictions</div>
+  <div class="ap-grid">
+
+    <!-- consensus badge + rating bar -->
+    <div class="ap-left">
+      <div style="margin-bottom:14px">
+        <span class="vbadge" style="background:#22c55e15;color:#22c55e;border-color:#22c55e45;font-size:11px">STRONG BUY</span>
+        <span style="font-size:10px;color:var(--muted);margin-left:8px">41 analysts covering</span>
+      </div>
+
+      <!-- buy/hold/sell bar -->
+      <div style="margin-bottom:14px">
+        <div style="display:flex;border-radius:6px;overflow:hidden;height:26px;gap:2px">
+          <div style="width:90%;background:rgba(34,197,94,.25);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--green)">BUY 27</div>
+          <div style="width:10%;background:rgba(245,158,11,.2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--amber)">HOLD 3</div>
+          
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:3px">
+          <span>90% bullish</span><span>10% neutral</span><span style="color:transparent">0% bearish</span>
+        </div>
+      </div>
+
+      <!-- price target range scale -->
+      <div style="font-size:10px;color:var(--muted);margin-bottom:5px">12-Month Price Target Range</div>
+      <div style="position:relative;height:28px;margin-bottom:4px">
+        <div style="position:absolute;top:11px;left:0;right:0;height:6px;background:#1a1e2a;border-radius:3px"></div>
+        <div style="position:absolute;top:11px;left:-55.2%;width:3px;height:6px;background:#fff;transform:translateX(-50%)"></div>
+        <div style="position:absolute;top:2px;left:45.6%;transform:translateX(-50%);background:var(--purple);color:#fff;font-size:8px;font-family:'JetBrains Mono',monospace;padding:1px 5px;border-radius:4px;white-space:nowrap">▼ $176</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted)">
+        <span>Low $140</span>
+        <span style="color:#22c55e;font-family:'JetBrains Mono',monospace;font-weight:700">
+          +84.2% implied upside
+        </span>
+        <span>High $220</span>
+      </div>
+    </div>
+
+    <!-- key targets -->
+    <div class="ap-right">
+      <div style="font-size:10px;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em">Key Analyst Calls</div>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:5px">
+        <li>UBS: $200 (Buy)</li><li>Wells Fargo: $185 (OW)</li><li>Rosenblatt: $155 (Buy)</li>
+      </ul>
+      <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:6px">
+        <div class="pc-stat"><div class="lbl">Avg Target</div><div class="val mono" style="color:var(--purple)">$176</div></div>
+        <div class="pc-stat"><div class="lbl">High Target</div><div class="val mono" style="color:var(--green)">$220</div></div>
+        <div class="pc-stat"><div class="lbl">Low Target</div><div class="val mono" style="color:var(--muted)">$140</div></div>
+        <div class="pc-stat"><div class="lbl">Analysts</div><div class="val mono">41</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+  <div class="row2" style="margin-top:14px">
+    <div class="panel"><div class="ptitle" style="color:var(--green)">⚡ Bull Case</div><ul class="blist bull"><li>CEO guides $11B revenue in 2026 — +22% from 2025</li><li>AI cluster networking TAM expanded $60B→$105B</li><li>800G Ethernet becoming hyperscaler default</li><li>Microsoft, Meta, Google all on multi-year ANET contracts</li><li>Op margins 41.5% — best-in-class for networking</li></ul></div>
+    <div class="panel"><div class="ptitle" style="color:var(--red)">⚠️ Bear Case</div><ul class="blist bear"><li>Stock down 28% YTD despite strong fundamentals</li><li>P/E 48× not cheap for a hardware vendor</li><li>Cisco competing aggressively in AI data centers</li><li>Meta single customer concentration risk</li><li>AI capex slowdown would hit immediately</li></ul></div>
+  </div>
+
+  <div class="panel" style="margin-top:14px">
+    <div class="ptitle">Verdict</div>
+    <div class="rating-bar"><div class="rating-pin" style="left:22%"></div></div>
+    <div class="rating-lbs"><span>Strong Buy</span><span>Buy</span><span>Hold</span><span>Sell</span><span>Strong Sell</span></div>
+    <div style="margin-top:10px"><span class="vbadge" style="background:rgba(34,197,94,.12);color:var(--green);border-color:rgba(34,197,94,.4)">BUY</span></div>
+    <p class="vsummary">Arista is the backbone of AI cluster networking. CEO confirmed $11B revenue target for 2026, TAM has surged to $105B, and 800G Ethernet adoption is irreversible in hyperscaler data centers. Stock is down 28% YTD creating a compelling entry point. P/E 48× is reasonable for 29% growth and 41% margins. Risk score 42 — one of the safer plays in this cohort.</p>
+  </div>
+
+  <script>(function(){
+    var ctx=document.getElementById('c_ANET').getContext('2d');
+    var gr=ctx.createLinearGradient(0,0,0,200);
+    gr.addColorStop(0,'rgba(6,182,212,0.28)');
+    gr.addColorStop(1,'rgba(6,182,212,0)');
+    new Chart(ctx,{type:'line',data:{labels:['May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26','Apr 26','May 26'],datasets:[
+      {data:[125, 132, 148, 165, 155, 140, 130, 140, 145, 130, 115, 100, 96],borderColor:'#06b6d4',borderWidth:2,backgroundColor:gr,fill:true,tension:0.35,pointRadius:3,pointBackgroundColor:'#06b6d4',label:'Price'},
+      {data:[176.47,176.47,176.47,176.47,176.47,176.47,176.47,176.47,176.47,176.47,176.47,176.47,176.47],borderColor:'rgba(168,85,247,.6)',borderWidth:1.5,borderDash:[5,4],backgroundColor:'transparent',fill:false,pointRadius:0,label:'Analyst Target'}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,position:'top',labels:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},boxWidth:20}},
+        tooltip:{backgroundColor:'#12151c',borderColor:'#1e2330',borderWidth:1,titleColor:'#e8eaf0',bodyColor:'#a0b0c8',callbacks:{label:c=>` $`+c.raw}}},
+      scales:{x:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'}}},
+        y:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},callback:v=>'$'+v}}}}
+    });})();
+  </script>
+</section>
+<section id="VRT" class="stock-section fade-in" style="background:rgba(6,182,212,.04);border:1px solid rgba(6,182,212,.15);border-radius:20px;padding:24px;margin-bottom:20px">
+  <div class="s-topbar">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="s-logo" style="background:linear-gradient(135deg,#f97316,#0a0c10)">V</div>
+      <div>
+        <h2 class="s-name">Vertiv Holdings <span>(VRT)</span></h2>
+        <span class="s-sub">Data Center Power & Cooling</span>
+        <span class="seg-badge infra-badge">🏗️ AI Infrastructure</span>
+      </div>
+    </div>
+    <div class="s-pblock">
+      <div class="s-price">$94.30</div>
+      <div class="s-chg down">▼ -26% YTD</div>
+    </div>
+  </div>
+
+  <div class="row3">
+    <div class="panel" style="display:flex;flex-direction:column;align-items:center;padding:16px">
+      <div style="font-size:11px;text-transform:uppercase;color:var(--muted);letter-spacing:.06em;margin-bottom:10px">Risk Score</div>
+      <svg viewBox="0 0 200 120" width="180" height="120">
+        <defs><linearGradient id="grdVRT" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:#22c55e"/>
+          <stop offset="40%" style="stop-color:#f59e0b"/>
+          <stop offset="100%" style="stop-color:#ef4444"/>
+        </linearGradient></defs>
+        <path d="M 10 100 A 90 90 0 0 1 190 100" fill="none" stroke="#1e2330" stroke-width="14" stroke-linecap="round"/>
+        <path d="M 10 100 A 90 90 0 0 1 190 100" fill="none" stroke="url(#grdVRT)" stroke-width="14" stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="155.7"/>
+        <line x1="100" y1="100" x2="100" y2="22" stroke="white" stroke-width="2" stroke-linecap="round" transform="rotate(-9.0 100 100)"/>
+        <circle cx="100" cy="100" r="5" fill="#f97316"/>
+        <text x="100" y="88" fill="#f59e0b" font-size="20" font-weight="bold" font-family="JetBrains Mono" text-anchor="middle">45</text>
+        <text x="100" y="112" fill="#7b8299" font-size="8" font-family="DM Sans" text-anchor="middle">MODERATE RISK</text>
+      </svg>
+      <div style="width:100%;margin-top:6px">
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Valuation</b><span class="mono" style="font-size:10px">50/100</span></div>
+          <div class="br-track"><div class="br-fill fill-a" style="width:50%"></div></div></div>
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Execution</b><span class="mono" style="font-size:10px">35/100</span></div>
+          <div class="br-track"><div class="br-fill fill-g" style="width:35%"></div></div></div>
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Macro</b><span class="mono" style="font-size:10px">58/100</span></div>
+          <div class="br-track"><div class="br-fill fill-a" style="width:58%"></div></div></div>
+      </div>
+    </div>
+    <div class="panel kpi-v">
+      <div class="ptitle">Key Metrics</div>
+      <div class="kv"><span>Market Cap</span><span class="mono">$36B</span></div>
+      <div class="kv"><span>P/E (TTM)</span><span class="mono">45×</span></div>
+      <div class="kv"><span>Revenue (TTM)</span><span class="mono">$9.7B</span></div>
+      <div class="kv"><span>Rev Growth</span><span class="mono" style="color:var(--green)">+22%</span></div>
+      <div class="kv"><span>EPS</span><span class="mono">$2.10</span></div>
+      <div class="kv"><span>FCF Margin</span><span class="mono">12%</span></div>
+      <div class="kv"><span>Op Margin</span><span class="mono">19.8%</span></div>
+      <div class="kv"><span>AI Revenue %</span><span class="mono" style="color:var(--purple)">80%</span></div>
+      <div class="kv" style="background:var(--purple-dim);border-radius:4px;margin-top:4px;padding:4px 6px">
+        <span style="color:var(--purple);font-weight:600">Analyst Target</span>
+        <span class="mono" style="color:var(--purple)">$269</span>
+      </div>
+      <div class="kv"><span style="color:var(--muted)">Implied Upside</span>
+        <span class="mono" style="color:var(--green)">+185.7%</span>
+      </div>
+    </div>
+    <div class="panel" style="padding:16px">
+      <div class="ptitle">12-Month Price Chart</div>
+      <div style="position:relative;height:200px"><canvas id="c_VRT"></canvas></div>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top:14px;overflow-x:auto">
+    <div class="ptitle">Quarterly Trend</div>
+    <table><thead><tr><th>Quarter</th><th>Rev Act</th><th>Rev Est</th><th>Rev B/M</th><th>EPS Act</th><th>EPS Est</th><th>EPS B/M</th><th>Result</th></tr></thead>
+    <tbody><tr><td>Q4 2025 (Dec)</td><td>$2.35B</td><td>$2.32B</td><td class='beat-cell'>+1.3%</td><td>$0.56</td><td>$0.54</td><td class='beat-cell'>+$0.02</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q3 2025 (Sep)</td><td>$2.22B</td><td>$2.18B</td><td class='beat-cell'>+1.8%</td><td>$0.51</td><td>$0.49</td><td class='beat-cell'>+$0.02</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q2 2025 (Jun)</td><td>$2.01B</td><td>$1.97B</td><td class='beat-cell'>+2.0%</td><td>$0.46</td><td>$0.43</td><td class='beat-cell'>+$0.03</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q1 2025 (Mar)</td><td>$2.12B</td><td>$2.04B</td><td class='beat-cell'>+3.9%</td><td>$0.50</td><td>$0.45</td><td class='beat-cell'>+$0.05</td><td><span class="badge beat">BEAT</span></td></tr>
+</tbody></table>
+  </div>
+
+  
+<div class="panel analyst-panel" style="margin-top:14px">
+  <div class="ptitle" style="color:#a855f7">📊 Analyst Predictions</div>
+  <div class="ap-grid">
+
+    <!-- consensus badge + rating bar -->
+    <div class="ap-left">
+      <div style="margin-bottom:14px">
+        <span class="vbadge" style="background:#86efac15;color:#86efac;border-color:#86efac45;font-size:11px">BUY</span>
+        <span style="font-size:10px;color:var(--muted);margin-left:8px">18 analysts covering</span>
+      </div>
+
+      <!-- buy/hold/sell bar -->
+      <div style="margin-bottom:14px">
+        <div style="display:flex;border-radius:6px;overflow:hidden;height:26px;gap:2px">
+          <div style="width:89%;background:rgba(34,197,94,.25);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--green)">BUY 16</div>
+          <div style="width:6%;background:rgba(245,158,11,.2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--amber)">HOLD 1</div>
+          <div style="width:5%;background:rgba(239,68,68,.2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--red)">SELL 1</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:3px">
+          <span>89% bullish</span><span>6% neutral</span><span style="color:var(--red)">5% bearish</span>
+        </div>
+      </div>
+
+      <!-- price target range scale -->
+      <div style="font-size:10px;color:var(--muted);margin-bottom:5px">12-Month Price Target Range</div>
+      <div style="position:relative;height:28px;margin-bottom:4px">
+        <div style="position:absolute;top:11px;left:0;right:0;height:6px;background:#1a1e2a;border-radius:3px"></div>
+        <div style="position:absolute;top:11px;left:-26.9%;width:3px;height:6px;background:#fff;transform:translateX(-50%)"></div>
+        <div style="position:absolute;top:2px;left:76.1%;transform:translateX(-50%);background:var(--purple);color:#fff;font-size:8px;font-family:'JetBrains Mono',monospace;padding:1px 5px;border-radius:4px;white-space:nowrap">▼ $269</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted)">
+        <span>Low $140</span>
+        <span style="color:#22c55e;font-family:'JetBrains Mono',monospace;font-weight:700">
+          +185.7% implied upside
+        </span>
+        <span>High $310</span>
+      </div>
+    </div>
+
+    <!-- key targets -->
+    <div class="ap-right">
+      <div style="font-size:10px;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em">Key Analyst Calls</div>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:5px">
+        <li>44% Strong Buy ratings</li><li>Strong Buy consensus</li><li>FY2026 guidance upside potential</li>
+      </ul>
+      <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:6px">
+        <div class="pc-stat"><div class="lbl">Avg Target</div><div class="val mono" style="color:var(--purple)">$269</div></div>
+        <div class="pc-stat"><div class="lbl">High Target</div><div class="val mono" style="color:var(--green)">$310</div></div>
+        <div class="pc-stat"><div class="lbl">Low Target</div><div class="val mono" style="color:var(--muted)">$140</div></div>
+        <div class="pc-stat"><div class="lbl">Analysts</div><div class="val mono">18</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+  <div class="row2" style="margin-top:14px">
+    <div class="panel"><div class="ptitle" style="color:var(--green)">⚡ Bull Case</div><ul class="blist bull"><li>Every AI GPU cluster needs VRT power & cooling</li><li>Liquid cooling for Blackwell GPUs is now a VRT monopoly</li><li>Backlog $7.7B — 2+ years visibility</li><li>$2B revenue target raised multiple times — mgmt credibility</li><li>Hyperscaler capex $300B+ in 2026 = VRT tailwind</li></ul></div>
+    <div class="panel"><div class="ptitle" style="color:var(--red)">⚠️ Bear Case</div><ul class="blist bear"><li>Stock down 26% YTD on tariff hardware fears</li><li>Power delivery supply chain exposure to China</li><li>12% FCF margin thin for 45× P/E</li><li>Any NVIDIA GPU delay cascades into VRT order deferrals</li><li>Margins 19.8% — modest vs software peers</li></ul></div>
+  </div>
+
+  <div class="panel" style="margin-top:14px">
+    <div class="ptitle">Verdict</div>
+    <div class="rating-bar"><div class="rating-pin" style="left:25%"></div></div>
+    <div class="rating-lbs"><span>Strong Buy</span><span>Buy</span><span>Hold</span><span>Sell</span><span>Strong Sell</span></div>
+    <div style="margin-top:10px"><span class="vbadge" style="background:rgba(34,197,94,.12);color:var(--green);border-color:rgba(34,197,94,.4)">BUY</span></div>
+    <p class="vsummary">Vertiv is the unglamorous but essential pick-and-shovel AI play. Every GPU cluster needs power delivery and liquid cooling, and Vertiv dominates both. With $7.7B backlog and revenue guidance raised 4 times in 2025, management credibility is high. Stock down 26% YTD creates entry. FCF margin is thin and tariff risk is real, but the structural AI capex cycle underpins multi-year demand. Risk score 45.</p>
+  </div>
+
+  <script>(function(){
+    var ctx=document.getElementById('c_VRT').getContext('2d');
+    var gr=ctx.createLinearGradient(0,0,0,200);
+    gr.addColorStop(0,'rgba(249,115,22,0.28)');
+    gr.addColorStop(1,'rgba(249,115,22,0)');
+    new Chart(ctx,{type:'line',data:{labels:['May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26','Apr 26','May 26'],datasets:[
+      {data:[88, 95, 110, 125, 115, 100, 92, 102, 115, 110, 100, 96, 94],borderColor:'#f97316',borderWidth:2,backgroundColor:gr,fill:true,tension:0.35,pointRadius:3,pointBackgroundColor:'#f97316',label:'Price'},
+      {data:[269.44,269.44,269.44,269.44,269.44,269.44,269.44,269.44,269.44,269.44,269.44,269.44,269.44],borderColor:'rgba(168,85,247,.6)',borderWidth:1.5,borderDash:[5,4],backgroundColor:'transparent',fill:false,pointRadius:0,label:'Analyst Target'}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,position:'top',labels:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},boxWidth:20}},
+        tooltip:{backgroundColor:'#12151c',borderColor:'#1e2330',borderWidth:1,titleColor:'#e8eaf0',bodyColor:'#a0b0c8',callbacks:{label:c=>` $`+c.raw}}},
+      scales:{x:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'}}},
+        y:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},callback:v=>'$'+v}}}}
+    });})();
+  </script>
+</section>
+<section id="EQIX" class="stock-section fade-in" style="background:rgba(6,182,212,.04);border:1px solid rgba(6,182,212,.15);border-radius:20px;padding:24px;margin-bottom:20px">
+  <div class="s-topbar">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="s-logo" style="background:linear-gradient(135deg,#ef4444,#0a0c10)">E</div>
+      <div>
+        <h2 class="s-name">Equinix Inc. <span>(EQIX)</span></h2>
+        <span class="s-sub">Data Center REIT / Colocation</span>
+        <span class="seg-badge infra-badge">🏗️ AI Infrastructure</span>
+      </div>
+    </div>
+    <div class="s-pblock">
+      <div class="s-price">$906.00</div>
+      <div class="s-chg up">▲ +8% YTD</div>
+    </div>
+  </div>
+
+  <div class="row3">
+    <div class="panel" style="display:flex;flex-direction:column;align-items:center;padding:16px">
+      <div style="font-size:11px;text-transform:uppercase;color:var(--muted);letter-spacing:.06em;margin-bottom:10px">Risk Score</div>
+      <svg viewBox="0 0 200 120" width="180" height="120">
+        <defs><linearGradient id="grdEQIX" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:#22c55e"/>
+          <stop offset="40%" style="stop-color:#f59e0b"/>
+          <stop offset="100%" style="stop-color:#ef4444"/>
+        </linearGradient></defs>
+        <path d="M 10 100 A 90 90 0 0 1 190 100" fill="none" stroke="#1e2330" stroke-width="14" stroke-linecap="round"/>
+        <path d="M 10 100 A 90 90 0 0 1 190 100" fill="none" stroke="url(#grdEQIX)" stroke-width="14" stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="175.5"/>
+        <line x1="100" y1="100" x2="100" y2="22" stroke="white" stroke-width="2" stroke-linecap="round" transform="rotate(-21.6 100 100)"/>
+        <circle cx="100" cy="100" r="5" fill="#ef4444"/>
+        <text x="100" y="88" fill="#22c55e" font-size="20" font-weight="bold" font-family="JetBrains Mono" text-anchor="middle">38</text>
+        <text x="100" y="112" fill="#7b8299" font-size="8" font-family="DM Sans" text-anchor="middle">LOW RISK</text>
+      </svg>
+      <div style="width:100%;margin-top:6px">
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Valuation</b><span class="mono" style="font-size:10px">45/100</span></div>
+          <div class="br-track"><div class="br-fill fill-a" style="width:45%"></div></div></div>
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Execution</b><span class="mono" style="font-size:10px">32/100</span></div>
+          <div class="br-track"><div class="br-fill fill-g" style="width:32%"></div></div></div>
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Macro</b><span class="mono" style="font-size:10px">42/100</span></div>
+          <div class="br-track"><div class="br-fill fill-a" style="width:42%"></div></div></div>
+      </div>
+    </div>
+    <div class="panel kpi-v">
+      <div class="ptitle">Key Metrics</div>
+      <div class="kv"><span>Market Cap</span><span class="mono">$80B</span></div>
+      <div class="kv"><span>P/E (TTM)</span><span class="mono">87×</span></div>
+      <div class="kv"><span>Revenue (TTM)</span><span class="mono">$9.0B</span></div>
+      <div class="kv"><span>Rev Growth</span><span class="mono" style="color:var(--green)">+9%</span></div>
+      <div class="kv"><span>EPS</span><span class="mono">$10.43</span></div>
+      <div class="kv"><span>FCF Margin</span><span class="mono">18%</span></div>
+      <div class="kv"><span>Op Margin</span><span class="mono">12%</span></div>
+      <div class="kv"><span>AI Revenue %</span><span class="mono" style="color:var(--purple)">40%</span></div>
+      <div class="kv" style="background:var(--purple-dim);border-radius:4px;margin-top:4px;padding:4px 6px">
+        <span style="color:var(--purple);font-weight:600">Analyst Target</span>
+        <span class="mono" style="color:var(--purple)">$1,009</span>
+      </div>
+      <div class="kv"><span style="color:var(--muted)">Implied Upside</span>
+        <span class="mono" style="color:var(--green)">+11.4%</span>
+      </div>
+    </div>
+    <div class="panel" style="padding:16px">
+      <div class="ptitle">12-Month Price Chart</div>
+      <div style="position:relative;height:200px"><canvas id="c_EQIX"></canvas></div>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top:14px;overflow-x:auto">
+    <div class="ptitle">Quarterly Trend</div>
+    <table><thead><tr><th>Quarter</th><th>Rev Act</th><th>Rev Est</th><th>Rev B/M</th><th>EPS Act</th><th>EPS Est</th><th>EPS B/M</th><th>Result</th></tr></thead>
+    <tbody><tr><td>Q4 2025 (Dec)</td><td>$2.26B</td><td>$2.24B</td><td class='beat-cell'>+0.9%</td><td>$2.70</td><td>$2.65</td><td class='beat-cell'>+$0.05</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q3 2025 (Sep)</td><td>$2.20B</td><td>$2.18B</td><td class='beat-cell'>+0.9%</td><td>$2.57</td><td>$2.51</td><td class='beat-cell'>+$0.06</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q2 2025 (Jun)</td><td>$2.16B</td><td>$2.13B</td><td class='beat-cell'>+1.4%</td><td>$2.44</td><td>$2.40</td><td class='beat-cell'>+$0.04</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q1 2025 (Mar)</td><td>$2.13B</td><td>$2.10B</td><td class='beat-cell'>+1.4%</td><td>$2.55</td><td>$2.48</td><td class='beat-cell'>+$0.07</td><td><span class="badge beat">BEAT</span></td></tr>
+</tbody></table>
+  </div>
+
+  
+<div class="panel analyst-panel" style="margin-top:14px">
+  <div class="ptitle" style="color:#a855f7">📊 Analyst Predictions</div>
+  <div class="ap-grid">
+
+    <!-- consensus badge + rating bar -->
+    <div class="ap-left">
+      <div style="margin-bottom:14px">
+        <span class="vbadge" style="background:#86efac15;color:#86efac;border-color:#86efac45;font-size:11px">BUY</span>
+        <span style="font-size:10px;color:var(--muted);margin-left:8px">29 analysts covering</span>
+      </div>
+
+      <!-- buy/hold/sell bar -->
+      <div style="margin-bottom:14px">
+        <div style="display:flex;border-radius:6px;overflow:hidden;height:26px;gap:2px">
+          <div style="width:86%;background:rgba(34,197,94,.25);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--green)">BUY 24</div>
+          <div style="width:14%;background:rgba(245,158,11,.2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--amber)">HOLD 4</div>
+          
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:3px">
+          <span>86% bullish</span><span>14% neutral</span><span style="color:transparent">0% bearish</span>
+        </div>
+      </div>
+
+      <!-- price target range scale -->
+      <div style="font-size:10px;color:var(--muted);margin-bottom:5px">12-Month Price Target Range</div>
+      <div style="position:relative;height:28px;margin-bottom:4px">
+        <div style="position:absolute;top:11px;left:0;right:0;height:6px;background:#1a1e2a;border-radius:3px"></div>
+        <div style="position:absolute;top:11px;left:22.9%;width:3px;height:6px;background:#fff;transform:translateX(-50%)"></div>
+        <div style="position:absolute;top:2px;left:46.0%;transform:translateX(-50%);background:var(--purple);color:#fff;font-size:8px;font-family:'JetBrains Mono',monospace;padding:1px 5px;border-radius:4px;white-space:nowrap">▼ $1,009</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted)">
+        <span>Low $804</span>
+        <span style="color:#f59e0b;font-family:'JetBrains Mono',monospace;font-weight:700">
+          +11.4% implied upside
+        </span>
+        <span>High $1,250</span>
+      </div>
+    </div>
+
+    <!-- key targets -->
+    <div class="ap-right">
+      <div style="font-size:10px;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em">Key Analyst Calls</div>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:5px">
+        <li>Stifel: $1,250 (Buy)</li><li>Wells Fargo: $1,200 (OW)</li><li>Avg 22% upside</li>
+      </ul>
+      <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:6px">
+        <div class="pc-stat"><div class="lbl">Avg Target</div><div class="val mono" style="color:var(--purple)">$1,009</div></div>
+        <div class="pc-stat"><div class="lbl">High Target</div><div class="val mono" style="color:var(--green)">$1,250</div></div>
+        <div class="pc-stat"><div class="lbl">Low Target</div><div class="val mono" style="color:var(--muted)">$804</div></div>
+        <div class="pc-stat"><div class="lbl">Analysts</div><div class="val mono">29</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+  <div class="row2" style="margin-top:14px">
+    <div class="panel"><div class="ptitle" style="color:var(--green)">⚡ Bull Case</div><ul class="blist bull"><li>#1 global data center REIT — 260 IBX sites in 71 metros</li><li>AI workloads driving premium interconnect revenue</li><li>Digital Nexus xScale AI campuses ramping</li><li>2.2% dividend yield — defensive income in volatile markets</li><li>Analyst consensus target $965 — 20% upside</li></ul></div>
+    <div class="panel"><div class="ptitle" style="color:var(--red)">⚠️ Bear Case</div><ul class="blist bear"><li>Growth modest at 9% — not a pure AI hypergrowth play</li><li>High debt load from capex-intensive REIT model</li><li>Rising interest rates compress REIT valuations</li><li>P/FFO is expensive vs history</li><li>AI cloud migration could reduce colocation need long-term</li></ul></div>
+  </div>
+
+  <div class="panel" style="margin-top:14px">
+    <div class="ptitle">Verdict</div>
+    <div class="rating-bar"><div class="rating-pin" style="left:40%"></div></div>
+    <div class="rating-lbs"><span>Strong Buy</span><span>Buy</span><span>Hold</span><span>Sell</span><span>Strong Sell</span></div>
+    <div style="margin-top:10px"><span class="vbadge" style="background:rgba(245,158,11,.12);color:var(--amber);border-color:rgba(245,158,11,.4)">HOLD / ACCUMULATE</span></div>
+    <p class="vsummary">Equinix is the safe haven of AI infrastructure — steady 9% growth, 2.2% dividend, and 260 data center sites globally that hyperscalers literally cannot replace overnight. AI is driving premium interconnect revenue and xScale AI campuses are ramping. Not a hypergrowth story but an essential infrastructure compounder with analyst target 20% above current levels. Risk score 38 — the lowest in this cohort.</p>
+  </div>
+
+  <script>(function(){
+    var ctx=document.getElementById('c_EQIX').getContext('2d');
+    var gr=ctx.createLinearGradient(0,0,0,200);
+    gr.addColorStop(0,'rgba(239,68,68,0.28)');
+    gr.addColorStop(1,'rgba(239,68,68,0)');
+    new Chart(ctx,{type:'line',data:{labels:['May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26','Apr 26','May 26'],datasets:[
+      {data:[800, 840, 870, 900, 860, 820, 800, 840, 875, 895, 900, 905, 906],borderColor:'#ef4444',borderWidth:2,backgroundColor:gr,fill:true,tension:0.35,pointRadius:3,pointBackgroundColor:'#ef4444',label:'Price'},
+      {data:[1009.0,1009.0,1009.0,1009.0,1009.0,1009.0,1009.0,1009.0,1009.0,1009.0,1009.0,1009.0,1009.0],borderColor:'rgba(168,85,247,.6)',borderWidth:1.5,borderDash:[5,4],backgroundColor:'transparent',fill:false,pointRadius:0,label:'Analyst Target'}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,position:'top',labels:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},boxWidth:20}},
+        tooltip:{backgroundColor:'#12151c',borderColor:'#1e2330',borderWidth:1,titleColor:'#e8eaf0',bodyColor:'#a0b0c8',callbacks:{label:c=>` $`+c.raw}}},
+      scales:{x:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'}}},
+        y:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},callback:v=>'$'+v}}}}
+    });})();
+  </script>
+</section>
+<section id="DELL" class="stock-section fade-in" style="background:rgba(6,182,212,.04);border:1px solid rgba(6,182,212,.15);border-radius:20px;padding:24px;margin-bottom:20px">
+  <div class="s-topbar">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="s-logo" style="background:linear-gradient(135deg,#2563eb,#0a0c10)">D</div>
+      <div>
+        <h2 class="s-name">Dell Technologies <span>(DELL)</span></h2>
+        <span class="s-sub">AI Servers / Edge Infrastructure</span>
+        <span class="seg-badge infra-badge">🏗️ AI Infrastructure</span>
+      </div>
+    </div>
+    <div class="s-pblock">
+      <div class="s-price">$104.50</div>
+      <div class="s-chg down">▼ -21% YTD</div>
+    </div>
+  </div>
+
+  <div class="row3">
+    <div class="panel" style="display:flex;flex-direction:column;align-items:center;padding:16px">
+      <div style="font-size:11px;text-transform:uppercase;color:var(--muted);letter-spacing:.06em;margin-bottom:10px">Risk Score</div>
+      <svg viewBox="0 0 200 120" width="180" height="120">
+        <defs><linearGradient id="grdDELL" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:#22c55e"/>
+          <stop offset="40%" style="stop-color:#f59e0b"/>
+          <stop offset="100%" style="stop-color:#ef4444"/>
+        </linearGradient></defs>
+        <path d="M 10 100 A 90 90 0 0 1 190 100" fill="none" stroke="#1e2330" stroke-width="14" stroke-linecap="round"/>
+        <path d="M 10 100 A 90 90 0 0 1 190 100" fill="none" stroke="url(#grdDELL)" stroke-width="14" stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="144.3"/>
+        <line x1="100" y1="100" x2="100" y2="22" stroke="white" stroke-width="2" stroke-linecap="round" transform="rotate(-1.8 100 100)"/>
+        <circle cx="100" cy="100" r="5" fill="#2563eb"/>
+        <text x="100" y="88" fill="#f59e0b" font-size="20" font-weight="bold" font-family="JetBrains Mono" text-anchor="middle">49</text>
+        <text x="100" y="112" fill="#7b8299" font-size="8" font-family="DM Sans" text-anchor="middle">MODERATE RISK</text>
+      </svg>
+      <div style="width:100%;margin-top:6px">
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Valuation</b><span class="mono" style="font-size:10px">28/100</span></div>
+          <div class="br-track"><div class="br-fill fill-g" style="width:28%"></div></div></div>
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Execution</b><span class="mono" style="font-size:10px">45/100</span></div>
+          <div class="br-track"><div class="br-fill fill-a" style="width:45%"></div></div></div>
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Macro</b><span class="mono" style="font-size:10px">62/100</span></div>
+          <div class="br-track"><div class="br-fill fill-r" style="width:62%"></div></div></div>
+      </div>
+    </div>
+    <div class="panel kpi-v">
+      <div class="ptitle">Key Metrics</div>
+      <div class="kv"><span>Market Cap</span><span class="mono">$72B</span></div>
+      <div class="kv"><span>P/E (TTM)</span><span class="mono">16×</span></div>
+      <div class="kv"><span>Revenue (TTM)</span><span class="mono">$95.6B</span></div>
+      <div class="kv"><span>Rev Growth</span><span class="mono" style="color:var(--green)">+8%</span></div>
+      <div class="kv"><span>EPS</span><span class="mono">$6.55</span></div>
+      <div class="kv"><span>FCF Margin</span><span class="mono">8%</span></div>
+      <div class="kv"><span>Op Margin</span><span class="mono">5.1%</span></div>
+      <div class="kv"><span>AI Revenue %</span><span class="mono" style="color:var(--purple)">35%</span></div>
+      <div class="kv" style="background:var(--purple-dim);border-radius:4px;margin-top:4px;padding:4px 6px">
+        <span style="color:var(--purple);font-weight:600">Analyst Target</span>
+        <span class="mono" style="color:var(--purple)">$166</span>
+      </div>
+      <div class="kv"><span style="color:var(--muted)">Implied Upside</span>
+        <span class="mono" style="color:var(--green)">+58.6%</span>
+      </div>
+    </div>
+    <div class="panel" style="padding:16px">
+      <div class="ptitle">12-Month Price Chart</div>
+      <div style="position:relative;height:200px"><canvas id="c_DELL"></canvas></div>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top:14px;overflow-x:auto">
+    <div class="ptitle">Quarterly Trend</div>
+    <table><thead><tr><th>Quarter</th><th>Rev Act</th><th>Rev Est</th><th>Rev B/M</th><th>EPS Act</th><th>EPS Est</th><th>EPS B/M</th><th>Result</th></tr></thead>
+    <tbody><tr><td>Q4 FY2026 (Jan)</td><td>$23.9B</td><td>$24.6B</td><td class='miss-cell'>-2.8%</td><td>$2.68</td><td>$2.53</td><td class='beat-cell'>+$0.15</td><td><span class="badge caution">CAUTION</span></td></tr>
+<tr><td>Q3 FY2026 (Oct)</td><td>$24.4B</td><td>$24.6B</td><td class='miss-cell'>-0.8%</td><td>$2.15</td><td>$2.06</td><td class='beat-cell'>+$0.09</td><td><span class="badge caution">CAUTION</span></td></tr>
+<tr><td>Q2 FY2026 (Jul)</td><td>$25.0B</td><td>$24.3B</td><td class='beat-cell'>+2.9%</td><td>$1.89</td><td>$1.71</td><td class='beat-cell'>+$0.18</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q1 FY2026 (May)</td><td>$22.9B</td><td>$22.6B</td><td class='beat-cell'>+1.3%</td><td>$1.70</td><td>$1.66</td><td class='beat-cell'>+$0.04</td><td><span class="badge beat">BEAT</span></td></tr>
+</tbody></table>
+  </div>
+
+  
+<div class="panel analyst-panel" style="margin-top:14px">
+  <div class="ptitle" style="color:#a855f7">📊 Analyst Predictions</div>
+  <div class="ap-grid">
+
+    <!-- consensus badge + rating bar -->
+    <div class="ap-left">
+      <div style="margin-bottom:14px">
+        <span class="vbadge" style="background:#86efac15;color:#86efac;border-color:#86efac45;font-size:11px">BUY</span>
+        <span style="font-size:10px;color:var(--muted);margin-left:8px">26 analysts covering</span>
+      </div>
+
+      <!-- buy/hold/sell bar -->
+      <div style="margin-bottom:14px">
+        <div style="display:flex;border-radius:6px;overflow:hidden;height:26px;gap:2px">
+          <div style="width:69%;background:rgba(34,197,94,.25);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--green)">BUY 18</div>
+          <div style="width:27%;background:rgba(245,158,11,.2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--amber)">HOLD 7</div>
+          <div style="width:4%;background:rgba(239,68,68,.2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--red)">SELL 1</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:3px">
+          <span>69% bullish</span><span>27% neutral</span><span style="color:var(--red)">4% bearish</span>
+        </div>
+      </div>
+
+      <!-- price target range scale -->
+      <div style="font-size:10px;color:var(--muted);margin-bottom:5px">12-Month Price Target Range</div>
+      <div style="position:relative;height:28px;margin-bottom:4px">
+        <div style="position:absolute;top:11px;left:0;right:0;height:6px;background:#1a1e2a;border-radius:3px"></div>
+        <div style="position:absolute;top:11px;left:3.4%;width:3px;height:6px;background:#fff;transform:translateX(-50%)"></div>
+        <div style="position:absolute;top:2px;left:62.2%;transform:translateX(-50%);background:var(--purple);color:#fff;font-size:8px;font-family:'JetBrains Mono',monospace;padding:1px 5px;border-radius:4px;white-space:nowrap">▼ $166</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted)">
+        <span>Low $101</span>
+        <span style="color:#22c55e;font-family:'JetBrains Mono',monospace;font-weight:700">
+          +58.6% implied upside
+        </span>
+        <span>High $205</span>
+      </div>
+    </div>
+
+    <!-- key targets -->
+    <div class="ap-right">
+      <div style="font-size:10px;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em">Key Analyst Calls</div>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:5px">
+        <li>Evercore: $205 (Buy)</li><li>Citi: $135 (Neutral)</li><li>Truist: $135 (Hold)</li>
+      </ul>
+      <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:6px">
+        <div class="pc-stat"><div class="lbl">Avg Target</div><div class="val mono" style="color:var(--purple)">$166</div></div>
+        <div class="pc-stat"><div class="lbl">High Target</div><div class="val mono" style="color:var(--green)">$205</div></div>
+        <div class="pc-stat"><div class="lbl">Low Target</div><div class="val mono" style="color:var(--muted)">$101</div></div>
+        <div class="pc-stat"><div class="lbl">Analysts</div><div class="val mono">26</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+  <div class="row2" style="margin-top:14px">
+    <div class="panel"><div class="ptitle" style="color:var(--green)">⚡ Bull Case</div><ul class="blist bull"><li>AI server backlog $9B+ — fastest growing segment</li><li>Forward P/E 12× — cheapest in AI infra cohort</li><li>EPS growth forecast 61% for FY2026</li><li>ISG (AI server) revenue now $12B/quarter run-rate</li><li>1.7% dividend yield provides cushion</li></ul></div>
+    <div class="panel"><div class="ptitle" style="color:var(--red)">⚠️ Bear Case</div><ul class="blist bear"><li>Revenue misses in Q3/Q4 — hyperscaler delays</li><li>Gross margins 5% — pure hardware economics</li><li>PC business structural decline drags overall growth</li><li>Tariff risk on hardware components significant</li><li>Net income volatile due to financial services arm</li></ul></div>
+  </div>
+
+  <div class="panel" style="margin-top:14px">
+    <div class="ptitle">Verdict</div>
+    <div class="rating-bar"><div class="rating-pin" style="left:35%"></div></div>
+    <div class="rating-lbs"><span>Strong Buy</span><span>Buy</span><span>Hold</span><span>Sell</span><span>Strong Sell</span></div>
+    <div style="margin-top:10px"><span class="vbadge" style="background:rgba(245,158,11,.12);color:var(--amber);border-color:rgba(245,158,11,.4)">SPECULATIVE BUY</span></div>
+    <p class="vsummary">Dell is the value trap or value play debate of 2026. At P/E 16× and forward P/E 12× with $9B AI server backlog, the valuation is compelling. But margins of 5% reflect the fundamental hardware reality — Dell assembles other companies' chips and earns thin margins doing it. The 61% EPS growth forecast for FY2026 would be transformative if delivered. Best suited for value investors comfortable with hardware exposure. Risk score 49.</p>
+  </div>
+
+  <script>(function(){
+    var ctx=document.getElementById('c_DELL').getContext('2d');
+    var gr=ctx.createLinearGradient(0,0,0,200);
+    gr.addColorStop(0,'rgba(37,99,235,0.28)');
+    gr.addColorStop(1,'rgba(37,99,235,0)');
+    new Chart(ctx,{type:'line',data:{labels:['May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26','Apr 26','May 26'],datasets:[
+      {data:[115, 130, 140, 160, 140, 120, 110, 120, 125, 115, 108, 105, 104],borderColor:'#2563eb',borderWidth:2,backgroundColor:gr,fill:true,tension:0.35,pointRadius:3,pointBackgroundColor:'#2563eb',label:'Price'},
+      {data:[165.69,165.69,165.69,165.69,165.69,165.69,165.69,165.69,165.69,165.69,165.69,165.69,165.69],borderColor:'rgba(168,85,247,.6)',borderWidth:1.5,borderDash:[5,4],backgroundColor:'transparent',fill:false,pointRadius:0,label:'Analyst Target'}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,position:'top',labels:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},boxWidth:20}},
+        tooltip:{backgroundColor:'#12151c',borderColor:'#1e2330',borderWidth:1,titleColor:'#e8eaf0',bodyColor:'#a0b0c8',callbacks:{label:c=>` $`+c.raw}}},
+      scales:{x:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'}}},
+        y:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},callback:v=>'$'+v}}}}
+    });})();
+  </script>
+</section>
+<div class="seg-divider"><div class="seg-divider-line"></div><div class="seg-divider-label" style="color:var(--purple)">🔒 AI Security</div><div class="seg-divider-line"></div></div>
+
+<section id="CRWD" class="stock-section fade-in" style="background:rgba(168,85,247,.04);border:1px solid rgba(168,85,247,.15);border-radius:20px;padding:24px;margin-bottom:20px">
+  <div class="s-topbar">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="s-logo" style="background:linear-gradient(135deg,#ef4444,#0a0c10)">C</div>
+      <div>
+        <h2 class="s-name">CrowdStrike Holdings <span>(CRWD)</span></h2>
+        <span class="s-sub">AI-Native Endpoint / Cloud Security</span>
+        <span class="seg-badge sec-badge">🔒 AI Security</span>
+      </div>
+    </div>
+    <div class="s-pblock">
+      <div class="s-price">$432.00</div>
+      <div class="s-chg up">▲ +48% YTD</div>
+    </div>
+  </div>
+
+  <div class="row3">
+    <div class="panel" style="display:flex;flex-direction:column;align-items:center;padding:16px">
+      <div style="font-size:11px;text-transform:uppercase;color:var(--muted);letter-spacing:.06em;margin-bottom:10px">Risk Score</div>
+      <svg viewBox="0 0 200 120" width="180" height="120">
+        <defs><linearGradient id="grdCRWD" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:#22c55e"/>
+          <stop offset="40%" style="stop-color:#f59e0b"/>
+          <stop offset="100%" style="stop-color:#ef4444"/>
+        </linearGradient></defs>
+        <path d="M 10 100 A 90 90 0 0 1 190 100" fill="none" stroke="#1e2330" stroke-width="14" stroke-linecap="round"/>
+        <path d="M 10 100 A 90 90 0 0 1 190 100" fill="none" stroke="url(#grdCRWD)" stroke-width="14" stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="118.9"/>
+        <line x1="100" y1="100" x2="100" y2="22" stroke="white" stroke-width="2" stroke-linecap="round" transform="rotate(14.4 100 100)"/>
+        <circle cx="100" cy="100" r="5" fill="#ef4444"/>
+        <text x="100" y="88" fill="#f59e0b" font-size="20" font-weight="bold" font-family="JetBrains Mono" text-anchor="middle">58</text>
+        <text x="100" y="112" fill="#7b8299" font-size="8" font-family="DM Sans" text-anchor="middle">MODERATE RISK</text>
+      </svg>
+      <div style="width:100%;margin-top:6px">
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Valuation</b><span class="mono" style="font-size:10px">72/100</span></div>
+          <div class="br-track"><div class="br-fill fill-r" style="width:72%"></div></div></div>
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Execution</b><span class="mono" style="font-size:10px">42/100</span></div>
+          <div class="br-track"><div class="br-fill fill-a" style="width:42%"></div></div></div>
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Macro</b><span class="mono" style="font-size:10px">55/100</span></div>
+          <div class="br-track"><div class="br-fill fill-a" style="width:55%"></div></div></div>
+      </div>
+    </div>
+    <div class="panel kpi-v">
+      <div class="ptitle">Key Metrics</div>
+      <div class="kv"><span>Market Cap</span><span class="mono">$105B</span></div>
+      <div class="kv"><span>P/E (TTM)</span><span class="mono">N/A (loss)</span></div>
+      <div class="kv"><span>Revenue (TTM)</span><span class="mono">$4.77B</span></div>
+      <div class="kv"><span>Rev Growth</span><span class="mono" style="color:var(--green)">+24%</span></div>
+      <div class="kv"><span>EPS</span><span class="mono">-$0.14</span></div>
+      <div class="kv"><span>FCF Margin</span><span class="mono">26%</span></div>
+      <div class="kv"><span>Op Margin</span><span class="mono">26% FCF</span></div>
+      <div class="kv"><span>AI Revenue %</span><span class="mono" style="color:var(--purple)">100%</span></div>
+      <div class="kv" style="background:var(--purple-dim);border-radius:4px;margin-top:4px;padding:4px 6px">
+        <span style="color:var(--purple);font-weight:600">Analyst Target</span>
+        <span class="mono" style="color:var(--purple)">$494</span>
+      </div>
+      <div class="kv"><span style="color:var(--muted)">Implied Upside</span>
+        <span class="mono" style="color:var(--green)">+14.5%</span>
+      </div>
+    </div>
+    <div class="panel" style="padding:16px">
+      <div class="ptitle">12-Month Price Chart</div>
+      <div style="position:relative;height:200px"><canvas id="c_CRWD"></canvas></div>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top:14px;overflow-x:auto">
+    <div class="ptitle">Quarterly Trend</div>
+    <table><thead><tr><th>Quarter</th><th>Rev Act</th><th>Rev Est</th><th>Rev B/M</th><th>EPS Act</th><th>EPS Est</th><th>EPS B/M</th><th>Result</th></tr></thead>
+    <tbody><tr><td>Q4 FY2026 (Jan)</td><td>$1.31B</td><td>$1.29B</td><td class='beat-cell'>+1.6%</td><td>$1.12</td><td>$1.10</td><td class='beat-cell'>+$0.02</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q3 FY2026 (Oct)</td><td>$1.23B</td><td>$1.21B</td><td class='beat-cell'>+1.7%</td><td>$0.93</td><td>$0.90</td><td class='beat-cell'>+$0.03</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q2 FY2026 (Jul)</td><td>$1.19B</td><td>$1.17B</td><td class='beat-cell'>+1.7%</td><td>$0.95</td><td>$0.92</td><td class='beat-cell'>+$0.03</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q1 FY2026 (Apr)</td><td>$1.07B</td><td>$1.05B</td><td class='beat-cell'>+1.9%</td><td>$0.87</td><td>$0.84</td><td class='beat-cell'>+$0.03</td><td><span class="badge beat">BEAT</span></td></tr>
+</tbody></table>
+  </div>
+
+  
+<div class="panel analyst-panel" style="margin-top:14px">
+  <div class="ptitle" style="color:#a855f7">📊 Analyst Predictions</div>
+  <div class="ap-grid">
+
+    <!-- consensus badge + rating bar -->
+    <div class="ap-left">
+      <div style="margin-bottom:14px">
+        <span class="vbadge" style="background:#22c55e15;color:#22c55e;border-color:#22c55e45;font-size:11px">STRONG BUY</span>
+        <span style="font-size:10px;color:var(--muted);margin-left:8px">69 analysts covering</span>
+      </div>
+
+      <!-- buy/hold/sell bar -->
+      <div style="margin-bottom:14px">
+        <div style="display:flex;border-radius:6px;overflow:hidden;height:26px;gap:2px">
+          <div style="width:77%;background:rgba(34,197,94,.25);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--green)">BUY 41</div>
+          <div style="width:23%;background:rgba(245,158,11,.2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--amber)">HOLD 12</div>
+          
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:3px">
+          <span>77% bullish</span><span>23% neutral</span><span style="color:transparent">0% bearish</span>
+        </div>
+      </div>
+
+      <!-- price target range scale -->
+      <div style="font-size:10px;color:var(--muted);margin-bottom:5px">12-Month Price Target Range</div>
+      <div style="position:relative;height:28px;margin-bottom:4px">
+        <div style="position:absolute;top:11px;left:0;right:0;height:6px;background:#1a1e2a;border-radius:3px"></div>
+        <div style="position:absolute;top:11px;left:18.9%;width:3px;height:6px;background:#fff;transform:translateX(-50%)"></div>
+        <div style="position:absolute;top:2px;left:37.4%;transform:translateX(-50%);background:var(--purple);color:#fff;font-size:8px;font-family:'JetBrains Mono',monospace;padding:1px 5px;border-radius:4px;white-space:nowrap">▼ $494</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted)">
+        <span>Low $368</span>
+        <span style="color:#f59e0b;font-family:'JetBrains Mono',monospace;font-weight:700">
+          +14.5% implied upside
+        </span>
+        <span>High $706</span>
+      </div>
+    </div>
+
+    <!-- key targets -->
+    <div class="ap-right">
+      <div style="font-size:10px;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em">Key Analyst Calls</div>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:5px">
+        <li>Median target $499 (+15%)</li><li>High target $706</li><li>Rating: 8.7/10 Strong Buy</li>
+      </ul>
+      <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:6px">
+        <div class="pc-stat"><div class="lbl">Avg Target</div><div class="val mono" style="color:var(--purple)">$494</div></div>
+        <div class="pc-stat"><div class="lbl">High Target</div><div class="val mono" style="color:var(--green)">$706</div></div>
+        <div class="pc-stat"><div class="lbl">Low Target</div><div class="val mono" style="color:var(--muted)">$368</div></div>
+        <div class="pc-stat"><div class="lbl">Analysts</div><div class="val mono">69</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+  <div class="row2" style="margin-top:14px">
+    <div class="panel"><div class="ptitle" style="color:var(--green)">⚡ Bull Case</div><ul class="blist bull"><li>$5.25B ARR — first cybersecurity company to hit $5B ARR</li><li>47% net new ARR growth in Q4 FY2026</li><li>115% dollar-based net retention — customers spend more</li><li>Falcon platform now 28 modules — upsell machine</li><li>AI Charlotte assistant driving detection 7× faster</li></ul></div>
+    <div class="panel"><div class="ptitle" style="color:var(--red)">⚠️ Bear Case</div><ul class="blist bear"><li>Still GAAP net loss despite $5.25B ARR</li><li>CrowdStrike Outage July 2024 — reputational tail risk</li><li>Valuation at 22× ARR is extremely stretched</li><li>MSFT Defender and SentinelOne intensifying competition</li><li>Stock up 48% YTD — stretched short-term</li></ul></div>
+  </div>
+
+  <div class="panel" style="margin-top:14px">
+    <div class="ptitle">Verdict</div>
+    <div class="rating-bar"><div class="rating-pin" style="left:48%"></div></div>
+    <div class="rating-lbs"><span>Strong Buy</span><span>Buy</span><span>Hold</span><span>Sell</span><span>Strong Sell</span></div>
+    <div style="margin-top:10px"><span class="vbadge" style="background:rgba(245,158,11,.12);color:var(--amber);border-color:rgba(245,158,11,.4)">HOLD / TRIM ON STRENGTH</span></div>
+    <p class="vsummary">CrowdStrike is the most successful AI-native cybersecurity platform ever built. $5.25B ARR growing 24%, 115% NRR, and 88,000 customers is exceptional. However, the stock is up 48% YTD and trades at 22× ARR — pricing in near perfection. The July 2024 outage reputational risk hasn't fully faded. Best accumulated on dips below $380. Risk score 58 — elevated valuation is the primary risk.</p>
+  </div>
+
+  <script>(function(){
+    var ctx=document.getElementById('c_CRWD').getContext('2d');
+    var gr=ctx.createLinearGradient(0,0,0,200);
+    gr.addColorStop(0,'rgba(239,68,68,0.28)');
+    gr.addColorStop(1,'rgba(239,68,68,0)');
+    new Chart(ctx,{type:'line',data:{labels:['May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26','Apr 26','May 26'],datasets:[
+      {data:[285, 310, 340, 380, 340, 290, 270, 300, 340, 370, 400, 425, 432],borderColor:'#ef4444',borderWidth:2,backgroundColor:gr,fill:true,tension:0.35,pointRadius:3,pointBackgroundColor:'#ef4444',label:'Price'},
+      {data:[494.5,494.5,494.5,494.5,494.5,494.5,494.5,494.5,494.5,494.5,494.5,494.5,494.5],borderColor:'rgba(168,85,247,.6)',borderWidth:1.5,borderDash:[5,4],backgroundColor:'transparent',fill:false,pointRadius:0,label:'Analyst Target'}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,position:'top',labels:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},boxWidth:20}},
+        tooltip:{backgroundColor:'#12151c',borderColor:'#1e2330',borderWidth:1,titleColor:'#e8eaf0',bodyColor:'#a0b0c8',callbacks:{label:c=>` $`+c.raw}}},
+      scales:{x:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'}}},
+        y:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},callback:v=>'$'+v}}}}
+    });})();
+  </script>
+</section>
+<section id="PANW" class="stock-section fade-in" style="background:rgba(168,85,247,.04);border:1px solid rgba(168,85,247,.15);border-radius:20px;padding:24px;margin-bottom:20px">
+  <div class="s-topbar">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="s-logo" style="background:linear-gradient(135deg,#f59e0b,#0a0c10)">P</div>
+      <div>
+        <h2 class="s-name">Palo Alto Networks <span>(PANW)</span></h2>
+        <span class="s-sub">AI-Integrated Network Security</span>
+        <span class="seg-badge sec-badge">🔒 AI Security</span>
+      </div>
+    </div>
+    <div class="s-pblock">
+      <div class="s-price">$215.40</div>
+      <div class="s-chg up">▲ +12% YTD</div>
+    </div>
+  </div>
+
+  <div class="row3">
+    <div class="panel" style="display:flex;flex-direction:column;align-items:center;padding:16px">
+      <div style="font-size:11px;text-transform:uppercase;color:var(--muted);letter-spacing:.06em;margin-bottom:10px">Risk Score</div>
+      <svg viewBox="0 0 200 120" width="180" height="120">
+        <defs><linearGradient id="grdPANW" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:#22c55e"/>
+          <stop offset="40%" style="stop-color:#f59e0b"/>
+          <stop offset="100%" style="stop-color:#ef4444"/>
+        </linearGradient></defs>
+        <path d="M 10 100 A 90 90 0 0 1 190 100" fill="none" stroke="#1e2330" stroke-width="14" stroke-linecap="round"/>
+        <path d="M 10 100 A 90 90 0 0 1 190 100" fill="none" stroke="url(#grdPANW)" stroke-width="14" stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="141.5"/>
+        <line x1="100" y1="100" x2="100" y2="22" stroke="white" stroke-width="2" stroke-linecap="round" transform="rotate(0.0 100 100)"/>
+        <circle cx="100" cy="100" r="5" fill="#f59e0b"/>
+        <text x="100" y="88" fill="#f59e0b" font-size="20" font-weight="bold" font-family="JetBrains Mono" text-anchor="middle">50</text>
+        <text x="100" y="112" fill="#7b8299" font-size="8" font-family="DM Sans" text-anchor="middle">MODERATE RISK</text>
+      </svg>
+      <div style="width:100%;margin-top:6px">
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Valuation</b><span class="mono" style="font-size:10px">68/100</span></div>
+          <div class="br-track"><div class="br-fill fill-r" style="width:68%"></div></div></div>
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Execution</b><span class="mono" style="font-size:10px">35/100</span></div>
+          <div class="br-track"><div class="br-fill fill-g" style="width:35%"></div></div></div>
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Macro</b><span class="mono" style="font-size:10px">52/100</span></div>
+          <div class="br-track"><div class="br-fill fill-a" style="width:52%"></div></div></div>
+      </div>
+    </div>
+    <div class="panel kpi-v">
+      <div class="ptitle">Key Metrics</div>
+      <div class="kv"><span>Market Cap</span><span class="mono">$140B</span></div>
+      <div class="kv"><span>P/E (TTM)</span><span class="mono">98×</span></div>
+      <div class="kv"><span>Revenue (TTM)</span><span class="mono">$9.0B</span></div>
+      <div class="kv"><span>Rev Growth</span><span class="mono" style="color:var(--green)">+14%</span></div>
+      <div class="kv"><span>EPS</span><span class="mono">$2.20</span></div>
+      <div class="kv"><span>FCF Margin</span><span class="mono">31%</span></div>
+      <div class="kv"><span>Op Margin</span><span class="mono">31%</span></div>
+      <div class="kv"><span>AI Revenue %</span><span class="mono" style="color:var(--purple)">90%</span></div>
+      <div class="kv" style="background:var(--purple-dim);border-radius:4px;margin-top:4px;padding:4px 6px">
+        <span style="color:var(--purple);font-weight:600">Analyst Target</span>
+        <span class="mono" style="color:var(--purple)">$217</span>
+      </div>
+      <div class="kv"><span style="color:var(--muted)">Implied Upside</span>
+        <span class="mono" style="color:var(--amber)">+0.8%</span>
+      </div>
+    </div>
+    <div class="panel" style="padding:16px">
+      <div class="ptitle">12-Month Price Chart</div>
+      <div style="position:relative;height:200px"><canvas id="c_PANW"></canvas></div>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top:14px;overflow-x:auto">
+    <div class="ptitle">Quarterly Trend</div>
+    <table><thead><tr><th>Quarter</th><th>Rev Act</th><th>Rev Est</th><th>Rev B/M</th><th>EPS Act</th><th>EPS Est</th><th>EPS B/M</th><th>Result</th></tr></thead>
+    <tbody><tr><td>Q2 FY2026 (Jan)</td><td>$2.26B</td><td>$2.24B</td><td class='beat-cell'>+0.9%</td><td>$0.81</td><td>$0.77</td><td class='beat-cell'>+$0.04</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q1 FY2026 (Oct)</td><td>$2.14B</td><td>$2.12B</td><td class='beat-cell'>+0.9%</td><td>$1.56</td><td>$1.48</td><td class='beat-cell'>+$0.08</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q4 FY2025 (Jul)</td><td>$2.19B</td><td>$2.17B</td><td class='beat-cell'>+0.9%</td><td>$0.63</td><td>$0.58</td><td class='beat-cell'>+$0.05</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q3 FY2025 (Apr)</td><td>$2.26B</td><td>$2.24B</td><td class='beat-cell'>+0.9%</td><td>$0.80</td><td>$0.77</td><td class='beat-cell'>+$0.03</td><td><span class="badge beat">BEAT</span></td></tr>
+</tbody></table>
+  </div>
+
+  
+<div class="panel analyst-panel" style="margin-top:14px">
+  <div class="ptitle" style="color:#a855f7">📊 Analyst Predictions</div>
+  <div class="ap-grid">
+
+    <!-- consensus badge + rating bar -->
+    <div class="ap-left">
+      <div style="margin-bottom:14px">
+        <span class="vbadge" style="background:#f59e0b15;color:#f59e0b;border-color:#f59e0b45;font-size:11px">MODERATE BUY</span>
+        <span style="font-size:10px;color:var(--muted);margin-left:8px">43 analysts covering</span>
+      </div>
+
+      <!-- buy/hold/sell bar -->
+      <div style="margin-bottom:14px">
+        <div style="display:flex;border-radius:6px;overflow:hidden;height:26px;gap:2px">
+          <div style="width:70%;background:rgba(34,197,94,.25);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--green)">BUY 30</div>
+          <div style="width:26%;background:rgba(245,158,11,.2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--amber)">HOLD 11</div>
+          <div style="width:4%;background:rgba(239,68,68,.2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--red)">SELL 2</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:3px">
+          <span>70% bullish</span><span>26% neutral</span><span style="color:var(--red)">4% bearish</span>
+        </div>
+      </div>
+
+      <!-- price target range scale -->
+      <div style="font-size:10px;color:var(--muted);margin-bottom:5px">12-Month Price Target Range</div>
+      <div style="position:relative;height:28px;margin-bottom:4px">
+        <div style="position:absolute;top:11px;left:0;right:0;height:6px;background:#1a1e2a;border-radius:3px"></div>
+        <div style="position:absolute;top:11px;left:71.2%;width:3px;height:6px;background:#fff;transform:translateX(-50%)"></div>
+        <div style="position:absolute;top:2px;left:72.8%;transform:translateX(-50%);background:var(--purple);color:#fff;font-size:8px;font-family:'JetBrains Mono',monospace;padding:1px 5px;border-radius:4px;white-space:nowrap">▼ $217</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted)">
+        <span>Low $135</span>
+        <span style="color:#a0b0c8;font-family:'JetBrains Mono',monospace;font-weight:700">
+          +0.8% implied upside
+        </span>
+        <span>High $248</span>
+      </div>
+    </div>
+
+    <!-- key targets -->
+    <div class="ap-right">
+      <div style="font-size:10px;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em">Key Analyst Calls</div>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:5px">
+        <li>Avg target $217 — flat from here</li><li>High $248 (+15%)</li><li>30 Buy / 11 Hold / 2 Sell</li>
+      </ul>
+      <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:6px">
+        <div class="pc-stat"><div class="lbl">Avg Target</div><div class="val mono" style="color:var(--purple)">$217</div></div>
+        <div class="pc-stat"><div class="lbl">High Target</div><div class="val mono" style="color:var(--green)">$248</div></div>
+        <div class="pc-stat"><div class="lbl">Low Target</div><div class="val mono" style="color:var(--muted)">$135</div></div>
+        <div class="pc-stat"><div class="lbl">Analysts</div><div class="val mono">43</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+  <div class="row2" style="margin-top:14px">
+    <div class="panel"><div class="ptitle" style="color:var(--green)">⚡ Bull Case</div><ul class="blist bull"><li>Platformization strategy driving 31% FCF margins</li><li>AI Access Security product suite for agentic AI</li><li>Google Cloud partnership for AI infra protection</li><li>FY2026 ARR target $15.2B — 21% growth</li><li>Largest pure-play cybersecurity company by revenue</li></ul></div>
+    <div class="panel"><div class="ptitle" style="color:var(--red)">⚠️ Bear Case</div><ul class="blist bear"><li>P/E 98× expensive vs 14% revenue growth</li><li>Platformization bundles = near-term billing headwinds</li><li>CRWD and MSFT Defender eroding market share</li><li>CEO Nikesh compensation controversy overhang</li><li>Free trial strategy delaying revenue recognition</li></ul></div>
+  </div>
+
+  <div class="panel" style="margin-top:14px">
+    <div class="ptitle">Verdict</div>
+    <div class="rating-bar"><div class="rating-pin" style="left:45%"></div></div>
+    <div class="rating-lbs"><span>Strong Buy</span><span>Buy</span><span>Hold</span><span>Sell</span><span>Strong Sell</span></div>
+    <div style="margin-top:10px"><span class="vbadge" style="background:rgba(245,158,11,.12);color:var(--amber);border-color:rgba(245,158,11,.4)">HOLD</span></div>
+    <p class="vsummary">Palo Alto is the most credible enterprise security platform with $9B revenue and 31% FCF margins. The platformization strategy is long-term correct but creates near-term billing headwinds. P/E 98× is expensive for 14% growth. AI Access Security for protecting agentic AI workflows is a genuine new revenue layer. Hold at current levels; accumulate on weakness below $190. Risk score 50.</p>
+  </div>
+
+  <script>(function(){
+    var ctx=document.getElementById('c_PANW').getContext('2d');
+    var gr=ctx.createLinearGradient(0,0,0,200);
+    gr.addColorStop(0,'rgba(245,158,11,0.28)');
+    gr.addColorStop(1,'rgba(245,158,11,0)');
+    new Chart(ctx,{type:'line',data:{labels:['May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26','Apr 26','May 26'],datasets:[
+      {data:[180, 195, 215, 240, 215, 190, 178, 195, 210, 215, 215, 215, 215],borderColor:'#f59e0b',borderWidth:2,backgroundColor:gr,fill:true,tension:0.35,pointRadius:3,pointBackgroundColor:'#f59e0b',label:'Price'},
+      {data:[217.22,217.22,217.22,217.22,217.22,217.22,217.22,217.22,217.22,217.22,217.22,217.22,217.22],borderColor:'rgba(168,85,247,.6)',borderWidth:1.5,borderDash:[5,4],backgroundColor:'transparent',fill:false,pointRadius:0,label:'Analyst Target'}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,position:'top',labels:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},boxWidth:20}},
+        tooltip:{backgroundColor:'#12151c',borderColor:'#1e2330',borderWidth:1,titleColor:'#e8eaf0',bodyColor:'#a0b0c8',callbacks:{label:c=>` $`+c.raw}}},
+      scales:{x:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'}}},
+        y:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},callback:v=>'$'+v}}}}
+    });})();
+  </script>
+</section>
+<section id="ZS" class="stock-section fade-in" style="background:rgba(168,85,247,.04);border:1px solid rgba(168,85,247,.15);border-radius:20px;padding:24px;margin-bottom:20px">
+  <div class="s-topbar">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="s-logo" style="background:linear-gradient(135deg,#6366f1,#0a0c10)">Z</div>
+      <div>
+        <h2 class="s-name">Zscaler Inc. <span>(ZS)</span></h2>
+        <span class="s-sub">Zero Trust / Cloud Security</span>
+        <span class="seg-badge sec-badge">🔒 AI Security</span>
+      </div>
+    </div>
+    <div class="s-pblock">
+      <div class="s-price">$197.50</div>
+      <div class="s-chg down">▼ -8% YTD</div>
+    </div>
+  </div>
+
+  <div class="row3">
+    <div class="panel" style="display:flex;flex-direction:column;align-items:center;padding:16px">
+      <div style="font-size:11px;text-transform:uppercase;color:var(--muted);letter-spacing:.06em;margin-bottom:10px">Risk Score</div>
+      <svg viewBox="0 0 200 120" width="180" height="120">
+        <defs><linearGradient id="grdZS" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:#22c55e"/>
+          <stop offset="40%" style="stop-color:#f59e0b"/>
+          <stop offset="100%" style="stop-color:#ef4444"/>
+        </linearGradient></defs>
+        <path d="M 10 100 A 90 90 0 0 1 190 100" fill="none" stroke="#1e2330" stroke-width="14" stroke-linecap="round"/>
+        <path d="M 10 100 A 90 90 0 0 1 190 100" fill="none" stroke="url(#grdZS)" stroke-width="14" stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="127.3"/>
+        <line x1="100" y1="100" x2="100" y2="22" stroke="white" stroke-width="2" stroke-linecap="round" transform="rotate(9.0 100 100)"/>
+        <circle cx="100" cy="100" r="5" fill="#6366f1"/>
+        <text x="100" y="88" fill="#f59e0b" font-size="20" font-weight="bold" font-family="JetBrains Mono" text-anchor="middle">55</text>
+        <text x="100" y="112" fill="#7b8299" font-size="8" font-family="DM Sans" text-anchor="middle">MODERATE RISK</text>
+      </svg>
+      <div style="width:100%;margin-top:6px">
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Valuation</b><span class="mono" style="font-size:10px">62/100</span></div>
+          <div class="br-track"><div class="br-fill fill-r" style="width:62%"></div></div></div>
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Execution</b><span class="mono" style="font-size:10px">38/100</span></div>
+          <div class="br-track"><div class="br-fill fill-a" style="width:38%"></div></div></div>
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Macro</b><span class="mono" style="font-size:10px">60/100</span></div>
+          <div class="br-track"><div class="br-fill fill-a" style="width:60%"></div></div></div>
+      </div>
+    </div>
+    <div class="panel kpi-v">
+      <div class="ptitle">Key Metrics</div>
+      <div class="kv"><span>Market Cap</span><span class="mono">$30B</span></div>
+      <div class="kv"><span>P/E (TTM)</span><span class="mono">N/A (loss)</span></div>
+      <div class="kv"><span>Revenue (TTM)</span><span class="mono">$3.28B</span></div>
+      <div class="kv"><span>Rev Growth</span><span class="mono" style="color:var(--green)">+26%</span></div>
+      <div class="kv"><span>EPS</span><span class="mono">-$0.40</span></div>
+      <div class="kv"><span>FCF Margin</span><span class="mono">22%</span></div>
+      <div class="kv"><span>Op Margin</span><span class="mono">22%</span></div>
+      <div class="kv"><span>AI Revenue %</span><span class="mono" style="color:var(--purple)">95%</span></div>
+      <div class="kv" style="background:var(--purple-dim);border-radius:4px;margin-top:4px;padding:4px 6px">
+        <span style="color:var(--purple);font-weight:600">Analyst Target</span>
+        <span class="mono" style="color:var(--purple)">$268</span>
+      </div>
+      <div class="kv"><span style="color:var(--muted)">Implied Upside</span>
+        <span class="mono" style="color:var(--green)">+35.6%</span>
+      </div>
+    </div>
+    <div class="panel" style="padding:16px">
+      <div class="ptitle">12-Month Price Chart</div>
+      <div style="position:relative;height:200px"><canvas id="c_ZS"></canvas></div>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top:14px;overflow-x:auto">
+    <div class="ptitle">Quarterly Trend</div>
+    <table><thead><tr><th>Quarter</th><th>Rev Act</th><th>Rev Est</th><th>Rev B/M</th><th>EPS Act</th><th>EPS Est</th><th>EPS B/M</th><th>Result</th></tr></thead>
+    <tbody><tr><td>Q1 FY2026 (Oct)</td><td>$788M</td><td>$778M</td><td class='beat-cell'>+1.3%</td><td>$0.77</td><td>$0.74</td><td class='beat-cell'>+$0.03</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q4 FY2025 (Jul)</td><td>$923M</td><td>$912M</td><td class='beat-cell'>+1.2%</td><td>$0.88</td><td>$0.86</td><td class='beat-cell'>+$0.02</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q3 FY2025 (Apr)</td><td>$876M</td><td>$860M</td><td class='beat-cell'>+1.9%</td><td>$0.83</td><td>$0.80</td><td class='beat-cell'>+$0.03</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q2 FY2025 (Jan)</td><td>$776M</td><td>$771M</td><td class='beat-cell'>+0.6%</td><td>$0.78</td><td>$0.75</td><td class='beat-cell'>+$0.03</td><td><span class="badge beat">BEAT</span></td></tr>
+</tbody></table>
+  </div>
+
+  
+<div class="panel analyst-panel" style="margin-top:14px">
+  <div class="ptitle" style="color:#a855f7">📊 Analyst Predictions</div>
+  <div class="ap-grid">
+
+    <!-- consensus badge + rating bar -->
+    <div class="ap-left">
+      <div style="margin-bottom:14px">
+        <span class="vbadge" style="background:#f59e0b15;color:#f59e0b;border-color:#f59e0b45;font-size:11px">MODERATE BUY</span>
+        <span style="font-size:10px;color:var(--muted);margin-left:8px">42 analysts covering</span>
+      </div>
+
+      <!-- buy/hold/sell bar -->
+      <div style="margin-bottom:14px">
+        <div style="display:flex;border-radius:6px;overflow:hidden;height:26px;gap:2px">
+          <div style="width:78%;background:rgba(34,197,94,.25);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--green)">BUY 31</div>
+          <div style="width:20%;background:rgba(245,158,11,.2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--amber)">HOLD 8</div>
+          <div style="width:2%;background:rgba(239,68,68,.2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--red)">SELL 1</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:3px">
+          <span>78% bullish</span><span>20% neutral</span><span style="color:var(--red)">2% bearish</span>
+        </div>
+      </div>
+
+      <!-- price target range scale -->
+      <div style="font-size:10px;color:var(--muted);margin-bottom:5px">12-Month Price Target Range</div>
+      <div style="position:relative;height:28px;margin-bottom:4px">
+        <div style="position:absolute;top:11px;left:0;right:0;height:6px;background:#1a1e2a;border-radius:3px"></div>
+        <div style="position:absolute;top:11px;left:23.0%;width:3px;height:6px;background:#fff;transform:translateX(-50%)"></div>
+        <div style="position:absolute;top:2px;left:61.0%;transform:translateX(-50%);background:var(--purple);color:#fff;font-size:8px;font-family:'JetBrains Mono',monospace;padding:1px 5px;border-radius:4px;white-space:nowrap">▼ $268</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted)">
+        <span>Low $155</span>
+        <span style="color:#22c55e;font-family:'JetBrains Mono',monospace;font-weight:700">
+          +35.6% implied upside
+        </span>
+        <span>High $340</span>
+      </div>
+    </div>
+
+    <!-- key targets -->
+    <div class="ap-right">
+      <div style="font-size:10px;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em">Key Analyst Calls</div>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:5px">
+        <li>Avg target $267 (+36%)</li><li>High $340 (+72%)</li><li>2 Strong Buy / 31 Buy / 8 Hold</li>
+      </ul>
+      <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:6px">
+        <div class="pc-stat"><div class="lbl">Avg Target</div><div class="val mono" style="color:var(--purple)">$268</div></div>
+        <div class="pc-stat"><div class="lbl">High Target</div><div class="val mono" style="color:var(--green)">$340</div></div>
+        <div class="pc-stat"><div class="lbl">Low Target</div><div class="val mono" style="color:var(--muted)">$155</div></div>
+        <div class="pc-stat"><div class="lbl">Analysts</div><div class="val mono">42</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+  <div class="row2" style="margin-top:14px">
+    <div class="panel"><div class="ptitle" style="color:var(--green)">⚡ Bull Case</div><ul class="blist bull"><li>$3.2B ARR growing 26% YoY — Zero Trust is mandatory</li><li>AI threat prevention: ZS blocks 500B+ daily transactions</li><li>ZIA AI connector securing AI apps from data exfiltration</li><li>FY2026 ARR guidance $3.7B — highly visible revenue</li><li>Rule of 78 performance — growth + margins combined</li></ul></div>
+    <div class="panel"><div class="ptitle" style="color:var(--red)">⚠️ Bear Case</div><ul class="blist bear"><li>Still GAAP unprofitable — burning cash</li><li>22% FCF margin better but not best-in-class</li><li>PANW platformization offers overlapping Zero Trust</li><li>Stock down 8% YTD — macro pressure on deal cycles</li><li>Federal deal timing lumpy in DC budget uncertainty</li></ul></div>
+  </div>
+
+  <div class="panel" style="margin-top:14px">
+    <div class="ptitle">Verdict</div>
+    <div class="rating-bar"><div class="rating-pin" style="left:30%"></div></div>
+    <div class="rating-lbs"><span>Strong Buy</span><span>Buy</span><span>Hold</span><span>Sell</span><span>Strong Sell</span></div>
+    <div style="margin-top:10px"><span class="vbadge" style="background:rgba(34,197,94,.12);color:var(--green);border-color:rgba(34,197,94,.4)">BUY</span></div>
+    <p class="vsummary">Zscaler is the Zero Trust standard for modern enterprises. $3.2B ARR growing 26% with $788M quarterly revenue beats demonstrates consistent execution. AI-native threat prevention blocking 500B+ daily transactions is a real moat. FCF margin of 22% is improving. Still loss-making on GAAP basis, but Rule of 78 performance and ARR visibility make this a quality AI security compounder. Risk score 55.</p>
+  </div>
+
+  <script>(function(){
+    var ctx=document.getElementById('c_ZS').getContext('2d');
+    var gr=ctx.createLinearGradient(0,0,0,200);
+    gr.addColorStop(0,'rgba(99,102,241,0.28)');
+    gr.addColorStop(1,'rgba(99,102,241,0)');
+    new Chart(ctx,{type:'line',data:{labels:['May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26','Apr 26','May 26'],datasets:[
+      {data:[195, 215, 240, 260, 230, 200, 185, 200, 215, 210, 200, 200, 197],borderColor:'#6366f1',borderWidth:2,backgroundColor:gr,fill:true,tension:0.35,pointRadius:3,pointBackgroundColor:'#6366f1',label:'Price'},
+      {data:[267.86,267.86,267.86,267.86,267.86,267.86,267.86,267.86,267.86,267.86,267.86,267.86,267.86],borderColor:'rgba(168,85,247,.6)',borderWidth:1.5,borderDash:[5,4],backgroundColor:'transparent',fill:false,pointRadius:0,label:'Analyst Target'}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,position:'top',labels:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},boxWidth:20}},
+        tooltip:{backgroundColor:'#12151c',borderColor:'#1e2330',borderWidth:1,titleColor:'#e8eaf0',bodyColor:'#a0b0c8',callbacks:{label:c=>` $`+c.raw}}},
+      scales:{x:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'}}},
+        y:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},callback:v=>'$'+v}}}}
+    });})();
+  </script>
+</section>
+<section id="NET" class="stock-section fade-in" style="background:rgba(168,85,247,.04);border:1px solid rgba(168,85,247,.15);border-radius:20px;padding:24px;margin-bottom:20px">
+  <div class="s-topbar">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="s-logo" style="background:linear-gradient(135deg,#f97316,#0a0c10)">N</div>
+      <div>
+        <h2 class="s-name">Cloudflare Inc. <span>(NET)</span></h2>
+        <span class="s-sub">Network Security / AI Edge</span>
+        <span class="seg-badge sec-badge">🔒 AI Security</span>
+      </div>
+    </div>
+    <div class="s-pblock">
+      <div class="s-price">$127.80</div>
+      <div class="s-chg down">▼ -2% YTD</div>
+    </div>
+  </div>
+
+  <div class="row3">
+    <div class="panel" style="display:flex;flex-direction:column;align-items:center;padding:16px">
+      <div style="font-size:11px;text-transform:uppercase;color:var(--muted);letter-spacing:.06em;margin-bottom:10px">Risk Score</div>
+      <svg viewBox="0 0 200 120" width="180" height="120">
+        <defs><linearGradient id="grdNET" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:#22c55e"/>
+          <stop offset="40%" style="stop-color:#f59e0b"/>
+          <stop offset="100%" style="stop-color:#ef4444"/>
+        </linearGradient></defs>
+        <path d="M 10 100 A 90 90 0 0 1 190 100" fill="none" stroke="#1e2330" stroke-width="14" stroke-linecap="round"/>
+        <path d="M 10 100 A 90 90 0 0 1 190 100" fill="none" stroke="url(#grdNET)" stroke-width="14" stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="124.5"/>
+        <line x1="100" y1="100" x2="100" y2="22" stroke="white" stroke-width="2" stroke-linecap="round" transform="rotate(10.8 100 100)"/>
+        <circle cx="100" cy="100" r="5" fill="#f97316"/>
+        <text x="100" y="88" fill="#f59e0b" font-size="20" font-weight="bold" font-family="JetBrains Mono" text-anchor="middle">56</text>
+        <text x="100" y="112" fill="#7b8299" font-size="8" font-family="DM Sans" text-anchor="middle">MODERATE RISK</text>
+      </svg>
+      <div style="width:100%;margin-top:6px">
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Valuation</b><span class="mono" style="font-size:10px">65/100</span></div>
+          <div class="br-track"><div class="br-fill fill-r" style="width:65%"></div></div></div>
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Execution</b><span class="mono" style="font-size:10px">40/100</span></div>
+          <div class="br-track"><div class="br-fill fill-a" style="width:40%"></div></div></div>
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Macro</b><span class="mono" style="font-size:10px">58/100</span></div>
+          <div class="br-track"><div class="br-fill fill-a" style="width:58%"></div></div></div>
+      </div>
+    </div>
+    <div class="panel kpi-v">
+      <div class="ptitle">Key Metrics</div>
+      <div class="kv"><span>Market Cap</span><span class="mono">$41B</span></div>
+      <div class="kv"><span>P/E (TTM)</span><span class="mono">N/A (loss)</span></div>
+      <div class="kv"><span>Revenue (TTM)</span><span class="mono">$2.09B</span></div>
+      <div class="kv"><span>Rev Growth</span><span class="mono" style="color:var(--green)">+27%</span></div>
+      <div class="kv"><span>EPS</span><span class="mono">-$0.30</span></div>
+      <div class="kv"><span>FCF Margin</span><span class="mono">12%</span></div>
+      <div class="kv"><span>Op Margin</span><span class="mono">12%</span></div>
+      <div class="kv"><span>AI Revenue %</span><span class="mono" style="color:var(--purple)">70%</span></div>
+      <div class="kv" style="background:var(--purple-dim);border-radius:4px;margin-top:4px;padding:4px 6px">
+        <span style="color:var(--purple);font-weight:600">Analyst Target</span>
+        <span class="mono" style="color:var(--purple)">$238</span>
+      </div>
+      <div class="kv"><span style="color:var(--muted)">Implied Upside</span>
+        <span class="mono" style="color:var(--green)">+85.9%</span>
+      </div>
+    </div>
+    <div class="panel" style="padding:16px">
+      <div class="ptitle">12-Month Price Chart</div>
+      <div style="position:relative;height:200px"><canvas id="c_NET"></canvas></div>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top:14px;overflow-x:auto">
+    <div class="ptitle">Quarterly Trend</div>
+    <table><thead><tr><th>Quarter</th><th>Rev Act</th><th>Rev Est</th><th>Rev B/M</th><th>EPS Act</th><th>EPS Est</th><th>EPS B/M</th><th>Result</th></tr></thead>
+    <tbody><tr><td>Q4 2025 (Dec)</td><td>$459M</td><td>$451M</td><td class='beat-cell'>+1.8%</td><td>-$0.07</td><td>-$0.08</td><td class='beat-cell'>+$0.01</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q3 2025 (Sep)</td><td>$430M</td><td>$425M</td><td class='beat-cell'>+1.2%</td><td>-$0.05</td><td>-$0.06</td><td class='beat-cell'>+$0.01</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q2 2025 (Jun)</td><td>$435M</td><td>$430M</td><td class='beat-cell'>+1.2%</td><td>$0.14</td><td>$0.13</td><td class='beat-cell'>+$0.01</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q1 2025 (Mar)</td><td>$479M</td><td>$470M</td><td class='beat-cell'>+1.9%</td><td>$0.14</td><td>$0.12</td><td class='beat-cell'>+$0.02</td><td><span class="badge beat">BEAT</span></td></tr>
+</tbody></table>
+  </div>
+
+  
+<div class="panel analyst-panel" style="margin-top:14px">
+  <div class="ptitle" style="color:#a855f7">📊 Analyst Predictions</div>
+  <div class="ap-grid">
+
+    <!-- consensus badge + rating bar -->
+    <div class="ap-left">
+      <div style="margin-bottom:14px">
+        <span class="vbadge" style="background:#86efac15;color:#86efac;border-color:#86efac45;font-size:11px">BUY</span>
+        <span style="font-size:10px;color:var(--muted);margin-left:8px">25 analysts covering</span>
+      </div>
+
+      <!-- buy/hold/sell bar -->
+      <div style="margin-bottom:14px">
+        <div style="display:flex;border-radius:6px;overflow:hidden;height:26px;gap:2px">
+          <div style="width:80%;background:rgba(34,197,94,.25);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--green)">BUY 20</div>
+          <div style="width:20%;background:rgba(245,158,11,.2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--amber)">HOLD 5</div>
+          
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:3px">
+          <span>80% bullish</span><span>20% neutral</span><span style="color:transparent">0% bearish</span>
+        </div>
+      </div>
+
+      <!-- price target range scale -->
+      <div style="font-size:10px;color:var(--muted);margin-bottom:5px">12-Month Price Target Range</div>
+      <div style="position:relative;height:28px;margin-bottom:4px">
+        <div style="position:absolute;top:11px;left:0;right:0;height:6px;background:#1a1e2a;border-radius:3px"></div>
+        <div style="position:absolute;top:11px;left:8.9%;width:3px;height:6px;background:#fff;transform:translateX(-50%)"></div>
+        <div style="position:absolute;top:2px;left:66.9%;transform:translateX(-50%);background:var(--purple);color:#fff;font-size:8px;font-family:'JetBrains Mono',monospace;padding:1px 5px;border-radius:4px;white-space:nowrap">▼ $238</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted)">
+        <span>Low $111</span>
+        <span style="color:#22c55e;font-family:'JetBrains Mono',monospace;font-weight:700">
+          +85.9% implied upside
+        </span>
+        <span>High $300</span>
+      </div>
+    </div>
+
+    <!-- key targets -->
+    <div class="ap-right">
+      <div style="font-size:10px;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em">Key Analyst Calls</div>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:5px">
+        <li>Avg target $237 (+86%)</li><li>High $300 (+135%)</li><li>Strong Outperform consensus</li>
+      </ul>
+      <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:6px">
+        <div class="pc-stat"><div class="lbl">Avg Target</div><div class="val mono" style="color:var(--purple)">$238</div></div>
+        <div class="pc-stat"><div class="lbl">High Target</div><div class="val mono" style="color:var(--green)">$300</div></div>
+        <div class="pc-stat"><div class="lbl">Low Target</div><div class="val mono" style="color:var(--muted)">$111</div></div>
+        <div class="pc-stat"><div class="lbl">Analysts</div><div class="val mono">25</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+  <div class="row2" style="margin-top:14px">
+    <div class="panel"><div class="ptitle" style="color:var(--green)">⚡ Bull Case</div><ul class="blist bull"><li>Cloudflare Workers AI — largest global AI inference edge network</li><li>One-click AI firewall protecting against prompt injection</li><li>27% revenue growth with land-and-expand model</li><li>$100K+ customer base growing 27% — enterprise penetration</li><li>AI Gateway product securing every AI API call</li></ul></div>
+    <div class="panel"><div class="ptitle" style="color:var(--red)">⚠️ Bear Case</div><ul class="blist bear"><li>Still not GAAP profitable — P/S 20× is very stretched</li><li>FCF margin only 12% — needs to improve sharply</li><li>AWS CloudFront, Akamai competing on price</li><li>Any macro slowdown delays enterprise security budgets</li><li>Large short interest suggests skeptics remain</li></ul></div>
+  </div>
+
+  <div class="panel" style="margin-top:14px">
+    <div class="ptitle">Verdict</div>
+    <div class="rating-bar"><div class="rating-pin" style="left:42%"></div></div>
+    <div class="rating-lbs"><span>Strong Buy</span><span>Buy</span><span>Hold</span><span>Sell</span><span>Strong Sell</span></div>
+    <div style="margin-top:10px"><span class="vbadge" style="background:rgba(245,158,11,.12);color:var(--amber);border-color:rgba(245,158,11,.4)">HOLD / ACCUMULATE</span></div>
+    <p class="vsummary">Cloudflare is uniquely positioned at the intersection of network security and AI delivery — its Workers AI edge network runs AI inference globally at millisecond latency. The AI Firewall product for protecting against prompt injection and data exfiltration is a genuine first-mover. However, 12% FCF margins and GAAP losses at P/S 20× demand patience. 27% growth rate is strong. Risk score 56.</p>
+  </div>
+
+  <script>(function(){
+    var ctx=document.getElementById('c_NET').getContext('2d');
+    var gr=ctx.createLinearGradient(0,0,0,200);
+    gr.addColorStop(0,'rgba(249,115,22,0.28)');
+    gr.addColorStop(1,'rgba(249,115,22,0)');
+    new Chart(ctx,{type:'line',data:{labels:['May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26','Apr 26','May 26'],datasets:[
+      {data:[115, 128, 145, 165, 145, 120, 110, 120, 130, 132, 128, 128, 127],borderColor:'#f97316',borderWidth:2,backgroundColor:gr,fill:true,tension:0.35,pointRadius:3,pointBackgroundColor:'#f97316',label:'Price'},
+      {data:[237.52,237.52,237.52,237.52,237.52,237.52,237.52,237.52,237.52,237.52,237.52,237.52,237.52],borderColor:'rgba(168,85,247,.6)',borderWidth:1.5,borderDash:[5,4],backgroundColor:'transparent',fill:false,pointRadius:0,label:'Analyst Target'}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,position:'top',labels:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},boxWidth:20}},
+        tooltip:{backgroundColor:'#12151c',borderColor:'#1e2330',borderWidth:1,titleColor:'#e8eaf0',bodyColor:'#a0b0c8',callbacks:{label:c=>` $`+c.raw}}},
+      scales:{x:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'}}},
+        y:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},callback:v=>'$'+v}}}}
+    });})();
+  </script>
+</section>
+<section id="FTNT" class="stock-section fade-in" style="background:rgba(168,85,247,.04);border:1px solid rgba(168,85,247,.15);border-radius:20px;padding:24px;margin-bottom:20px">
+  <div class="s-topbar">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="s-logo" style="background:linear-gradient(135deg,#ef4444,#0a0c10)">F</div>
+      <div>
+        <h2 class="s-name">Fortinet Inc. <span>(FTNT)</span></h2>
+        <span class="s-sub">Network Security / FortiAI</span>
+        <span class="seg-badge sec-badge">🔒 AI Security</span>
+      </div>
+    </div>
+    <div class="s-pblock">
+      <div class="s-price">$83.20</div>
+      <div class="s-chg down">▼ -22% YTD</div>
+    </div>
+  </div>
+
+  <div class="row3">
+    <div class="panel" style="display:flex;flex-direction:column;align-items:center;padding:16px">
+      <div style="font-size:11px;text-transform:uppercase;color:var(--muted);letter-spacing:.06em;margin-bottom:10px">Risk Score</div>
+      <svg viewBox="0 0 200 120" width="180" height="120">
+        <defs><linearGradient id="grdFTNT" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:#22c55e"/>
+          <stop offset="40%" style="stop-color:#f59e0b"/>
+          <stop offset="100%" style="stop-color:#ef4444"/>
+        </linearGradient></defs>
+        <path d="M 10 100 A 90 90 0 0 1 190 100" fill="none" stroke="#1e2330" stroke-width="14" stroke-linecap="round"/>
+        <path d="M 10 100 A 90 90 0 0 1 190 100" fill="none" stroke="url(#grdFTNT)" stroke-width="14" stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="169.8"/>
+        <line x1="100" y1="100" x2="100" y2="22" stroke="white" stroke-width="2" stroke-linecap="round" transform="rotate(-18.0 100 100)"/>
+        <circle cx="100" cy="100" r="5" fill="#ef4444"/>
+        <text x="100" y="88" fill="#22c55e" font-size="20" font-weight="bold" font-family="JetBrains Mono" text-anchor="middle">40</text>
+        <text x="100" y="112" fill="#7b8299" font-size="8" font-family="DM Sans" text-anchor="middle">LOW RISK</text>
+      </svg>
+      <div style="width:100%;margin-top:6px">
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Valuation</b><span class="mono" style="font-size:10px">38/100</span></div>
+          <div class="br-track"><div class="br-fill fill-a" style="width:38%"></div></div></div>
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Execution</b><span class="mono" style="font-size:10px">38/100</span></div>
+          <div class="br-track"><div class="br-fill fill-a" style="width:38%"></div></div></div>
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Macro</b><span class="mono" style="font-size:10px">48/100</span></div>
+          <div class="br-track"><div class="br-fill fill-a" style="width:48%"></div></div></div>
+      </div>
+    </div>
+    <div class="panel kpi-v">
+      <div class="ptitle">Key Metrics</div>
+      <div class="kv"><span>Market Cap</span><span class="mono">$60B</span></div>
+      <div class="kv"><span>P/E (TTM)</span><span class="mono">34×</span></div>
+      <div class="kv"><span>Revenue (TTM)</span><span class="mono">$6.8B</span></div>
+      <div class="kv"><span>Rev Growth</span><span class="mono" style="color:var(--green)">+14%</span></div>
+      <div class="kv"><span>EPS</span><span class="mono">$2.42</span></div>
+      <div class="kv"><span>FCF Margin</span><span class="mono">27%</span></div>
+      <div class="kv"><span>Op Margin</span><span class="mono">27%</span></div>
+      <div class="kv"><span>AI Revenue %</span><span class="mono" style="color:var(--purple)">70%</span></div>
+      <div class="kv" style="background:var(--purple-dim);border-radius:4px;margin-top:4px;padding:4px 6px">
+        <span style="color:var(--purple);font-weight:600">Analyst Target</span>
+        <span class="mono" style="color:var(--purple)">$89</span>
+      </div>
+      <div class="kv"><span style="color:var(--muted)">Implied Upside</span>
+        <span class="mono" style="color:var(--amber)">+6.5%</span>
+      </div>
+    </div>
+    <div class="panel" style="padding:16px">
+      <div class="ptitle">12-Month Price Chart</div>
+      <div style="position:relative;height:200px"><canvas id="c_FTNT"></canvas></div>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top:14px;overflow-x:auto">
+    <div class="ptitle">Quarterly Trend</div>
+    <table><thead><tr><th>Quarter</th><th>Rev Act</th><th>Rev Est</th><th>Rev B/M</th><th>EPS Act</th><th>EPS Est</th><th>EPS B/M</th><th>Result</th></tr></thead>
+    <tbody><tr><td>Q4 2025 (Dec)</td><td>$1.58B</td><td>$1.57B</td><td class='beat-cell'>+0.6%</td><td>$0.71</td><td>$0.68</td><td class='beat-cell'>+$0.03</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q3 2025 (Sep)</td><td>$1.51B</td><td>$1.50B</td><td class='beat-cell'>+0.7%</td><td>$0.63</td><td>$0.61</td><td class='beat-cell'>+$0.02</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q2 2025 (Jun)</td><td>$1.43B</td><td>$1.41B</td><td class='beat-cell'>+1.4%</td><td>$0.57</td><td>$0.55</td><td class='beat-cell'>+$0.02</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q1 2025 (Mar)</td><td>$1.54B</td><td>$1.52B</td><td class='beat-cell'>+1.3%</td><td>$0.50</td><td>$0.49</td><td class='beat-cell'>+$0.01</td><td><span class="badge beat">BEAT</span></td></tr>
+</tbody></table>
+  </div>
+
+  
+<div class="panel analyst-panel" style="margin-top:14px">
+  <div class="ptitle" style="color:#a855f7">📊 Analyst Predictions</div>
+  <div class="ap-grid">
+
+    <!-- consensus badge + rating bar -->
+    <div class="ap-left">
+      <div style="margin-bottom:14px">
+        <span class="vbadge" style="background:#a0b0c815;color:#a0b0c8;border-color:#a0b0c845;font-size:11px">HOLD</span>
+        <span style="font-size:10px;color:var(--muted);margin-left:8px">31 analysts covering</span>
+      </div>
+
+      <!-- buy/hold/sell bar -->
+      <div style="margin-bottom:14px">
+        <div style="display:flex;border-radius:6px;overflow:hidden;height:26px;gap:2px">
+          <div style="width:29%;background:rgba(34,197,94,.25);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--green)">BUY 9</div>
+          <div style="width:65%;background:rgba(245,158,11,.2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--amber)">HOLD 20</div>
+          <div style="width:6%;background:rgba(239,68,68,.2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--red)">SELL 2</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:3px">
+          <span>29% bullish</span><span>65% neutral</span><span style="color:var(--red)">6% bearish</span>
+        </div>
+      </div>
+
+      <!-- price target range scale -->
+      <div style="font-size:10px;color:var(--muted);margin-bottom:5px">12-Month Price Target Range</div>
+      <div style="position:relative;height:28px;margin-bottom:4px">
+        <div style="position:absolute;top:11px;left:0;right:0;height:6px;background:#1a1e2a;border-radius:3px"></div>
+        <div style="position:absolute;top:11px;left:29.2%;width:3px;height:6px;background:#fff;transform:translateX(-50%)"></div>
+        <div style="position:absolute;top:2px;left:39.6%;transform:translateX(-50%);background:var(--purple);color:#fff;font-size:8px;font-family:'JetBrains Mono',monospace;padding:1px 5px;border-radius:4px;white-space:nowrap">▼ $89</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted)">
+        <span>Low $68</span>
+        <span style="color:#f59e0b;font-family:'JetBrains Mono',monospace;font-weight:700">
+          +6.5% implied upside
+        </span>
+        <span>High $120</span>
+      </div>
+    </div>
+
+    <!-- key targets -->
+    <div class="ap-right">
+      <div style="font-size:10px;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em">Key Analyst Calls</div>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:5px">
+        <li>Consensus Hold — cautious</li><li>Mizuho: Hold $88</li><li>Avg $88.59 — minimal upside</li>
+      </ul>
+      <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:6px">
+        <div class="pc-stat"><div class="lbl">Avg Target</div><div class="val mono" style="color:var(--purple)">$89</div></div>
+        <div class="pc-stat"><div class="lbl">High Target</div><div class="val mono" style="color:var(--green)">$120</div></div>
+        <div class="pc-stat"><div class="lbl">Low Target</div><div class="val mono" style="color:var(--muted)">$68</div></div>
+        <div class="pc-stat"><div class="lbl">Analysts</div><div class="val mono">31</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+  <div class="row2" style="margin-top:14px">
+    <div class="panel"><div class="ptitle" style="color:var(--green)">⚡ Bull Case</div><ul class="blist bull"><li>P/E 34× — cheapest quality cybersecurity stock</li><li>FortiAI-Assist integrating gen AI + agentic AI into ops</li><li>2026 revenue guidance $7.5–7.7B reaffirmed</li><li>Firewall refresh cycle + OT/ICS security expanding TAM</li><li>27% FCF margin — strong cash generation</li></ul></div>
+    <div class="panel"><div class="ptitle" style="color:var(--red)">⚠️ Bear Case</div><ul class="blist bear"><li>Stock down 22% YTD — firewall refresh slowdown</li><li>Slower growth (14%) vs CRWD/ZS at 24-26%</li><li>Legacy network security faces cloud-native disruption</li><li>PANW aggressive bundling pressure on Fortinet deals</li><li>Hardware-centric model disadvantaged vs SaaS peers</li></ul></div>
+  </div>
+
+  <div class="panel" style="margin-top:14px">
+    <div class="ptitle">Verdict</div>
+    <div class="rating-bar"><div class="rating-pin" style="left:28%"></div></div>
+    <div class="rating-lbs"><span>Strong Buy</span><span>Buy</span><span>Hold</span><span>Sell</span><span>Strong Sell</span></div>
+    <div style="margin-top:10px"><span class="vbadge" style="background:rgba(34,197,94,.12);color:var(--green);border-color:rgba(34,197,94,.4)">BUY</span></div>
+    <p class="vsummary">Fortinet is the value gem of the cybersecurity cohort. P/E 34× with 27% FCF margins, $7.5B revenue guidance, and FortiAI-Assist making it genuinely AI-native is a compelling combination. Down 22% YTD on firewall refresh concerns, but OT/ICS security expansion and firewall refresh cycle provide medium-term catalysts. The cheapest quality cybersecurity stock on earnings multiples. Risk score 40.</p>
+  </div>
+
+  <script>(function(){
+    var ctx=document.getElementById('c_FTNT').getContext('2d');
+    var gr=ctx.createLinearGradient(0,0,0,200);
+    gr.addColorStop(0,'rgba(239,68,68,0.28)');
+    gr.addColorStop(1,'rgba(239,68,68,0)');
+    new Chart(ctx,{type:'line',data:{labels:['May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26','Apr 26','May 26'],datasets:[
+      {data:[80, 90, 100, 120, 110, 95, 85, 90, 95, 92, 88, 85, 83],borderColor:'#ef4444',borderWidth:2,backgroundColor:gr,fill:true,tension:0.35,pointRadius:3,pointBackgroundColor:'#ef4444',label:'Price'},
+      {data:[88.59,88.59,88.59,88.59,88.59,88.59,88.59,88.59,88.59,88.59,88.59,88.59,88.59],borderColor:'rgba(168,85,247,.6)',borderWidth:1.5,borderDash:[5,4],backgroundColor:'transparent',fill:false,pointRadius:0,label:'Analyst Target'}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,position:'top',labels:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},boxWidth:20}},
+        tooltip:{backgroundColor:'#12151c',borderColor:'#1e2330',borderWidth:1,titleColor:'#e8eaf0',bodyColor:'#a0b0c8',callbacks:{label:c=>` $`+c.raw}}},
+      scales:{x:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'}}},
+        y:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},callback:v=>'$'+v}}}}
+    });})();
+  </script>
+</section>
+<section id="OKTA" class="stock-section fade-in" style="background:rgba(168,85,247,.04);border:1px solid rgba(168,85,247,.15);border-radius:20px;padding:24px;margin-bottom:20px">
+  <div class="s-topbar">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="s-logo" style="background:linear-gradient(135deg,#00aeff,#0a0c10)">O</div>
+      <div>
+        <h2 class="s-name">Okta Inc. <span>(OKTA)</span></h2>
+        <span class="s-sub">Identity Security / AI Access</span>
+        <span class="seg-badge sec-badge">🔒 AI Security</span>
+      </div>
+    </div>
+    <div class="s-pblock">
+      <div class="s-price">$89.50</div>
+      <div class="s-chg down">▼ -15% YTD</div>
+    </div>
+  </div>
+
+  <div class="row3">
+    <div class="panel" style="display:flex;flex-direction:column;align-items:center;padding:16px">
+      <div style="font-size:11px;text-transform:uppercase;color:var(--muted);letter-spacing:.06em;margin-bottom:10px">Risk Score</div>
+      <svg viewBox="0 0 200 120" width="180" height="120">
+        <defs><linearGradient id="grdOKTA" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:#22c55e"/>
+          <stop offset="40%" style="stop-color:#f59e0b"/>
+          <stop offset="100%" style="stop-color:#ef4444"/>
+        </linearGradient></defs>
+        <path d="M 10 100 A 90 90 0 0 1 190 100" fill="none" stroke="#1e2330" stroke-width="14" stroke-linecap="round"/>
+        <path d="M 10 100 A 90 90 0 0 1 190 100" fill="none" stroke="url(#grdOKTA)" stroke-width="14" stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="135.8"/>
+        <line x1="100" y1="100" x2="100" y2="22" stroke="white" stroke-width="2" stroke-linecap="round" transform="rotate(3.6 100 100)"/>
+        <circle cx="100" cy="100" r="5" fill="#00aeff"/>
+        <text x="100" y="88" fill="#f59e0b" font-size="20" font-weight="bold" font-family="JetBrains Mono" text-anchor="middle">52</text>
+        <text x="100" y="112" fill="#7b8299" font-size="8" font-family="DM Sans" text-anchor="middle">MODERATE RISK</text>
+      </svg>
+      <div style="width:100%;margin-top:6px">
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Valuation</b><span class="mono" style="font-size:10px">60/100</span></div>
+          <div class="br-track"><div class="br-fill fill-a" style="width:60%"></div></div></div>
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Execution</b><span class="mono" style="font-size:10px">48/100</span></div>
+          <div class="br-track"><div class="br-fill fill-a" style="width:48%"></div></div></div>
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Macro</b><span class="mono" style="font-size:10px">52/100</span></div>
+          <div class="br-track"><div class="br-fill fill-a" style="width:52%"></div></div></div>
+      </div>
+    </div>
+    <div class="panel kpi-v">
+      <div class="ptitle">Key Metrics</div>
+      <div class="kv"><span>Market Cap</span><span class="mono">$15.7B</span></div>
+      <div class="kv"><span>P/E (TTM)</span><span class="mono">107×</span></div>
+      <div class="kv"><span>Revenue (TTM)</span><span class="mono">$2.76B</span></div>
+      <div class="kv"><span>Rev Growth</span><span class="mono" style="color:var(--green)">+15%</span></div>
+      <div class="kv"><span>EPS</span><span class="mono">$0.84</span></div>
+      <div class="kv"><span>FCF Margin</span><span class="mono">28%</span></div>
+      <div class="kv"><span>Op Margin</span><span class="mono">28%</span></div>
+      <div class="kv"><span>AI Revenue %</span><span class="mono" style="color:var(--purple)">85%</span></div>
+      <div class="kv" style="background:var(--purple-dim);border-radius:4px;margin-top:4px;padding:4px 6px">
+        <span style="color:var(--purple);font-weight:600">Analyst Target</span>
+        <span class="mono" style="color:var(--purple)">$99</span>
+      </div>
+      <div class="kv"><span style="color:var(--muted)">Implied Upside</span>
+        <span class="mono" style="color:var(--green)">+10.6%</span>
+      </div>
+    </div>
+    <div class="panel" style="padding:16px">
+      <div class="ptitle">12-Month Price Chart</div>
+      <div style="position:relative;height:200px"><canvas id="c_OKTA"></canvas></div>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top:14px;overflow-x:auto">
+    <div class="ptitle">Quarterly Trend</div>
+    <table><thead><tr><th>Quarter</th><th>Rev Act</th><th>Rev Est</th><th>Rev B/M</th><th>EPS Act</th><th>EPS Est</th><th>EPS B/M</th><th>Result</th></tr></thead>
+    <tbody><tr><td>Q4 FY2026 (Jan)</td><td>$682M</td><td>$671M</td><td class='beat-cell'>+1.6%</td><td>$0.78</td><td>$0.74</td><td class='beat-cell'>+$0.04</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q3 FY2026 (Oct)</td><td>$665M</td><td>$654M</td><td class='beat-cell'>+1.7%</td><td>$0.67</td><td>$0.63</td><td class='beat-cell'>+$0.04</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q2 FY2026 (Jul)</td><td>$686M</td><td>$672M</td><td class='beat-cell'>+2.1%</td><td>$0.72</td><td>$0.67</td><td class='beat-cell'>+$0.05</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q1 FY2026 (Apr)</td><td>$678M</td><td>$661M</td><td class='beat-cell'>+2.6%</td><td>$0.68</td><td>$0.61</td><td class='beat-cell'>+$0.07</td><td><span class="badge beat">BEAT</span></td></tr>
+</tbody></table>
+  </div>
+
+  
+<div class="panel analyst-panel" style="margin-top:14px">
+  <div class="ptitle" style="color:#a855f7">📊 Analyst Predictions</div>
+  <div class="ap-grid">
+
+    <!-- consensus badge + rating bar -->
+    <div class="ap-left">
+      <div style="margin-bottom:14px">
+        <span class="vbadge" style="background:#f59e0b15;color:#f59e0b;border-color:#f59e0b45;font-size:11px">MODERATE BUY</span>
+        <span style="font-size:10px;color:var(--muted);margin-left:8px">27 analysts covering</span>
+      </div>
+
+      <!-- buy/hold/sell bar -->
+      <div style="margin-bottom:14px">
+        <div style="display:flex;border-radius:6px;overflow:hidden;height:26px;gap:2px">
+          <div style="width:56%;background:rgba(34,197,94,.25);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--green)">BUY 15</div>
+          <div style="width:37%;background:rgba(245,158,11,.2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--amber)">HOLD 10</div>
+          <div style="width:7%;background:rgba(239,68,68,.2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--red)">SELL 2</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:3px">
+          <span>56% bullish</span><span>37% neutral</span><span style="color:var(--red)">7% bearish</span>
+        </div>
+      </div>
+
+      <!-- price target range scale -->
+      <div style="font-size:10px;color:var(--muted);margin-bottom:5px">12-Month Price Target Range</div>
+      <div style="position:relative;height:28px;margin-bottom:4px">
+        <div style="position:absolute;top:11px;left:0;right:0;height:6px;background:#1a1e2a;border-radius:3px"></div>
+        <div style="position:absolute;top:11px;left:34.7%;width:3px;height:6px;background:#fff;transform:translateX(-50%)"></div>
+        <div style="position:absolute;top:2px;left:50.8%;transform:translateX(-50%);background:var(--purple);color:#fff;font-size:8px;font-family:'JetBrains Mono',monospace;padding:1px 5px;border-radius:4px;white-space:nowrap">▼ $99</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted)">
+        <span>Low $69</span>
+        <span style="color:#f59e0b;font-family:'JetBrains Mono',monospace;font-weight:700">
+          +10.6% implied upside
+        </span>
+        <span>High $128</span>
+      </div>
+    </div>
+
+    <!-- key targets -->
+    <div class="ap-right">
+      <div style="font-size:10px;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em">Key Analyst Calls</div>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:5px">
+        <li>TIKR valuation model: $99 target</li><li>31% upside over 2.8 years</li><li>52-week range $69–$128</li>
+      </ul>
+      <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:6px">
+        <div class="pc-stat"><div class="lbl">Avg Target</div><div class="val mono" style="color:var(--purple)">$99</div></div>
+        <div class="pc-stat"><div class="lbl">High Target</div><div class="val mono" style="color:var(--green)">$128</div></div>
+        <div class="pc-stat"><div class="lbl">Low Target</div><div class="val mono" style="color:var(--muted)">$69</div></div>
+        <div class="pc-stat"><div class="lbl">Analysts</div><div class="val mono">27</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+  <div class="row2" style="margin-top:14px">
+    <div class="panel"><div class="ptitle" style="color:var(--green)">⚡ Bull Case</div><ul class="blist bull"><li>Identity is the #1 attack vector — Okta is the solution</li><li>AI Access product: controls what AI agents can access</li><li>28% FCF margin — quality business improving</li><li>4 consecutive earnings beats rebuilding credibility</li><li>AI identity security TAM expanding rapidly with agentic AI</li></ul></div>
+    <div class="panel"><div class="ptitle" style="color:var(--red)">⚠️ Bear Case</div><ul class="blist bear"><li>Still recovering from 2023 breach incident</li><li>Growth slowing: 15% vs 26-27% for CRWD/ZS</li><li>P/E 107× expensive given slower growth</li><li>Microsoft Entra identity platform aggressive competition</li><li>Small business customer churn accelerating</li></ul></div>
+  </div>
+
+  <div class="panel" style="margin-top:14px">
+    <div class="ptitle">Verdict</div>
+    <div class="rating-bar"><div class="rating-pin" style="left:44%"></div></div>
+    <div class="rating-lbs"><span>Strong Buy</span><span>Buy</span><span>Hold</span><span>Sell</span><span>Strong Sell</span></div>
+    <div style="margin-top:10px"><span class="vbadge" style="background:rgba(245,158,11,.12);color:var(--amber);border-color:rgba(245,158,11,.4)">HOLD / CAUTIOUS BUY</span></div>
+    <p class="vsummary">Okta is the identity security layer that AI agents need — every agentic AI deployment requires governed access control, making Okta's market structurally expanding. The 2023 breach is in the rearview mirror with 4 consecutive beats rebuilding trust. 28% FCF margin and improving retention are positives. However, P/E 107× for 15% growth is hard to justify vs faster peers. Risk score 52 — moderate.</p>
+  </div>
+
+  <script>(function(){
+    var ctx=document.getElementById('c_OKTA').getContext('2d');
+    var gr=ctx.createLinearGradient(0,0,0,200);
+    gr.addColorStop(0,'rgba(0,174,255,0.28)');
+    gr.addColorStop(1,'rgba(0,174,255,0)');
+    new Chart(ctx,{type:'line',data:{labels:['May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26','Apr 26','May 26'],datasets:[
+      {data:[95, 102, 115, 130, 115, 98, 88, 92, 98, 100, 94, 90, 89],borderColor:'#00aeff',borderWidth:2,backgroundColor:gr,fill:true,tension:0.35,pointRadius:3,pointBackgroundColor:'#00aeff',label:'Price'},
+      {data:[99.0,99.0,99.0,99.0,99.0,99.0,99.0,99.0,99.0,99.0,99.0,99.0,99.0],borderColor:'rgba(168,85,247,.6)',borderWidth:1.5,borderDash:[5,4],backgroundColor:'transparent',fill:false,pointRadius:0,label:'Analyst Target'}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,position:'top',labels:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},boxWidth:20}},
+        tooltip:{backgroundColor:'#12151c',borderColor:'#1e2330',borderWidth:1,titleColor:'#e8eaf0',bodyColor:'#a0b0c8',callbacks:{label:c=>` $`+c.raw}}},
+      scales:{x:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'}}},
+        y:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},callback:v=>'$'+v}}}}
+    });})();
+  </script>
+</section>
+</div>
+
+</div>
+<button id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')}),{threshold:.07});
+document.querySelectorAll('.fade-in').forEach(el=>io.observe(el));
+const bio=new IntersectionObserver(es=>es.forEach(e=>{
+  if(e.isIntersecting){const fill=e.target.querySelector('.rbr-fill');if(fill)fill.style.width=e.target.getAttribute('data-pct')+'%';bio.unobserve(e.target);}
+}),{threshold:.2});
+document.querySelectorAll('.rev-bar-row').forEach(r=>bio.observe(r));
+
+const chartOpts=(title)=>{return{responsive:true,maintainAspectRatio:false,
+  plugins:{legend:{display:false},tooltip:{backgroundColor:'#12151c',borderColor:'#1e2330',borderWidth:1,titleColor:'#e8eaf0',bodyColor:'#a0b0c8'}},
+  scales:{x:{grid:{color:'rgba(30,35,48,.4)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'}}},
+    y:{grid:{color:'rgba(30,35,48,.4)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'}}}}
+}};
+
+new Chart(document.getElementById('peChart').getContext('2d'),{
+  type:'bar',data:{labels:['ANET', 'VRT', 'EQIX', 'DELL', 'CRWD', 'PANW', 'ZS', 'NET', 'FTNT', 'OKTA'],datasets:[{data:[48, 45, 87, 16, 0, 98, 0, 0, 34, 107],backgroundColor:['#06b6d4cc', '#f97316cc', '#ef4444cc', '#2563ebcc', '#ef4444cc', '#f59e0bcc', '#6366f1cc', '#f97316cc', '#ef4444cc', '#00aeffcc'],borderColor:['#06b6d4cc', '#f97316cc', '#ef4444cc', '#2563ebcc', '#ef4444cc', '#f59e0bcc', '#6366f1cc', '#f97316cc', '#ef4444cc', '#00aeffcc'],borderWidth:1,borderRadius:5}]},
+  options:{...chartOpts(),plugins:{...chartOpts().plugins,tooltip:{...chartOpts().plugins.tooltip,callbacks:{label:c=>c.raw?` P/E: ${c.raw}×`:' GAAP loss'}}}}
+});
+new Chart(document.getElementById('growthChart').getContext('2d'),{
+  type:'bar',data:{labels:['ANET', 'VRT', 'EQIX', 'DELL', 'CRWD', 'PANW', 'ZS', 'NET', 'FTNT', 'OKTA'],datasets:[{data:[29, 22, 9, 8, 24, 14, 26, 27, 14, 15],backgroundColor:['#06b6d4cc', '#f97316cc', '#ef4444cc', '#2563ebcc', '#ef4444cc', '#f59e0bcc', '#6366f1cc', '#f97316cc', '#ef4444cc', '#00aeffcc'],borderColor:['#06b6d4cc', '#f97316cc', '#ef4444cc', '#2563ebcc', '#ef4444cc', '#f59e0bcc', '#6366f1cc', '#f97316cc', '#ef4444cc', '#00aeffcc'],borderWidth:1,borderRadius:5}]},
+  options:{...chartOpts(),plugins:{...chartOpts().plugins,tooltip:{...chartOpts().plugins.tooltip,callbacks:{label:c=>` ${c.raw}%`}}},scales:{...chartOpts().scales,y:{...chartOpts().scales.y,ticks:{...chartOpts().scales.y.ticks,callback:v=>v+'%'}}}}
+});
+
+var upsideVals=[84.2, 185.7, 11.4, 58.6, 14.5, 0.8, 35.6, 85.9, 6.5, 10.6];
+var upsideCols=['#22c55e', '#22c55e', '#f59e0b', '#22c55e', '#f59e0b', '#a0b0c8', '#22c55e', '#22c55e', '#f59e0b', '#f59e0b'];
+new Chart(document.getElementById('upsideChart').getContext('2d'),{
+  type:'bar',data:{labels:['ANET', 'VRT', 'EQIX', 'DELL', 'CRWD', 'PANW', 'ZS', 'NET', 'FTNT', 'OKTA'],datasets:[{data:upsideVals,backgroundColor:upsideCols,borderColor:upsideCols,borderWidth:1,borderRadius:5}]},
+  options:{...chartOpts(),plugins:{...chartOpts().plugins,tooltip:{...chartOpts().plugins.tooltip,callbacks:{label:c=>` +${c.raw}% upside`}}},scales:{...chartOpts().scales,y:{...chartOpts().scales.y,ticks:{...chartOpts().scales.y.ticks,callback:v=>v+'%'}}}}
+});
+</script>
+</body>
+</html>

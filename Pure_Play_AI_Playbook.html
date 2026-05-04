@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Pure-Play AI Playbook</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0c10;--card:#12151c;--border:#1e2330;
+  --text:#e8eaf0;--muted:#7b8299;
+  --green:#22c55e;--red:#ef4444;--amber:#f59e0b;--blue:#3b82f6;
+  --purple:#a855f7;--purple-dim:rgba(168,85,247,.15);--purple-border:rgba(168,85,247,.3);
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.6}
+.page{max-width:1260px;margin:0 auto;padding:32px 20px 80px}
+
+/* FADE */
+.fade-in{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
+.fade-in.visible{opacity:1;transform:none}
+
+/* HERO */
+.hero{
+  background:linear-gradient(135deg,#0d0f1b 0%,#120e1c 100%);
+  border:1px solid var(--border);border-radius:20px;
+  padding:40px 44px;margin-bottom:32px;position:relative;overflow:hidden;
+}
+.hero::before{content:'';position:absolute;top:-80px;right:-80px;width:400px;height:400px;
+  border-radius:50%;background:radial-gradient(circle,rgba(168,85,247,.14),transparent 70%);pointer-events:none}
+.hero-tag{display:inline-block;background:var(--purple-dim);border:1px solid var(--purple-border);
+  color:var(--purple);border-radius:20px;padding:4px 14px;font-size:11px;font-weight:600;
+  letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px}
+.hero h1{font-family:'Playfair Display',serif;font-size:38px;font-weight:700;margin-bottom:8px;line-height:1.2}
+.hero h1 span{color:var(--purple)}
+.hero-sub{color:var(--muted);font-size:13px;max-width:700px;line-height:1.7}
+.hero-meta{display:flex;gap:12px;margin-top:20px;flex-wrap:wrap}
+.hm-badge{background:#1a1e2a;border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-size:12px;color:var(--muted)}
+.hm-badge b{color:var(--text)}
+
+/* NAV */
+.nav-strip{display:flex;gap:10px;margin-bottom:28px;background:var(--card);
+  border:1px solid var(--border);border-radius:14px;padding:14px 18px;flex-wrap:wrap;align-items:center}
+.nav-strip span{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em;margin-right:4px}
+.nav-btn{text-decoration:none;padding:6px 14px;border-radius:8px;border:1px solid var(--border);
+  font-size:12px;font-weight:600;color:var(--text);background:#0d0f1a;transition:all .2s}
+.nav-btn:hover{background:var(--purple-dim);border-color:var(--purple-border);color:var(--purple)}
+
+/* SECTION HEADER */
+.sec-head{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;margin-bottom:20px}
+.sec-head span{color:var(--purple)}
+
+/* STOCK PROFILE CARDS */
+.profile-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:32px}
+.profile-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px;position:relative;overflow:hidden}
+.profile-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:16px 16px 0 0}
+.pc-pltr::before{background:linear-gradient(90deg,#a855f7,#7c3aed)}
+.pc-arm::before{background:linear-gradient(90deg,#06b6d4,#0ea5e9)}
+.pc-smci::before{background:linear-gradient(90deg,#f59e0b,#ef4444)}
+.pc-ai::before{background:linear-gradient(90deg,#22c55e,#16a34a)}
+.pc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
+.pc-ticker{font-family:'Playfair Display',serif;font-size:24px;font-weight:700}
+.pc-name{color:var(--muted);font-size:11px;margin-top:2px}
+.pc-price{text-align:right}
+.pc-price .val{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:500}
+.pc-price .chg{font-size:11px;font-family:'JetBrains Mono',monospace}
+.pc-price .chg.up{color:var(--green)}.pc-price .chg.down{color:var(--red)}
+.pc-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.pc-stat{background:#0d0f1a;border-radius:8px;padding:8px 10px}
+.pc-stat .lbl{color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
+.pc-stat .val{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:500}
+.persona-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.persona{background:var(--purple-dim);border:1px solid var(--purple-border);
+  color:var(--purple);border-radius:20px;padding:3px 10px;font-size:10px;font-weight:600}
+
+/* AI REVENUE BARS */
+.ai-rev-section{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:32px}
+.ai-rev-section h2{font-family:'Playfair Display',serif;font-size:18px;margin-bottom:6px}
+.ai-rev-section .desc{color:var(--muted);font-size:12px;margin-bottom:20px}
+.rev-bar-row{margin-bottom:14px}
+.rev-bar-row .rbr-head{display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px}
+.rev-bar-row .rbr-head .ticker{font-weight:700}
+.rev-bar-row .rbr-head .pct{font-family:'JetBrains Mono',monospace}
+.rbr-track{height:22px;background:#0d0f1a;border-radius:6px;overflow:hidden;position:relative}
+.rbr-fill{height:100%;border-radius:6px;display:flex;align-items:center;padding-left:10px;
+  font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace;color:rgba(255,255,255,.7);
+  white-space:nowrap;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+.mag7-row .rbr-fill{opacity:0.35}
+
+/* CHART SECTION */
+.charts-2col{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:32px}
+@media(max-width:700px){.charts-2col{grid-template-columns:1fr}}
+.chart-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px}
+.chart-card h2{font-family:'Playfair Display',serif;font-size:16px;margin-bottom:4px}
+.chart-card .desc{color:var(--muted);font-size:11px;margin-bottom:16px}
+.chart-wrap{position:relative;height:220px}
+
+/* RISK SCORES */
+.risk-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:32px}
+.risk-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px}
+.risk-card .rk-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.risk-card .rk-ticker{font-family:'Playfair Display',serif;font-size:18px;font-weight:700}
+.rk-score{font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700}
+.risk-dim{margin-bottom:10px}
+.risk-dim .rd-head{display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;color:var(--muted)}
+.risk-dim .rd-head b{color:var(--text)}
+.rd-track{height:7px;background:#1a1e2a;border-radius:4px;overflow:hidden}
+.rd-fill{height:100%;border-radius:4px}
+.fill-low{background:var(--green)}.fill-med{background:var(--amber)}.fill-high{background:var(--red)}
+
+/* BULL/BEAR */
+.bb-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(560px,1fr));gap:20px;margin-bottom:32px}
+@media(max-width:700px){.bb-grid{grid-template-columns:1fr}}
+.bb-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px}
+.bb-card .bbc-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;margin-bottom:14px}
+.bb-cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.bb-col h4{font-size:12px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.bb-col h4.bull{color:var(--green)}.bb-col h4.bear{color:var(--red)}
+.bb-col ul{list-style:none;display:flex;flex-direction:column;gap:6px}
+.bb-col ul li{font-size:11px;color:#b0bcd4;display:flex;gap:6px}
+.bb-col ul li::before{flex-shrink:0}
+.bull li::before{content:'▲';color:var(--green)}.bear li::before{content:'▼';color:var(--red)}
+
+/* VERDICT */
+.verdict-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:32px}
+.verdict-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px}
+.verdict-card .vc-head{font-family:'Playfair Display',serif;font-size:18px;margin-bottom:14px}
+.rating-bar{height:10px;border-radius:5px;background:linear-gradient(to right,var(--green),#84cc16,var(--amber),#f97316,var(--red));
+  position:relative;margin:10px 0 4px}
+.rating-pin{position:absolute;top:-5px;width:20px;height:20px;border-radius:50%;
+  background:#fff;border:2.5px solid var(--purple);transform:translateX(-50%);
+  box-shadow:0 0 0 3px rgba(168,85,247,.25)}
+.rating-lbs{display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-bottom:12px}
+.verdict-badge{display:inline-block;padding:7px 16px;border-radius:20px;font-weight:700;font-size:12px;letter-spacing:.06em;border:1.5px solid;margin-bottom:10px}
+.vb-strong-buy{background:rgba(34,197,94,.12);color:var(--green);border-color:rgba(34,197,94,.4)}
+.vb-buy{background:rgba(34,197,94,.08);color:#86efac;border-color:rgba(34,197,94,.25)}
+.vb-hold{background:rgba(245,158,11,.12);color:var(--amber);border-color:rgba(245,158,11,.4)}
+.vb-spec{background:rgba(239,68,68,.1);color:#fca5a5;border-color:rgba(239,68,68,.3)}
+.verdict-card p{color:#a0b0c8;font-size:12px;line-height:1.8}
+
+/* PURPLE EXPLAINER */
+.explainer{background:var(--purple-dim);border:1px solid var(--purple-border);
+  border-radius:12px;padding:14px 18px;margin-bottom:16px;display:flex;gap:12px}
+.expl-icon{font-size:16px;flex-shrink:0;margin-top:2px}
+.explainer h4{color:var(--purple);font-size:12px;font-weight:700;margin-bottom:4px}
+.explainer p{color:#c4b5fd;font-size:11px;line-height:1.6}
+
+/* BACK TOP */
+#btt{position:fixed;bottom:24px;right:24px;width:40px;height:40px;border-radius:50%;
+  background:var(--purple);color:#fff;border:none;cursor:pointer;font-size:16px;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 16px rgba(168,85,247,.4);z-index:99}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- HERO -->
+<div class="hero fade-in">
+  <div class="hero-tag">Special Report · May 2026</div>
+  <h1>The Pure-Play <span>AI Playbook</span></h1>
+  <p class="hero-sub">A deep dive into 4 pure-play AI stocks — Palantir, Arm Holdings, Super Micro Computer, and C3.ai — analyzing AI revenue exposure, valuation extremes, risk dimensions, and verdict. How do they compare to Mag 7 giants? Data baked in as of May 2026.</p>
+  <div class="hero-meta">
+    <div class="hm-badge"><b>4 Pure-Play AI Stocks</b></div>
+    <div class="hm-badge">vs <b>Mag 7 Comparison</b></div>
+    <div class="hm-badge">May 2026 Data</div>
+    <div class="hm-badge">Risk · Valuation · Verdict</div>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav-strip fade-in">
+  <span>Jump to →</span>
+  <a href="#profiles" class="nav-btn">Stock Profiles</a>
+  <a href="#airev" class="nav-btn">AI Revenue</a>
+  <a href="#charts" class="nav-btn">Pure-Play vs Mag 7</a>
+  <a href="#risk" class="nav-btn">Risk Scores</a>
+  <a href="#bb" class="nav-btn">Bull vs Bear</a>
+  <a href="#verdict" class="nav-btn">Verdicts</a>
+</div>
+
+<!-- ─────────────── STOCK PROFILES ─────────────── -->
+<div id="profiles" class="fade-in">
+<div class="sec-head">Stock <span>Profiles</span></div>
+
+<div class="explainer">
+  <div class="expl-icon">💡</div>
+  <div><h4>What is a Pure-Play AI Stock?</h4>
+  <p>A "pure-play" AI stock derives the majority of its revenue directly from AI software, chips, or infrastructure — unlike Mag 7 giants (Apple, Google, Meta, etc.) where AI is one feature among many. Pure-plays offer higher AI upside but also higher concentration risk.</p></div>
+</div>
+
+<div class="profile-grid">
+
+  <!-- PLTR -->
+  <div class="profile-card pc-pltr fade-in">
+    <div class="pc-top">
+      <div><div class="pc-ticker">PLTR</div><div class="pc-name">Palantir Technologies</div></div>
+      <div class="pc-price"><div class="val">$143.25</div><div class="chg down">▼ -20% YTD</div></div>
+    </div>
+    <div class="pc-stats">
+      <div class="pc-stat"><div class="lbl">Market Cap</div><div class="val">$345B</div></div>
+      <div class="pc-stat"><div class="lbl">P/E (TTM)</div><div class="val" style="color:var(--red)">229×</div></div>
+      <div class="pc-stat"><div class="lbl">Revenue (TTM)</div><div class="val">$4.48B</div></div>
+      <div class="pc-stat"><div class="lbl">Rev Growth</div><div class="val" style="color:var(--green)">+56%</div></div>
+      <div class="pc-stat"><div class="lbl">Net Income</div><div class="val" style="color:var(--green)">$1.63B</div></div>
+      <div class="pc-stat"><div class="lbl">2026 Guide</div><div class="val" style="color:var(--purple)">$7.2B</div></div>
+    </div>
+    <div class="persona-row">
+      <span class="persona">🏛️ Gov-Tech Bulls</span>
+      <span class="persona">🤖 AIP Believers</span>
+      <span class="persona">📈 Momentum Traders</span>
+      <span class="persona">🇺🇸 Defense-AI Fans</span>
+    </div>
+  </div>
+
+  <!-- ARM -->
+  <div class="profile-card pc-arm fade-in">
+    <div class="pc-top">
+      <div><div class="pc-ticker">ARM</div><div class="pc-name">Arm Holdings plc</div></div>
+      <div class="pc-price"><div class="val">$172.00</div><div class="chg down">▼ -15% YTD</div></div>
+    </div>
+    <div class="pc-stats">
+      <div class="pc-stat"><div class="lbl">Market Cap</div><div class="val">$181B</div></div>
+      <div class="pc-stat"><div class="lbl">P/E (TTM)</div><div class="val" style="color:var(--red)">258×</div></div>
+      <div class="pc-stat"><div class="lbl">Revenue (TTM)</div><div class="val">$4.67B</div></div>
+      <div class="pc-stat"><div class="lbl">Rev Growth</div><div class="val" style="color:var(--green)">+34%</div></div>
+      <div class="pc-stat"><div class="lbl">EPS (TTM)</div><div class="val">$0.75</div></div>
+      <div class="pc-stat"><div class="lbl">Gross Margin</div><div class="val" style="color:var(--green)">97%</div></div>
+    </div>
+    <div class="persona-row">
+      <span class="persona">🔬 IP Royalty Fans</span>
+      <span class="persona">📱 Mobile-AI Investors</span>
+      <span class="persona">☁️ Edge AI Believers</span>
+      <span class="persona">🏗️ Infra Architects</span>
+    </div>
+  </div>
+
+  <!-- SMCI -->
+  <div class="profile-card pc-smci fade-in">
+    <div class="pc-top">
+      <div><div class="pc-ticker">SMCI</div><div class="pc-name">Super Micro Computer</div></div>
+      <div class="pc-price"><div class="val">$27.18</div><div class="chg down">▼ -60% from ATH</div></div>
+    </div>
+    <div class="pc-stats">
+      <div class="pc-stat"><div class="lbl">Market Cap</div><div class="val">~$16B</div></div>
+      <div class="pc-stat"><div class="lbl">P/E (TTM)</div><div class="val" style="color:var(--amber)">~11×</div></div>
+      <div class="pc-stat"><div class="lbl">Q2 Revenue</div><div class="val" style="color:var(--green)">$12.68B</div></div>
+      <div class="pc-stat"><div class="lbl">Rev Growth</div><div class="val" style="color:var(--green)">+123%</div></div>
+      <div class="pc-stat"><div class="lbl">Gross Margin</div><div class="val" style="color:var(--red)">6.3%</div></div>
+      <div class="pc-stat"><div class="lbl">EPS (Q2)</div><div class="val">$0.60</div></div>
+    </div>
+    <div class="persona-row">
+      <span class="persona">⚡ Deep Value Hunters</span>
+      <span class="persona">🖥️ Server Hardware Bulls</span>
+      <span class="persona">🎰 High-Risk Speculators</span>
+      <span class="persona">🔄 Turnaround Players</span>
+    </div>
+  </div>
+
+  <!-- C3.AI -->
+  <div class="profile-card pc-ai fade-in">
+    <div class="pc-top">
+      <div><div class="pc-ticker">AI</div><div class="pc-name">C3.ai Inc.</div></div>
+      <div class="pc-price"><div class="val">$9.16</div><div class="chg down">▼ -33% YTD</div></div>
+    </div>
+    <div class="pc-stats">
+      <div class="pc-stat"><div class="lbl">Market Cap</div><div class="val">$1.13B</div></div>
+      <div class="pc-stat"><div class="lbl">P/E (TTM)</div><div class="val" style="color:var(--red)">N/A (loss)</div></div>
+      <div class="pc-stat"><div class="lbl">Revenue (TTM)</div><div class="val">~$300M</div></div>
+      <div class="pc-stat"><div class="lbl">Rev Growth</div><div class="val" style="color:var(--red)">-23%</div></div>
+      <div class="pc-stat"><div class="lbl">Net Margin</div><div class="val" style="color:var(--red)">-80%</div></div>
+      <div class="pc-stat"><div class="lbl">Q3 Revenue</div><div class="val" style="color:var(--red)">$53.3M</div></div>
+    </div>
+    <div class="persona-row">
+      <span class="persona">🎯 Contrarian Bets</span>
+      <span class="persona">💊 Recovery Plays</span>
+      <span class="persona">⚠️ High-Risk Only</span>
+    </div>
+  </div>
+
+</div><!-- /profile-grid -->
+</div><!-- /profiles -->
+
+<!-- ─────────────── AI REVENUE EXPOSURE ─────────────── -->
+<div id="airev" class="fade-in">
+<div class="sec-head">AI Revenue <span>Exposure</span></div>
+
+<div class="explainer">
+  <div class="expl-icon">💡</div>
+  <div><h4>AI Revenue Exposure — What This Means</h4>
+  <p>This shows what percentage of each company's total revenue comes directly from AI products/services. 100% = every dollar is AI-driven. Compare pure-plays to Mag 7 giants below (faded) to see the concentration difference.</p></div>
+</div>
+
+<div class="ai-rev-section">
+  <h2>AI Revenue as % of Total Revenue</h2>
+  <p class="desc">Pure-play stocks (bright) vs Mag 7 reference (faded) · Bars animate on scroll</p>
+
+  <div class="rev-bar-row" data-pct="100" data-color="#a855f7">
+    <div class="rbr-head"><span class="ticker" style="color:#a855f7">PLTR — Palantir</span><span class="pct">100% · $4.48B</span></div>
+    <div class="rbr-track"><div class="rbr-fill" style="width:0%;background:linear-gradient(90deg,#a855f7,#7c3aed)">AIP + Gov + Commercial — 100% AI</div></div>
+  </div>
+
+  <div class="rev-bar-row" data-pct="85" data-color="#06b6d4">
+    <div class="rbr-head"><span class="ticker" style="color:#06b6d4">ARM — Arm Holdings</span><span class="pct">~85% AI-driven · $4.67B</span></div>
+    <div class="rbr-track"><div class="rbr-fill" style="width:0%;background:linear-gradient(90deg,#06b6d4,#0ea5e9)">CPU IP royalties powering AI chips</div></div>
+  </div>
+
+  <div class="rev-bar-row" data-pct="95" data-color="#f59e0b">
+    <div class="rbr-head"><span class="ticker" style="color:#f59e0b">SMCI — Super Micro</span><span class="pct">~95% AI servers · $50B+ FY26 target</span></div>
+    <div class="rbr-track"><div class="rbr-fill" style="width:0%;background:linear-gradient(90deg,#f59e0b,#ef4444)">NVIDIA GPU servers / AI infra hardware</div></div>
+  </div>
+
+  <div class="rev-bar-row" data-pct="100" data-color="#22c55e">
+    <div class="rbr-head"><span class="ticker" style="color:#22c55e">AI — C3.ai</span><span class="pct">100% AI software · $300M (declining)</span></div>
+    <div class="rbr-track"><div class="rbr-fill" style="width:0%;background:linear-gradient(90deg,#22c55e,#16a34a)">Enterprise AI apps — revenue falling -23%</div></div>
+  </div>
+
+  <div style="border-top:1px solid var(--border);margin:20px 0 16px;padding-top:14px">
+    <p style="color:var(--muted);font-size:11px;margin-bottom:12px">⬇ Mag 7 Reference (faded comparison)</p>
+
+    <div class="rev-bar-row mag7-row" data-pct="15" data-color="#7b8299">
+      <div class="rbr-head"><span class="ticker" style="color:var(--muted)">GOOGL — Alphabet</span><span class="pct" style="color:var(--muted)">~15% AI · $350B total</span></div>
+      <div class="rbr-track"><div class="rbr-fill" style="width:0%;background:#7b8299">Cloud AI / Search AI portion</div></div>
+    </div>
+    <div class="rev-bar-row mag7-row" data-pct="20" data-color="#7b8299">
+      <div class="rbr-head"><span class="ticker" style="color:var(--muted)">MSFT — Microsoft</span><span class="pct" style="color:var(--muted)">~20% AI · $282B total</span></div>
+      <div class="rbr-track"><div class="rbr-fill" style="width:0%;background:#7b8299">Copilot / Azure AI portion</div></div>
+    </div>
+    <div class="rev-bar-row mag7-row" data-pct="18" data-color="#7b8299">
+      <div class="rbr-head"><span class="ticker" style="color:var(--muted)">META — Meta</span><span class="pct" style="color:var(--muted)">~18% AI-enhanced · $181B total</span></div>
+      <div class="rbr-track"><div class="rbr-fill" style="width:0%;background:#7b8299">AI-powered ad targeting</div></div>
+    </div>
+    <div class="rev-bar-row mag7-row" data-pct="12" data-color="#7b8299">
+      <div class="rbr-head"><span class="ticker" style="color:var(--muted)">AAPL — Apple</span><span class="pct" style="color:var(--muted)">~12% AI-enhanced · $395B total</span></div>
+      <div class="rbr-track"><div class="rbr-fill" style="width:0%;background:#7b8299">Apple Intelligence / on-device AI</div></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ─────────────── PURE-PLAY vs MAG 7 CHARTS ─────────────── -->
+<div id="charts" class="fade-in">
+<div class="sec-head">Pure-Play vs <span>Mag 7</span></div>
+
+<div class="explainer">
+  <div class="expl-icon">💡</div>
+  <div><h4>P/E Gap Explained</h4>
+  <p>P/E ratio = Stock Price ÷ Earnings Per Share. Pure-play AI stocks command sky-high P/E ratios because investors are paying for FUTURE AI dominance, not current profits. The Mag 7 trade at 25–38× — pure-plays trade at 100–260×. That gap is the "AI premium" you're paying.</p></div>
+</div>
+
+<div class="charts-2col">
+  <div class="chart-card fade-in">
+    <h2>P/E Ratio Gap</h2>
+    <p class="desc">Pure-plays vs Mag 7 avg — how much premium are you paying?</p>
+    <div class="chart-wrap"><canvas id="peChart"></canvas></div>
+  </div>
+  <div class="chart-card fade-in">
+    <h2>Revenue Growth YoY (%)</h2>
+    <p class="desc">Higher growth justifies higher P/E — but does it always?</p>
+    <div class="chart-wrap"><canvas id="growthChart"></canvas></div>
+  </div>
+</div>
+</div>
+
+<!-- ─────────────── RISK SCORES ─────────────── -->
+<div id="risk" class="fade-in">
+<div class="sec-head">Risk Scores <span>(1–10)</span></div>
+
+<div class="explainer">
+  <div class="expl-icon">💡</div>
+  <div><h4>Risk Dimensions Explained</h4>
+  <p><b style="color:#e8eaf0">Valuation:</b> How stretched is the stock price vs earnings? Higher = more expensive. <b style="color:#e8eaf0">Concentration:</b> How dependent is revenue on AI or a single customer/segment? <b style="color:#e8eaf0">Execution:</b> Can management deliver on promises? <b style="color:#e8eaf0">Macro:</b> How sensitive is the stock to interest rates, tariffs, and recession risk?</p></div>
+</div>
+
+<div class="risk-grid">
+
+  <!-- PLTR risk -->
+  <div class="risk-card fade-in">
+    <div class="rk-head">
+      <div><div class="rk-ticker" style="color:#a855f7">PLTR</div><div style="font-size:11px;color:var(--muted)">Palantir Technologies</div></div>
+      <div class="rk-score" style="color:var(--amber)">7.2<span style="font-size:14px;color:var(--muted)">/10</span></div>
+    </div>
+    <div class="risk-dim"><div class="rd-head"><b>Valuation</b><span>9/10 🔴</span></div><div class="rd-track"><div class="rd-fill fill-high" style="width:90%"></div></div></div>
+    <div class="risk-dim"><div class="rd-head"><b>Concentration</b><span>7/10 🟠</span></div><div class="rd-track"><div class="rd-fill fill-high" style="width:70%"></div></div></div>
+    <div class="risk-dim"><div class="rd-head"><b>Execution</b><span>4/10 🟢</span></div><div class="rd-track"><div class="rd-fill fill-low" style="width:40%"></div></div></div>
+    <div class="risk-dim"><div class="rd-head"><b>Macro</b><span>7/10 🟠</span></div><div class="rd-track"><div class="rd-fill fill-high" style="width:70%"></div></div></div>
+    <p style="font-size:11px;color:var(--muted);margin-top:10px">P/E 229× is the dominant risk. Execution is strong — 4 consecutive beats. Government AI spending could dry up with budget cuts.</p>
+  </div>
+
+  <!-- ARM risk -->
+  <div class="risk-card fade-in">
+    <div class="rk-head">
+      <div><div class="rk-ticker" style="color:#06b6d4">ARM</div><div style="font-size:11px;color:var(--muted)">Arm Holdings</div></div>
+      <div class="rk-score" style="color:var(--amber)">6.8<span style="font-size:14px;color:var(--muted)">/10</span></div>
+    </div>
+    <div class="risk-dim"><div class="rd-head"><b>Valuation</b><span>9/10 🔴</span></div><div class="rd-track"><div class="rd-fill fill-high" style="width:90%"></div></div></div>
+    <div class="risk-dim"><div class="rd-head"><b>Concentration</b><span>6/10 🟡</span></div><div class="rd-track"><div class="rd-fill fill-med" style="width:60%"></div></div></div>
+    <div class="risk-dim"><div class="rd-head"><b>Execution</b><span>5/10 🟡</span></div><div class="rd-track"><div class="rd-fill fill-med" style="width:50%"></div></div></div>
+    <div class="risk-dim"><div class="rd-head"><b>Macro</b><span>6/10 🟡</span></div><div class="rd-track"><div class="rd-fill fill-med" style="width:60%"></div></div></div>
+    <p style="font-size:11px;color:var(--muted);margin-top:10px">P/E 258× is extreme. SoftBank 90%+ ownership is a governance risk. Q1 revenue missed slightly. RISC-V is a long-term existential threat.</p>
+  </div>
+
+  <!-- SMCI risk -->
+  <div class="risk-card fade-in">
+    <div class="rk-head">
+      <div><div class="rk-ticker" style="color:#f59e0b">SMCI</div><div style="font-size:11px;color:var(--muted)">Super Micro Computer</div></div>
+      <div class="rk-score" style="color:var(--red)">8.5<span style="font-size:14px;color:var(--muted)">/10</span></div>
+    </div>
+    <div class="risk-dim"><div class="rd-head"><b>Valuation</b><span>4/10 🟢</span></div><div class="rd-track"><div class="rd-fill fill-low" style="width:40%"></div></div></div>
+    <div class="risk-dim"><div class="rd-head"><b>Concentration</b><span>9/10 🔴</span></div><div class="rd-track"><div class="rd-fill fill-high" style="width:90%"></div></div></div>
+    <div class="risk-dim"><div class="rd-head"><b>Execution</b><span>8/10 🔴</span></div><div class="rd-track"><div class="rd-fill fill-high" style="width:80%"></div></div></div>
+    <div class="risk-dim"><div class="rd-head"><b>Macro</b><span>9/10 🔴</span></div><div class="rd-track"><div class="rd-fill fill-high" style="width:90%"></div></div></div>
+    <p style="font-size:11px;color:var(--muted);margin-top:10px">Revenue +123% but gross margins collapsed to 6.3%. Accounting scandal delayed filings in 2024. 95% NVIDIA-dependent. Tariff risk on server hardware is critical.</p>
+  </div>
+
+  <!-- C3.AI risk -->
+  <div class="risk-card fade-in">
+    <div class="rk-head">
+      <div><div class="rk-ticker" style="color:#22c55e">C3.AI</div><div style="font-size:11px;color:var(--muted)">C3.ai Inc.</div></div>
+      <div class="rk-score" style="color:var(--red)">9.1<span style="font-size:14px;color:var(--muted)">/10</span></div>
+    </div>
+    <div class="risk-dim"><div class="rd-head"><b>Valuation</b><span>5/10 🟡</span></div><div class="rd-track"><div class="rd-fill fill-med" style="width:50%"></div></div></div>
+    <div class="risk-dim"><div class="rd-head"><b>Concentration</b><span>10/10 🔴</span></div><div class="rd-track"><div class="rd-fill fill-high" style="width:100%"></div></div></div>
+    <div class="risk-dim"><div class="rd-head"><b>Execution</b><span>9/10 🔴</span></div><div class="rd-track"><div class="rd-fill fill-high" style="width:90%"></div></div></div>
+    <div class="risk-dim"><div class="rd-head"><b>Macro</b><span>8/10 🔴</span></div><div class="rd-track"><div class="rd-fill fill-high" style="width:80%"></div></div></div>
+    <p style="font-size:11px;color:var(--muted);margin-top:10px">Revenue fell 46% YoY in Q3 FY2026. Burning cash rapidly. Consumption model transition not working. At $9, approaching distressed territory.</p>
+  </div>
+
+</div>
+</div>
+
+<!-- ─────────────── BULL vs BEAR ─────────────── -->
+<div id="bb" class="fade-in">
+<div class="sec-head">Bull vs <span>Bear Cases</span></div>
+
+<div class="bb-grid">
+
+  <div class="bb-card fade-in">
+    <div class="bbc-name" style="color:#a855f7">PLTR — Palantir</div>
+    <div class="bb-cols">
+      <div class="bb-col bull"><h4 class="bull">🐂 Bull Case</h4>
+      <ul class="bull">
+        <li>$7.2B 2026 guidance — 61% growth</li>
+        <li>US commercial revenue +115% expected</li>
+        <li>AIP is the OS of enterprise AI</li>
+        <li>Government AI spending is non-discretionary</li>
+        <li>Analyst target $191 (+34% from here)</li>
+      </ul></div>
+      <div class="bb-col bear"><h4 class="bear">🐻 Bear Case</h4>
+      <ul class="bear">
+        <li>P/E 229× — any miss = -30% drop</li>
+        <li>Already down -20% YTD despite guidance raise</li>
+        <li>Defence budget risk if DOGE cuts deeper</li>
+        <li>Alex Karp selling millions of shares</li>
+        <li>Needs $7B+ revenue to justify valuation</li>
+      </ul></div>
+    </div>
+  </div>
+
+  <div class="bb-card fade-in">
+    <div class="bbc-name" style="color:#06b6d4">ARM — Arm Holdings</div>
+    <div class="bb-cols">
+      <div class="bb-col bull"><h4 class="bull">🐂 Bull Case</h4>
+      <ul class="bull">
+        <li>v9 architecture: 2× royalty rates vs v8</li>
+        <li>AWS Graviton, Google Axion, Apple M-series</li>
+        <li>Every AI edge device runs on ARM</li>
+        <li>Expansion into datacenter accelerating</li>
+        <li>Earnings May 6 — expected +28% EPS growth</li>
+      </ul></div>
+      <div class="bb-col bear"><h4 class="bear">🐻 Bear Case</h4>
+      <ul class="bear">
+        <li>P/E 258× — worst risk/reward in the group</li>
+        <li>SoftBank controls 90%+ — overhang risk</li>
+        <li>Q1 2026 revenue missed consensus</li>
+        <li>RISC-V open-source threat long-term</li>
+        <li>Lumpy royalty revenue, hard to predict</li>
+      </ul></div>
+    </div>
+  </div>
+
+  <div class="bb-card fade-in">
+    <div class="bbc-name" style="color:#f59e0b">SMCI — Super Micro Computer</div>
+    <div class="bb-cols">
+      <div class="bb-col bull"><h4 class="bull">🐂 Bull Case</h4>
+      <ul class="bull">
+        <li>Q2 revenue $12.68B — crushed estimates by $2.34B</li>
+        <li>P/E ~11× — cheapest pure-play on earnings</li>
+        <li>AI server demand cycle is multi-year</li>
+        <li>Accounting issues largely resolved post-audit</li>
+        <li>Price target $42 (+55% upside)</li>
+      </ul></div>
+      <div class="bb-col bear"><h4 class="bear">🐻 Bear Case</h4>
+      <ul class="bear">
+        <li>Gross margin collapsed to 6.3% — hardware curse</li>
+        <li>95% dependent on NVIDIA GPU supply chain</li>
+        <li>Accounting scandal reputational damage lingers</li>
+        <li>Q3 earnings May 5 — guidance key watch</li>
+        <li>US tariffs on server components could crush margins</li>
+      </ul></div>
+    </div>
+  </div>
+
+  <div class="bb-card fade-in">
+    <div class="bbc-name" style="color:#22c55e">AI — C3.ai Inc.</div>
+    <div class="bb-cols">
+      <div class="bb-col bull"><h4 class="bull">🐂 Bull Case</h4>
+      <ul class="bull">
+        <li>At $9, market cap only $1.1B — low floor</li>
+        <li>90% subscription revenue = sticky base</li>
+        <li>Enterprise AI tailwind is a decade-long trend</li>
+        <li>Potential acquisition target at these prices</li>
+        <li>Any revenue stabilisation = +50% short squeeze</li>
+      </ul></div>
+      <div class="bb-col bear"><h4 class="bear">🐻 Bear Case</h4>
+      <ul class="bear">
+        <li>Revenue down -46% YoY in latest quarter</li>
+        <li>Burning $200M+ per year in cash</li>
+        <li>Consumption model transition failing</li>
+        <li>PLTR, Microsoft Copilot eating its market</li>
+        <li>Gross margin fell to 17% — structural problem</li>
+      </ul></div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ─────────────── VERDICTS ─────────────── -->
+<div id="verdict" class="fade-in">
+<div class="sec-head">Verdict <span>Cards</span></div>
+
+<div class="verdict-grid">
+
+  <div class="verdict-card fade-in">
+    <div class="vc-head" style="color:#a855f7">PLTR — Palantir</div>
+    <div class="rating-bar"><div class="rating-pin" style="left:22%"></div></div>
+    <div class="rating-lbs"><span>Strong Buy</span><span>Buy</span><span>Hold</span><span>Sell</span><span>Strong Sell</span></div>
+    <div class="verdict-badge vb-buy">CAUTIOUS BUY</div>
+    <p>The most credible pure-play AI software company. 2026 guidance of $7.2B (+61%) with near-profitable operations is exceptional. The problem: P/E 229× prices in near-perfection. Buy only on dips below $120. Analyst target of $191 offers 34% upside from current levels. Risk score 7.2/10.</p>
+  </div>
+
+  <div class="verdict-card fade-in">
+    <div class="vc-head" style="color:#06b6d4">ARM — Arm Holdings</div>
+    <div class="rating-bar"><div class="rating-pin" style="left:48%"></div></div>
+    <div class="rating-lbs"><span>Strong Buy</span><span>Buy</span><span>Hold</span><span>Sell</span><span>Strong Sell</span></div>
+    <div class="verdict-badge vb-hold">HOLD / TRIM</div>
+    <p>Exceptional business — monopoly IP in CPU architecture — but P/E of 258× is the worst entry point in the group. v9 royalty ramp is real and AI accelerator adoption is genuine upside. Watch May 6 earnings. Best accumulated on 20%+ pullbacks. Risk score 6.8/10.</p>
+  </div>
+
+  <div class="verdict-card fade-in">
+    <div class="vc-head" style="color:#f59e0b">SMCI — Super Micro</div>
+    <div class="rating-bar"><div class="rating-pin" style="left:40%"></div></div>
+    <div class="rating-lbs"><span>Strong Buy</span><span>Buy</span><span>Hold</span><span>Sell</span><span>Strong Sell</span></div>
+    <div class="verdict-badge vb-buy">SPECULATIVE BUY</div>
+    <p>The value trap or value play of 2026. Revenue +123% at P/E 11× is deeply attractive, but 6.3% gross margins and NVIDIA supply-chain dependency create existential risks. Watch Q3 earnings May 5 — if margins hold above 7% and guidance is maintained, the stock could re-rate to $42+. High risk. Risk score 8.5/10.</p>
+  </div>
+
+  <div class="verdict-card fade-in">
+    <div class="vc-head" style="color:#22c55e">AI — C3.ai</div>
+    <div class="rating-bar"><div class="rating-pin" style="left:72%"></div></div>
+    <div class="rating-lbs"><span>Strong Buy</span><span>Buy</span><span>Hold</span><span>Sell</span><span>Strong Sell</span></div>
+    <div class="verdict-badge vb-spec">AVOID / SPECULATIVE ONLY</div>
+    <p>C3.ai is in deep trouble. Revenue down 46% YoY, gross margins at 17%, burning $200M/year, and PLTR is eating its lunch in enterprise AI. At $9 it is approaching distressed-asset territory. The only bull case is an acquisition. Not suitable for most investors. Risk score 9.1/10.</p>
+  </div>
+
+</div>
+</div>
+
+</div><!-- /page -->
+
+<button id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+// ── FADE IN ──
+const io = new IntersectionObserver(es => es.forEach(e => {
+  if(e.isIntersecting) e.target.classList.add('visible');
+}), {threshold: 0.08});
+document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
+
+// ── ANIMATE REVENUE BARS ──
+const barObserver = new IntersectionObserver(es => es.forEach(e => {
+  if(e.isIntersecting){
+    const pct = e.target.getAttribute('data-pct');
+    const fill = e.target.querySelector('.rbr-fill');
+    if(fill) fill.style.width = pct + '%';
+    barObserver.unobserve(e.target);
+  }
+}), {threshold:0.2});
+document.querySelectorAll('.rev-bar-row').forEach(r => barObserver.observe(r));
+
+// ── P/E CHART ──
+const peCtx = document.getElementById('peChart').getContext('2d');
+new Chart(peCtx, {
+  type: 'bar',
+  data: {
+    labels: ['PLTR','ARM','SMCI','C3.AI','GOOGL','MSFT','AMZN','META','NVDA'],
+    datasets: [{
+      label: 'P/E Ratio',
+      data: [229, 258, 11, null, 22, 38, 40, 26, 41],
+      backgroundColor: [
+        'rgba(168,85,247,.8)','rgba(6,182,212,.8)','rgba(245,158,11,.8)','rgba(34,197,94,.4)',
+        'rgba(123,130,153,.35)','rgba(123,130,153,.35)','rgba(123,130,153,.35)','rgba(123,130,153,.35)','rgba(123,130,153,.35)'
+      ],
+      borderColor: ['#a855f7','#06b6d4','#f59e0b','#22c55e','#7b8299','#7b8299','#7b8299','#7b8299','#7b8299'],
+      borderWidth: 1.5, borderRadius: 6
+    }]
+  },
+  options: {
+    responsive:true, maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{backgroundColor:'#12151c',borderColor:'#1e2330',borderWidth:1,
+      titleColor:'#e8eaf0',bodyColor:'#a0b0c8',callbacks:{label:c=>` P/E: ${c.raw ?? 'N/A (loss)'}×`}}},
+    scales:{
+      x:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:10,family:'JetBrains Mono'}}},
+      y:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:10,family:'JetBrains Mono'}}}
+    }
+  }
+});
+
+// ── GROWTH CHART ──
+const growthCtx = document.getElementById('growthChart').getContext('2d');
+new Chart(growthCtx, {
+  type: 'bar',
+  data: {
+    labels: ['PLTR','ARM','SMCI','C3.AI','GOOGL','MSFT','AMZN','META','NVDA'],
+    datasets: [{
+      label: 'Revenue Growth YoY %',
+      data: [56, 34, 123, -23, 14, 15, 17, 21, 114],
+      backgroundColor: [
+        'rgba(168,85,247,.8)','rgba(6,182,212,.8)','rgba(245,158,11,.8)','rgba(239,68,68,.7)',
+        'rgba(123,130,153,.35)','rgba(123,130,153,.35)','rgba(123,130,153,.35)','rgba(123,130,153,.35)','rgba(123,130,153,.35)'
+      ],
+      borderColor: ['#a855f7','#06b6d4','#f59e0b','#ef4444','#7b8299','#7b8299','#7b8299','#7b8299','#7b8299'],
+      borderWidth: 1.5, borderRadius: 6
+    }]
+  },
+  options: {
+    responsive:true, maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{backgroundColor:'#12151c',borderColor:'#1e2330',borderWidth:1,
+      titleColor:'#e8eaf0',bodyColor:'#a0b0c8',callbacks:{label:c=>` Growth: ${c.raw}%`}}},
+    scales:{
+      x:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:10,family:'JetBrains Mono'}}},
+      y:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:10,family:'JetBrains Mono'},callback:v=>v+'%'}}
+    }
+  }
+});
+</script>
+</body>
+</html>

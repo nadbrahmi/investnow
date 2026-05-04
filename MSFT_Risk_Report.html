@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MSFT Risk Score Report</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0a0c10;
+    --card: #12151c;
+    --border: #1e2330;
+    --text: #e8eaf0;
+    --muted: #7b8299;
+    --green: #22c55e;
+    --red: #ef4444;
+    --amber: #f59e0b;
+    --blue: #3b82f6;
+    --accent: #6366f1;
+    --accent2: #8b5cf6;
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .page { max-width: 1200px; margin: 0 auto; padding: 32px 24px 60px; }
+
+  /* ---- FADE-IN ---- */
+  .fade-in { opacity: 0; transform: translateY(22px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .fade-in.visible { opacity: 1; transform: none; }
+
+  /* ---- STOCK INFO BAR ---- */
+  .stock-bar {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px 28px;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+  }
+  .stock-logo {
+    width: 52px; height: 52px; border-radius: 12px;
+    background: linear-gradient(135deg, #0078d4, #50e6ff);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif; font-weight: 700;
+    font-size: 20px; color: #fff; flex-shrink: 0;
+  }
+  .stock-name h1 { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; }
+  .stock-name span { color: var(--muted); font-size: 13px; }
+  .stock-price { margin-left: auto; text-align: right; }
+  .stock-price .price { font-family: 'JetBrains Mono', monospace; font-size: 32px; font-weight: 500; color: #fff; }
+  .stock-price .change { font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--amber); }
+  .stock-price .change.up { color: var(--green); }
+  .stock-meta { display: flex; gap: 6px; flex-wrap: wrap; margin-left: 8px; }
+  .tag { background: #1e2330; border-radius: 6px; padding: 4px 10px; font-size: 11px; color: var(--muted); }
+
+  /* ---- RISK GAUGE ---- */
+  .risk-section {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 28px;
+  }
+  @media(max-width:700px){ .risk-section { grid-template-columns: 1fr; } }
+  .gauge-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 24px; display: flex;
+    flex-direction: column; align-items: center;
+  }
+  .gauge-card h2 { font-family: 'Playfair Display', serif; font-size: 18px; margin-bottom: 16px; align-self: flex-start; }
+  .risk-score-label { font-family: 'JetBrains Mono', monospace; font-size: 42px; font-weight: 500; color: var(--amber); margin-top: -10px; }
+  .risk-sub { color: var(--muted); font-size: 12px; margin-top: 4px; }
+
+  /* ---- KPI STRIP ---- */
+  .kpi-strip {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 20px 24px; margin-bottom: 28px;
+    display: flex; gap: 12px; flex-wrap: wrap; justify-content: space-between;
+  }
+  .kpi-item { text-align: center; min-width: 110px; }
+  .kpi-item .label { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 4px; }
+  .kpi-item .value { font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 500; color: #fff; }
+  .kpi-item .sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  /* ---- PRICE CHART ---- */
+  .chart-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 24px; margin-bottom: 28px;
+  }
+  .chart-card h2 { font-family: 'Playfair Display', serif; font-size: 18px; margin-bottom: 16px; }
+  .chart-wrap { position: relative; height: 240px; }
+
+  /* ---- METRIC GRID ---- */
+  .metric-section { margin-bottom: 28px; }
+  .metric-section h2 { font-family: 'Playfair Display', serif; font-size: 20px; margin-bottom: 14px; }
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+  .metric-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 18px;
+  }
+  .metric-card .mc-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .metric-card .mc-name { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .05em; }
+  .badge { font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 20px; }
+  .badge.beat { background: rgba(34,197,94,.18); color: var(--green); border: 1px solid rgba(34,197,94,.3); }
+  .badge.miss { background: rgba(239,68,68,.18); color: var(--red); border: 1px solid rgba(239,68,68,.3); }
+  .badge.caution { background: rgba(245,158,11,.18); color: var(--amber); border: 1px solid rgba(245,158,11,.3); }
+  .metric-card .mc-value { font-family: 'JetBrains Mono', monospace; font-size: 26px; font-weight: 500; margin-bottom: 4px; }
+  .metric-card .mc-sub { font-size: 11px; color: var(--muted); margin-bottom: 10px; }
+  .score-bar-wrap { background: #1a1e2a; border-radius: 4px; height: 6px; overflow: hidden; margin-top: 6px; }
+  .score-bar-fill { height: 100%; border-radius: 4px; transition: width 1s ease; }
+  .fill-green { background: var(--green); }
+  .fill-amber { background: var(--amber); }
+  .fill-red { background: var(--red); }
+
+  /* ---- SCORE BREAKDOWN ---- */
+  .breakdown-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 24px; margin-bottom: 28px;
+  }
+  .breakdown-card h2 { font-family: 'Playfair Display', serif; font-size: 18px; margin-bottom: 16px; }
+  .breakdown-row { margin-bottom: 14px; }
+  .breakdown-row .br-header { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 13px; }
+  .breakdown-row .br-bar { height: 10px; background: #1a1e2a; border-radius: 6px; overflow: hidden; }
+  .breakdown-row .br-fill { height: 100%; border-radius: 6px; }
+
+  /* ---- EXPLAINER BOX ---- */
+  .explainer {
+    background: rgba(59,130,246,.08); border: 1px solid rgba(59,130,246,.25);
+    border-radius: 12px; padding: 16px 20px; margin-bottom: 14px;
+    display: flex; gap: 14px; align-items: flex-start;
+  }
+  .explainer-icon { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+  .explainer h4 { color: var(--blue); font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+  .explainer p { color: #a0aec0; font-size: 12px; line-height: 1.5; }
+
+  /* ---- PAGE DIVIDER ---- */
+  .page-break {
+    border: none; border-top: 2px dashed var(--border);
+    margin: 48px 0 40px;
+    position: relative;
+  }
+  .page-break::after {
+    content: 'PAGE 2';
+    position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+    background: var(--bg); color: var(--muted); font-size: 11px; padding: 0 12px;
+    letter-spacing: .1em;
+  }
+
+  /* ---- QUARTERLY TABLE ---- */
+  .table-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 24px; margin-bottom: 28px; overflow-x: auto;
+  }
+  .table-card h2 { font-family: 'Playfair Display', serif; font-size: 18px; margin-bottom: 16px; }
+  table { width: 100%; border-collapse: collapse; }
+  th { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .05em; padding: 8px 14px; text-align: left; border-bottom: 1px solid var(--border); }
+  td { padding: 10px 14px; font-family: 'JetBrains Mono', monospace; font-size: 13px; border-bottom: 1px solid rgba(30,35,48,.7); }
+  tr:last-child td { border-bottom: none; }
+  .beat-cell { color: var(--green); }
+  .miss-cell { color: var(--red); }
+  .caution-cell { color: var(--amber); }
+
+  /* ---- CATALYSTS / RISKS ---- */
+  .dual-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 28px; }
+  @media(max-width:640px){ .dual-col { grid-template-columns: 1fr; } }
+  .col-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 22px; }
+  .col-card h3 { font-family: 'Playfair Display', serif; font-size: 16px; margin-bottom: 14px; }
+  .col-card h3.green { color: var(--green); }
+  .col-card h3.red { color: var(--red); }
+  .col-card ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .col-card ul li { font-size: 13px; color: #b0bcd4; display: flex; gap: 8px; }
+  .col-card ul li::before { content: '▸'; flex-shrink: 0; }
+
+  /* ---- BOTTOM LINE ---- */
+  .bottom-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 28px; margin-bottom: 28px;
+  }
+  .bottom-card h2 { font-family: 'Playfair Display', serif; font-size: 20px; margin-bottom: 16px; }
+  .rating-bar-wrap { margin: 20px 0 12px; }
+  .rating-bar-track {
+    height: 14px; border-radius: 7px;
+    background: linear-gradient(to right, var(--green) 0%, #84cc16 20%, var(--amber) 50%, #f97316 75%, var(--red) 100%);
+    position: relative;
+  }
+  .rating-bar-marker {
+    position: absolute; top: -5px;
+    width: 24px; height: 24px; border-radius: 50%;
+    background: #fff; border: 3px solid var(--accent);
+    transform: translateX(-50%);
+    box-shadow: 0 0 0 4px rgba(99,102,241,.3);
+    transition: left 1.2s ease;
+  }
+  .rating-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--muted); margin-top: 6px; }
+  .verdict-badge {
+    display: inline-block; padding: 8px 20px; border-radius: 24px;
+    font-weight: 700; font-size: 15px; letter-spacing: .08em; margin-top: 10px;
+    background: rgba(245,158,11,.15); color: var(--amber); border: 1.5px solid var(--amber);
+  }
+  .summary-p { color: #a0b0c8; font-size: 13px; line-height: 1.8; margin-top: 14px; }
+
+  /* ---- EARNINGS RECAP ---- */
+  .recap-card {
+    background: rgba(99,102,241,.06); border: 1px solid rgba(99,102,241,.2);
+    border-radius: 14px; padding: 18px 22px; margin-bottom: 28px;
+  }
+  .recap-card h3 { font-size: 14px; color: var(--accent); margin-bottom: 12px; font-weight: 600; }
+  .recap-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+  .recap-item .ri-label { font-size: 11px; color: var(--muted); margin-bottom: 3px; }
+  .recap-item .ri-val { font-family: 'JetBrains Mono', monospace; font-size: 15px; }
+
+  /* page header */
+  .section-header { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; margin-bottom: 22px; color: #fff; }
+  .section-header span { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════ PAGE 1 ═══════════════════════════ -->
+<div class="page">
+
+  <!-- STOCK INFO BAR -->
+  <div class="stock-bar fade-in">
+    <div class="stock-logo">M</div>
+    <div class="stock-name">
+      <h1>Microsoft Corporation</h1>
+      <span>NASDAQ: MSFT &nbsp;·&nbsp; Technology — Software &amp; Cloud</span>
+    </div>
+    <div class="stock-meta">
+      <span class="tag">S&amp;P 500</span>
+      <span class="tag">Nasdaq 100</span>
+      <span class="tag">DJIA</span>
+      <span class="tag">Large Cap</span>
+    </div>
+    <div class="stock-price">
+      <div class="price">$402.44</div>
+      <div class="change">▼ -5.19% (1D) &nbsp;·&nbsp; YTD: -4.4%</div>
+    </div>
+  </div>
+
+  <!-- RISK GAUGE + EXPLAINER -->
+  <div class="risk-section fade-in">
+    <div class="gauge-card">
+      <h2>Composite Risk Score</h2>
+      <svg id="gauge-svg" viewBox="0 0 240 140" width="240" height="140">
+        <defs>
+          <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#22c55e"/>
+            <stop offset="40%" style="stop-color:#f59e0b"/>
+            <stop offset="100%" style="stop-color:#ef4444"/>
+          </linearGradient>
+        </defs>
+        <!-- background arc -->
+        <path d="M 20 120 A 100 100 0 0 1 220 120" fill="none" stroke="#1e2330" stroke-width="18" stroke-linecap="round"/>
+        <!-- filled arc (risk = 42 out of 100, so 42% of 180deg = 75.6deg) -->
+        <path id="gauge-arc" d="M 20 120 A 100 100 0 0 1 220 120" fill="none" stroke="url(#gaugeGrad)" stroke-width="18" stroke-linecap="round"
+              stroke-dasharray="314" stroke-dashoffset="314"/>
+        <!-- tick marks -->
+        <line x1="20" y1="120" x2="28" y2="120" stroke="#2a2f40" stroke-width="2"/>
+        <line x1="220" y1="120" x2="212" y2="120" stroke="#2a2f40" stroke-width="2"/>
+        <!-- needle -->
+        <line id="gauge-needle" x1="120" y1="120" x2="120" y2="30" stroke="#fff" stroke-width="2.5" stroke-linecap="round"
+              transform-origin="120 120" transform="rotate(-90 120 120)"/>
+        <circle cx="120" cy="120" r="6" fill="var(--accent)"/>
+        <!-- labels -->
+        <text x="16" y="138" fill="#7b8299" font-size="10" font-family="JetBrains Mono">0</text>
+        <text x="112" y="18" fill="#7b8299" font-size="10" font-family="JetBrains Mono" text-anchor="middle">50</text>
+        <text x="218" y="138" fill="#7b8299" font-size="10" font-family="JetBrains Mono">100</text>
+      </svg>
+      <div class="risk-score-label" id="risk-num">42</div>
+      <div class="risk-sub">MODERATE RISK &nbsp;·&nbsp; Scale 0 (Low) → 100 (High)</div>
+    </div>
+
+    <div class="gauge-card" style="gap:12px;">
+      <h2>Score Breakdown</h2>
+      <div style="width:100%">
+        <div class="breakdown-row">
+          <div class="br-header"><span>Valuation Risk <span style="color:var(--muted);font-size:11px">(35% weight)</span></span><span style="font-family:'JetBrains Mono',monospace">44/100</span></div>
+          <div class="br-bar"><div class="br-fill fill-amber" id="bar1" style="width:0%;background:var(--amber)"></div></div>
+        </div>
+        <div class="breakdown-row">
+          <div class="br-header"><span>Financial Health Risk <span style="color:var(--muted);font-size:11px">(35% weight)</span></span><span style="font-family:'JetBrains Mono',monospace">36/100</span></div>
+          <div class="br-bar"><div class="br-fill fill-green" id="bar2" style="width:0%;background:var(--green)"></div></div>
+        </div>
+        <div class="breakdown-row">
+          <div class="br-header"><span>Growth Risk <span style="color:var(--muted);font-size:11px">(30% weight)</span></span><span style="font-family:'JetBrains Mono',monospace">47/100</span></div>
+          <div class="br-bar"><div class="br-fill fill-amber" id="bar3" style="width:0%;background:var(--amber)"></div></div>
+        </div>
+      </div>
+      <div class="explainer" style="margin-top:8px">
+        <div class="explainer-icon">💡</div>
+        <div>
+          <h4>What is a Risk Score?</h4>
+          <p>A composite 0–100 score blending valuation stretch, balance-sheet strength, and growth sustainability. Lower = safer. 0–30 Low · 31–55 Moderate · 56–75 Elevated · 76–100 High.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPI STRIP -->
+  <div class="kpi-strip fade-in">
+    <div class="kpi-item">
+      <div class="label">Market Cap</div>
+      <div class="value">$3.07T</div>
+      <div class="sub">2nd globally</div>
+    </div>
+    <div class="kpi-item">
+      <div class="label">P/E Ratio (TTM)</div>
+      <div class="value">37.7×</div>
+      <div class="sub">vs S&P 500 avg ~22×</div>
+    </div>
+    <div class="kpi-item">
+      <div class="label">Revenue (FY25)</div>
+      <div class="value">$281.7B</div>
+      <div class="sub">+14.9% YoY</div>
+    </div>
+    <div class="kpi-item">
+      <div class="label">EPS (FY25)</div>
+      <div class="value">$13.64</div>
+      <div class="sub">+15.6% YoY</div>
+    </div>
+    <div class="kpi-item">
+      <div class="label">Div. Yield</div>
+      <div class="value">0.88%</div>
+      <div class="sub">$0.91/qtr</div>
+    </div>
+  </div>
+
+  <!-- PRICE CHART -->
+  <div class="chart-card fade-in">
+    <h2>12-Month Price Chart &nbsp;<span style="color:var(--muted);font-size:13px;font-weight:400">May 2025 – May 2026</span></h2>
+    <div class="chart-wrap">
+      <canvas id="priceChart"></canvas>
+    </div>
+  </div>
+
+  <!-- VALUATION CARDS -->
+  <div class="metric-section fade-in">
+    <h2>Valuation Metrics</h2>
+    <div class="explainer">
+      <div class="explainer-icon">💡</div>
+      <div>
+        <h4>P/E Ratio Explained</h4>
+        <p>Price-to-Earnings (P/E) = Stock Price ÷ Earnings Per Share. A P/E of 37.7 means investors pay $37.70 for every $1 of earnings. Higher P/E = growth expectations priced in = more valuation risk if growth disappoints.</p>
+      </div>
+    </div>
+    <div class="metric-grid">
+      <div class="metric-card">
+        <div class="mc-header"><span class="mc-name">P/E Ratio (TTM)</span><span class="badge caution">CAUTION</span></div>
+        <div class="mc-value">37.7×</div>
+        <div class="mc-sub">Sector median ~28×</div>
+        <div class="score-bar-wrap"><div class="score-bar-fill fill-amber" data-width="62"></div></div>
+      </div>
+      <div class="metric-card">
+        <div class="mc-header"><span class="mc-name">P/S Ratio (TTM)</span><span class="badge caution">CAUTION</span></div>
+        <div class="mc-value">10.1×</div>
+        <div class="mc-sub">End of 2025: 11.5×</div>
+        <div class="score-bar-wrap"><div class="score-bar-fill fill-amber" data-width="58"></div></div>
+      </div>
+      <div class="metric-card">
+        <div class="mc-header"><span class="mc-name">PEG Ratio</span><span class="badge beat">BEAT</span></div>
+        <div class="mc-value">2.06</div>
+        <div class="mc-sub">5Y EBITDA growth: 18.3%</div>
+        <div class="score-bar-wrap"><div class="score-bar-fill fill-green" data-width="42"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FINANCIAL HEALTH & GROWTH CARDS -->
+  <div class="metric-section fade-in">
+    <h2>Financial Health &amp; Growth</h2>
+    <div class="metric-grid">
+      <div class="metric-card">
+        <div class="mc-header"><span class="mc-name">Revenue Growth</span><span class="badge beat">BEAT</span></div>
+        <div class="mc-value">+14.9%</div>
+        <div class="mc-sub">FY2025 YoY</div>
+        <div class="score-bar-wrap"><div class="score-bar-fill fill-green" data-width="75"></div></div>
+      </div>
+      <div class="metric-card">
+        <div class="mc-header"><span class="mc-name">Op. Margin</span><span class="badge beat">BEAT</span></div>
+        <div class="mc-value">46.3%</div>
+        <div class="mc-sub">Q3 FY2026 (Mar 2026)</div>
+        <div class="score-bar-wrap"><div class="score-bar-fill fill-green" data-width="85"></div></div>
+      </div>
+      <div class="metric-card">
+        <div class="mc-header"><span class="mc-name">FCF Margin</span><span class="badge caution">CAUTION</span></div>
+        <div class="mc-value">28.97%</div>
+        <div class="mc-sub">vs 10Y median 30.3%</div>
+        <div class="score-bar-wrap"><div class="score-bar-fill fill-amber" data-width="55"></div></div>
+      </div>
+      <div class="metric-card">
+        <div class="mc-header"><span class="mc-name">D/E Ratio</span><span class="badge beat">BEAT</span></div>
+        <div class="mc-value">Low</div>
+        <div class="mc-sub">LT Debt $40.2B vs $42.5B returns</div>
+        <div class="score-bar-wrap"><div class="score-bar-fill fill-green" data-width="80"></div></div>
+      </div>
+      <div class="metric-card">
+        <div class="mc-header"><span class="mc-name">ROE (FY25)</span><span class="badge caution">CAUTION</span></div>
+        <div class="mc-value">33.3%</div>
+        <div class="mc-sub">Down from 37.1% (FY24)</div>
+        <div class="score-bar-wrap"><div class="score-bar-fill fill-amber" data-width="60"></div></div>
+      </div>
+      <div class="metric-card">
+        <div class="mc-header"><span class="mc-name">EPS Growth</span><span class="badge beat">BEAT</span></div>
+        <div class="mc-value">+15.6%</div>
+        <div class="mc-sub">FY2025 YoY</div>
+        <div class="score-bar-wrap"><div class="score-bar-fill fill-green" data-width="78"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════ PAGE 2 ═══════════════════════════ -->
+  <hr class="page-break">
+
+  <div class="section-header">Deeper Analysis &nbsp;<span>— MSFT</span></div>
+
+  <!-- QUARTERLY TABLE -->
+  <div class="table-card fade-in">
+    <h2>Quarterly Trend — Last 4 Quarters</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Quarter</th>
+          <th>Revenue (Act)</th>
+          <th>Rev Estimate</th>
+          <th>Rev Beat/Miss</th>
+          <th>EPS (Act)</th>
+          <th>EPS Estimate</th>
+          <th>EPS Beat/Miss</th>
+          <th>Result</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Q3 FY2026 (Mar)</td>
+          <td>$70.07B</td>
+          <td>$68.42B</td>
+          <td class="beat-cell">+2.4%</td>
+          <td>$4.27</td>
+          <td>$4.06</td>
+          <td class="beat-cell">+$0.21</td>
+          <td><span class="badge beat">BEAT</span></td>
+        </tr>
+        <tr>
+          <td>Q2 FY2026 (Dec)</td>
+          <td>$69.6B</td>
+          <td>$68.7B</td>
+          <td class="beat-cell">+1.3%</td>
+          <td>$4.14</td>
+          <td>$3.91</td>
+          <td class="beat-cell">+$0.23</td>
+          <td><span class="badge beat">BEAT</span></td>
+        </tr>
+        <tr>
+          <td>Q1 FY2026 (Sep)</td>
+          <td>$65.6B</td>
+          <td>$64.5B</td>
+          <td class="beat-cell">+1.7%</td>
+          <td>$4.13</td>
+          <td>$3.65</td>
+          <td class="beat-cell">+$0.48</td>
+          <td><span class="badge beat">BEAT</span></td>
+        </tr>
+        <tr>
+          <td>Q4 FY2025 (Jun)</td>
+          <td>$76.44B</td>
+          <td>$73.79B</td>
+          <td class="beat-cell">+3.6%</td>
+          <td>$3.65</td>
+          <td>$3.37</td>
+          <td class="beat-cell">+$0.28</td>
+          <td><span class="badge beat">BEAT</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- EARNINGS RECAP -->
+  <div class="recap-card fade-in">
+    <h3>🏆 Latest Earnings Recap — Q3 FY2026 (April 29, 2026)</h3>
+    <div class="recap-grid">
+      <div class="recap-item">
+        <div class="ri-label">Revenue</div>
+        <div class="ri-val" style="color:var(--green)">$70.07B (+18.1% YoY)</div>
+      </div>
+      <div class="recap-item">
+        <div class="ri-label">EPS Beat</div>
+        <div class="ri-val" style="color:var(--green)">$4.27 vs $4.06 est.</div>
+      </div>
+      <div class="recap-item">
+        <div class="ri-label">Key Driver</div>
+        <div class="ri-val" style="color:#a0c4ff">Azure &amp; AI Cloud</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CATALYSTS & RISKS -->
+  <div class="dual-col fade-in">
+    <div class="col-card">
+      <h3 class="green">⚡ Catalysts</h3>
+      <ul>
+        <li>Azure AI growth momentum: cloud revenue up ~18% YoY</li>
+        <li>Copilot AI integration driving M365 commercial upsell</li>
+        <li>GitHub Copilot reaching millions of enterprise developers</li>
+        <li>Gaming segment strength (Activision integration)</li>
+        <li>Strong analyst consensus: avg target $556 (+38% upside)</li>
+        <li>4 consecutive earnings beats signal execution discipline</li>
+      </ul>
+    </div>
+    <div class="col-card">
+      <h3 class="red">⚠️ Risks</h3>
+      <ul>
+        <li>Premium valuation (P/E 37.7×) vulnerable to rate hikes</li>
+        <li>ROE declining trend: 47.1% (2021) → 33.3% (2025)</li>
+        <li>FCF margin below 10-year median (AI capex overhang)</li>
+        <li>Regulatory scrutiny on AI and cloud market dominance</li>
+        <li>YTD price down 4.4%; macro headwinds persist</li>
+        <li>Antitrust and data-privacy risks in EU markets</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- BOTTOM LINE -->
+  <div class="bottom-card fade-in">
+    <h2>Bottom Line</h2>
+    <div class="rating-bar-wrap">
+      <div class="rating-bar-track">
+        <div class="rating-bar-marker" id="rating-marker" style="left:42%"></div>
+      </div>
+      <div class="rating-labels">
+        <span>Strong Buy</span><span>Buy</span><span>Hold</span><span>Sell</span><span>Strong Sell</span>
+      </div>
+    </div>
+    <div class="verdict-badge">MODERATE HOLD / CAUTIOUS BUY</div>
+    <p class="summary-p">
+      Microsoft remains one of the highest-quality businesses in the S&amp;P 500, with four consecutive earnings beats, 
+      an operating margin of 46.3%, and Azure AI positioned as a secular growth engine. However, the stock trades 
+      at a premium P/E of 37.7×—more than 70% above the broader market average—which leaves limited margin of safety 
+      should cloud growth decelerate or macro conditions tighten further. The composite risk score of <strong>42/100</strong> 
+      reflects moderate risk: strong fundamentals offset by elevated valuation multiples and a declining ROE trend. 
+      Long-term investors may view pullbacks (stock down ~4.4% YTD and off June 2025 highs of ~$512) as accumulation 
+      opportunities, while short-term traders should note near-term resistance and continued AI capex pressures on free cash flow.
+    </p>
+  </div>
+
+</div><!-- end .page -->
+
+<script>
+// ---- SCROLL FADE-IN ----
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.12 });
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// ---- ANIMATE GAUGE ----
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    const arc = document.getElementById('gauge-arc');
+    const needle = document.getElementById('gauge-needle');
+    const riskVal = 42;
+    // arc: full arc = PI*r ≈ 314.16 for r=100 semicircle
+    const fullDash = 314;
+    const fillDash = fullDash * (riskVal / 100);
+    arc.style.transition = 'stroke-dashoffset 1.4s ease';
+    arc.style.strokeDashoffset = fullDash - fillDash;
+    // needle: -90deg = leftmost (0), +90deg = rightmost (100)
+    const angle = -90 + (riskVal / 100) * 180;
+    needle.style.transition = 'transform 1.4s ease';
+    needle.style.transform = `rotate(${angle}deg)`;
+    needle.setAttribute('transform', `rotate(${angle} 120 120)`);
+  }, 400);
+
+  // ---- SCORE BARS ----
+  setTimeout(() => {
+    document.querySelectorAll('.score-bar-fill[data-width]').forEach(el => {
+      el.style.transition = 'width 1s ease';
+      el.style.width = el.getAttribute('data-width') + '%';
+    });
+    document.getElementById('bar1').style.transition = 'width 1s ease';
+    document.getElementById('bar1').style.width = '44%';
+    document.getElementById('bar2').style.transition = 'width 1s ease';
+    document.getElementById('bar2').style.width = '36%';
+    document.getElementById('bar3').style.transition = 'width 1s ease';
+    document.getElementById('bar3').style.width = '47%';
+  }, 600);
+});
+
+// ---- PRICE CHART ----
+const ctx = document.getElementById('priceChart').getContext('2d');
+const months = ['May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26','Apr 26','May 26'];
+const prices = [460.36, 497.41, 512.63, 495.0, 478.2, 462.5, 445.0, 430.0, 420.0, 399.22, 365.14, 407.78, 414.44];
+const events = [null, null, 'Q4 FY25 Beat', null, null, 'Q1 FY26 Beat', null, null, null, null, 'Q2 FY26 Beat', 'Q3 FY26 Beat', null];
+
+const gradient = ctx.createLinearGradient(0, 0, 0, 240);
+gradient.addColorStop(0, 'rgba(99,102,241,0.35)');
+gradient.addColorStop(1, 'rgba(99,102,241,0.0)');
+
+new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: months,
+    datasets: [{
+      data: prices,
+      borderColor: '#6366f1',
+      borderWidth: 2.5,
+      backgroundColor: gradient,
+      fill: true,
+      tension: 0.35,
+      pointRadius: prices.map((_, i) => events[i] ? 6 : 3),
+      pointBackgroundColor: prices.map((_, i) => events[i] ? '#f59e0b' : '#6366f1'),
+      pointBorderColor: '#0a0c10',
+      pointBorderWidth: 2
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#12151c',
+        borderColor: '#1e2330', borderWidth: 1,
+        titleColor: '#e8eaf0', bodyColor: '#a0b0c8',
+        callbacks: {
+          label: (c) => ` $${c.raw}  ${events[c.dataIndex] ? '📌 ' + events[c.dataIndex] : ''}`
+        }
+      }
+    },
+    scales: {
+      x: { grid: { color: 'rgba(30,35,48,.6)' }, ticks: { color: '#7b8299', font: { size: 11, family: 'JetBrains Mono' } } },
+      y: { grid: { color: 'rgba(30,35,48,.6)' }, ticks: { color: '#7b8299', font: { size: 11, family: 'JetBrains Mono' }, callback: v => '$' + v } }
+    }
+  }
+});
+</script>
+</body>
+</html>

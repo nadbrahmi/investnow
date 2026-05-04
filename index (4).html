@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>InvestNow — AI & Quantum Stock Playbooks</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0a0c10;--card:#12151c;--border:#1e2330;--text:#e8eaf0;--muted:#7b8299;
+  --green:#22c55e;--amber:#f59e0b;--purple:#a855f7;--cyan:#06b6d4;--red:#ef4444;}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh}
+.page{max-width:1100px;margin:0 auto;padding:40px 20px 80px}
+.fade-in{opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s ease}
+.fade-in.visible{opacity:1;transform:none}
+
+/* HERO */
+.hero{text-align:center;padding:60px 20px 50px;position:relative}
+.hero::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:600px;height:600px;border-radius:50%;
+  background:radial-gradient(circle,rgba(168,85,247,.08),transparent 65%);pointer-events:none;z-index:0}
+.hero>*{position:relative;z-index:1}
+.logo-badge{display:inline-flex;align-items:center;gap:8px;background:#1a1e2a;
+  border:1px solid var(--border);border-radius:30px;padding:6px 18px;
+  font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--muted);margin-bottom:24px}
+.logo-dot{width:8px;height:8px;border-radius:50%;background:var(--purple);box-shadow:0 0 8px var(--purple)}
+.hero h1{font-family:"Playfair Display",serif;font-size:48px;font-weight:700;line-height:1.15;margin-bottom:16px}
+.hero h1 .invest{color:var(--cyan)}.hero h1 .now{color:var(--purple)}
+.hero-sub{color:var(--muted);font-size:15px;max-width:600px;margin:0 auto 32px;line-height:1.8}
+.stats-row{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin-bottom:16px}
+.stat-pill{background:#1a1e2a;border:1px solid var(--border);border-radius:20px;
+  padding:8px 18px;font-size:12px;color:var(--muted)}
+.stat-pill b{color:var(--text)}
+.updated{font-size:11px;color:var(--muted);margin-top:8px}
+
+/* PLAYBOOK GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:18px;margin-bottom:40px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:18px;
+  overflow:hidden;text-decoration:none;color:var(--text);
+  transition:transform .2s,border-color .2s,box-shadow .2s;display:flex;flex-direction:column}
+.card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,.4)}
+.card-header{padding:24px 24px 18px;position:relative;overflow:hidden}
+.card-header::after{content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;
+  border-radius:50%;background:radial-gradient(circle,var(--accent,.1),transparent 65%);pointer-events:none}
+.card-tag{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:12px}
+.card h2{font-family:"Playfair Display",serif;font-size:20px;font-weight:700;margin-bottom:6px;line-height:1.3}
+.card p{font-size:12px;color:var(--muted);line-height:1.7}
+.card-body{padding:16px 24px;flex:1}
+.card-stocks{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.stock-chip{font-size:10px;font-family:"JetBrains Mono",monospace;font-weight:600;
+  padding:3px 9px;border-radius:6px;background:#1a1e2a;border:1px solid var(--border)}
+.card-meta{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.meta-item{background:#0d0f1a;border-radius:8px;padding:8px 10px}
+.meta-item .lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
+.meta-item .val{font-size:12px;font-family:"JetBrains Mono",monospace;font-weight:500}
+.card-footer{padding:14px 24px 20px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.open-btn{display:inline-flex;align-items:center;gap:6px;background:var(--accent-color,#1a1e2a);
+  border:1px solid var(--accent-border,var(--border));border-radius:8px;padding:7px 16px;
+  font-size:12px;font-weight:700;color:var(--accent-text,var(--text));
+  letter-spacing:.04em;cursor:pointer;text-decoration:none;transition:opacity .2s}
+.open-btn:hover{opacity:.85}
+.card-size{font-size:10px;color:var(--muted);font-family:"JetBrains Mono",monospace}
+
+/* FOOTER */
+.footer{text-align:center;padding:32px 20px;border-top:1px solid var(--border);color:var(--muted);font-size:12px;line-height:1.9}
+.footer a{color:var(--purple);text-decoration:none}
+.gh-link{display:inline-flex;align-items:center;gap:8px;background:#1a1e2a;border:1px solid var(--border);
+  border-radius:10px;padding:10px 20px;font-size:13px;font-weight:600;color:var(--text);
+  text-decoration:none;margin-top:16px;transition:border-color .2s}
+.gh-link:hover{border-color:var(--purple)}
+.disclaimer{background:#1a1e2a;border:1px solid var(--border);border-radius:12px;
+  padding:16px 20px;margin:28px auto;max-width:800px;font-size:11px;color:var(--muted);line-height:1.8;text-align:left}
+.disclaimer strong{color:var(--amber)}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- HERO -->
+<div class="hero fade-in">
+  <div class="logo-badge"><span class="logo-dot"></span> INVESTNOW RESEARCH</div>
+  <h1>The <span class="invest">Invest</span><span class="now">Now</span><br>Stock Playbooks</h1>
+  <p class="hero-sub">Deep-dive research reports on AI Infrastructure, AI Security, Quantum Computing, Semiconductors, and more. Each playbook covers risk scores, quarterly earnings, analyst predictions, bull/bear cases, and verdicts.</p>
+  <div class="stats-row">
+    <div class="stat-pill"><b>5</b> Playbooks</div>
+    <div class="stat-pill"><b>30+</b> Stocks Covered</div>
+    <div class="stat-pill"><b>150+</b> Data Points Per Stock</div>
+    <div class="stat-pill"><b>Live</b> Analyst Targets</div>
+  </div>
+  <div class="updated">📅 Last updated: May 2026 · All prices and analyst data as of May 2026</div>
+</div>
+
+<!-- PLAYBOOKS -->
+<div class="grid">
+
+  <!-- AI Infra & Security -->
+  <a href="AI_Infra_Security_Playbook_v2.html" class="card fade-in" style="--accent:rgba(6,182,212,.12);border-top:3px solid #06b6d4">
+    <div class="card-header" style="background:linear-gradient(135deg,rgba(6,182,212,.06),transparent)">
+      <span class="card-tag" style="background:rgba(6,182,212,.15);color:#06b6d4;border:1px solid rgba(6,182,212,.3)">🏗️ Infrastructure · 🔒 Security</span>
+      <h2>AI Infrastructure &<br>Security Playbook</h2>
+      <p>10 stocks across AI networking, data centers, and cybersecurity. Full analyst consensus, risk scoring, and quarterly earnings.</p>
+    </div>
+    <div class="card-body">
+      <div class="card-stocks">
+        <span class="stock-chip" style="color:#06b6d4">ANET</span>
+        <span class="stock-chip" style="color:#06b6d4">VRT</span>
+        <span class="stock-chip" style="color:#06b6d4">EQIX</span>
+        <span class="stock-chip" style="color:#06b6d4">DELL</span>
+        <span class="stock-chip" style="color:#a855f7">CRWD</span>
+        <span class="stock-chip" style="color:#a855f7">PANW</span>
+        <span class="stock-chip" style="color:#a855f7">ZS</span>
+        <span class="stock-chip" style="color:#a855f7">NET</span>
+        <span class="stock-chip" style="color:#a855f7">FTNT</span>
+        <span class="stock-chip" style="color:#a855f7">OKTA</span>
+      </div>
+      <div class="card-meta">
+        <div class="meta-item"><div class="lbl">Stocks</div><div class="val" style="color:#06b6d4">10</div></div>
+        <div class="meta-item"><div class="lbl">Top Pick</div><div class="val" style="color:#22c55e">ANET / ZS</div></div>
+        <div class="meta-item"><div class="lbl">Safest</div><div class="val">EQIX (38)</div></div>
+        <div class="meta-item"><div class="lbl">Biggest Upside</div><div class="val" style="color:#22c55e">VRT +186%</div></div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <span class="open-btn" style="--accent-color:rgba(6,182,212,.15);--accent-border:rgba(6,182,212,.4);--accent-text:#06b6d4">Open Playbook →</span>
+      <span class="card-size">166 KB · 10 deep-dives</span>
+    </div>
+  </a>
+
+  <!-- Quantum Computing -->
+  <a href="Quantum_Computing_Playbook.html" class="card fade-in" style="border-top:3px solid #7c3aed">
+    <div class="card-header" style="background:linear-gradient(135deg,rgba(124,58,237,.08),transparent)">
+      <span class="card-tag" style="background:rgba(124,58,237,.15);color:#a78bfa;border:1px solid rgba(124,58,237,.3)">⚛️ Quantum Computing</span>
+      <h2>Quantum Computing<br>Playbook</h2>
+      <p>4 pure-play quantum stocks + 2 mega-cap plays. Technology type breakdowns (trapped-ion, superconducting, annealing, photonic) plus risk scores 30–94.</p>
+    </div>
+    <div class="card-body">
+      <div class="card-stocks">
+        <span class="stock-chip" style="color:#a855f7">IONQ</span>
+        <span class="stock-chip" style="color:#06b6d4">RGTI</span>
+        <span class="stock-chip" style="color:#22c55e">QBTS</span>
+        <span class="stock-chip" style="color:#f59e0b">QUBT</span>
+        <span class="stock-chip" style="color:#3b82f6">IBM</span>
+        <span class="stock-chip" style="color:#ef4444">GOOGL</span>
+      </div>
+      <div class="card-meta">
+        <div class="meta-item"><div class="lbl">Stocks</div><div class="val" style="color:#a78bfa">6</div></div>
+        <div class="meta-item"><div class="lbl">Top Pick</div><div class="val" style="color:#22c55e">GOOGL (BUY)</div></div>
+        <div class="meta-item"><div class="lbl">Risk Range</div><div class="val">30 – 94</div></div>
+        <div class="meta-item"><div class="lbl">Biggest Upside</div><div class="val" style="color:#22c55e">RGTI +131%</div></div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <span class="open-btn" style="--accent-color:rgba(124,58,237,.15);--accent-border:rgba(124,58,237,.4);--accent-text:#a78bfa">Open Playbook →</span>
+      <span class="card-size">91 KB · 6 deep-dives</span>
+    </div>
+  </a>
+
+  <!-- AI Semiconductor -->
+  <a href="AI_Semiconductor_Master_Report.html" class="card fade-in" style="border-top:3px solid #f59e0b">
+    <div class="card-header" style="background:linear-gradient(135deg,rgba(245,158,11,.06),transparent)">
+      <span class="card-tag" style="background:rgba(245,158,11,.15);color:#f59e0b;border:1px solid rgba(245,158,11,.3)">🔬 Semiconductors</span>
+      <h2>AI Semiconductor<br>Master Report</h2>
+      <p>The GPU and chip wars — NVIDIA, AMD, Broadcom, TSMC and more. Who wins the AI silicon race? Risk scores, earnings, and verdicts.</p>
+    </div>
+    <div class="card-body">
+      <div class="card-stocks">
+        <span class="stock-chip" style="color:#f59e0b">NVDA</span>
+        <span class="stock-chip" style="color:#f59e0b">AMD</span>
+        <span class="stock-chip" style="color:#f59e0b">AVGO</span>
+        <span class="stock-chip" style="color:#f59e0b">TSM</span>
+        <span class="stock-chip" style="color:#f59e0b">INTC</span>
+        <span class="stock-chip" style="color:#f59e0b">QCOM</span>
+        <span class="stock-chip" style="color:#f59e0b">MRVL</span>
+        <span class="stock-chip" style="color:#f59e0b">ARM</span>
+      </div>
+      <div class="card-meta">
+        <div class="meta-item"><div class="lbl">Stocks</div><div class="val" style="color:#f59e0b">8+</div></div>
+        <div class="meta-item"><div class="lbl">Top Pick</div><div class="val" style="color:#22c55e">NVDA / AVGO</div></div>
+        <div class="meta-item"><div class="lbl">Sector</div><div class="val">Semiconductors</div></div>
+        <div class="meta-item"><div class="lbl">Focus</div><div class="val">GPU · Foundry · Edge</div></div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <span class="open-btn" style="--accent-color:rgba(245,158,11,.15);--accent-border:rgba(245,158,11,.4);--accent-text:#f59e0b">Open Playbook →</span>
+      <span class="card-size">144 KB · Full report</span>
+    </div>
+  </a>
+
+  <!-- Pure Play AI -->
+  <a href="Pure_Play_AI_Playbook.html" class="card fade-in" style="border-top:3px solid #a855f7">
+    <div class="card-header" style="background:linear-gradient(135deg,rgba(168,85,247,.08),transparent)">
+      <span class="card-tag" style="background:rgba(168,85,247,.15);color:#a855f7;border:1px solid rgba(168,85,247,.3)">🤖 Pure-Play AI</span>
+      <h2>Pure-Play AI<br>Playbook</h2>
+      <p>The AI software and services layer — companies whose entire business model is built on artificial intelligence. Highest growth, highest multiples.</p>
+    </div>
+    <div class="card-body">
+      <div class="card-stocks">
+        <span class="stock-chip" style="color:#a855f7">PLTR</span>
+        <span class="stock-chip" style="color:#a855f7">AI</span>
+        <span class="stock-chip" style="color:#a855f7">BBAI</span>
+        <span class="stock-chip" style="color:#a855f7">SOUN</span>
+        <span class="stock-chip" style="color:#a855f7">ARQQ</span>
+      </div>
+      <div class="card-meta">
+        <div class="meta-item"><div class="lbl">Focus</div><div class="val" style="color:#a855f7">Pure AI Software</div></div>
+        <div class="meta-item"><div class="lbl">Risk Level</div><div class="val" style="color:#ef4444">HIGH</div></div>
+        <div class="meta-item"><div class="lbl">Model</div><div class="val">ARR · SaaS · Gov</div></div>
+        <div class="meta-item"><div class="lbl">Horizon</div><div class="val">3–5 Years</div></div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <span class="open-btn" style="--accent-color:rgba(168,85,247,.15);--accent-border:rgba(168,85,247,.4);--accent-text:#a855f7">Open Playbook →</span>
+      <span class="card-size">37 KB · Deep-dive</span>
+    </div>
+  </a>
+
+  <!-- MSFT Risk Report -->
+  <a href="MSFT_Risk_Report.html" class="card fade-in" style="border-top:3px solid #3b82f6">
+    <div class="card-header" style="background:linear-gradient(135deg,rgba(59,130,246,.07),transparent)">
+      <span class="card-tag" style="background:rgba(59,130,246,.15);color:#3b82f6;border:1px solid rgba(59,130,246,.3)">🛡️ Single Stock Deep-Dive</span>
+      <h2>Microsoft (MSFT)<br>Risk Report</h2>
+      <p>A full risk breakdown of Microsoft's AI transformation — OpenAI partnership, Copilot monetization, Azure growth, and valuation risk.</p>
+    </div>
+    <div class="card-body">
+      <div class="card-stocks">
+        <span class="stock-chip" style="color:#3b82f6">MSFT</span>
+      </div>
+      <div class="card-meta">
+        <div class="meta-item"><div class="lbl">Focus</div><div class="val" style="color:#3b82f6">Microsoft</div></div>
+        <div class="meta-item"><div class="lbl">Coverage</div><div class="val">Full Risk Map</div></div>
+        <div class="meta-item"><div class="lbl">Key Risk</div><div class="val">OpenAI Dependency</div></div>
+        <div class="meta-item"><div class="lbl">Verdict</div><div class="val" style="color:#22c55e">HOLD / BUY</div></div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <span class="open-btn" style="--accent-color:rgba(59,130,246,.15);--accent-border:rgba(59,130,246,.4);--accent-text:#3b82f6">Open Report →</span>
+      <span class="card-size">28 KB · Risk analysis</span>
+    </div>
+  </a>
+
+</div>
+
+<!-- DISCLAIMER -->
+<div class="disclaimer fade-in">
+  <strong>⚠️ Disclaimer:</strong> All content on InvestNow is for <strong>educational and informational purposes only</strong>. Nothing here constitutes financial advice, investment recommendations, or solicitation to buy or sell any security. Stock prices, analyst targets, and financial data reflect estimates as of May 2026. Always conduct your own due diligence and consult a licensed financial advisor before making investment decisions. Past performance does not guarantee future results.
+</div>
+
+<!-- FOOTER -->
+<div class="footer fade-in">
+  <div>Built with ❤️ by <a href="https://github.com/nadbrahmi">@nadbrahmi</a> · InvestNow Research Platform</div>
+  <div style="margin-top:4px">AI Infrastructure · Quantum Computing · Semiconductors · Pure-Play AI</div>
+  <a href="https://github.com/nadbrahmi/investnow" class="gh-link">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+    View on GitHub
+  </a>
+  <div style="margin-top:16px;font-size:10px">© 2026 InvestNow · Data sources: MarketBeat, StockAnalysis, Yahoo Finance, Zacks, TipRanks</div>
+</div>
+
+</div>
+<script>
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')}),{threshold:.08});
+document.querySelectorAll('.fade-in').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
