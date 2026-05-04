@@ -1,0 +1,2031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AI & Semiconductor — Master Risk Report 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0a0c10;--card:#12151c;--border:#1e2330;--text:#e8eaf0;--muted:#7b8299;--green:#22c55e;--red:#ef4444;--amber:#f59e0b;--blue:#3b82f6;--accent:#6366f1}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.6}
+.wrap{max-width:1300px;margin:0 auto;padding:28px 20px 80px}
+.mono{font-family:'JetBrains Mono',monospace}
+
+/* ---- HERO ---- */
+.hero{background:linear-gradient(135deg,#0d0f1a,#12151c);border:1px solid var(--border);border-radius:20px;padding:32px 36px;margin-bottom:28px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-60px;right:-60px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,.12),transparent 70%);pointer-events:none}
+.hero h1{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;margin-bottom:8px}
+.hero h1 span{color:var(--accent)}
+.hero p{color:var(--muted);max-width:680px;font-size:13px}
+.hero-meta{display:flex;gap:16px;margin-top:16px;flex-wrap:wrap}
+.hero-badge{background:#1e2330;border-radius:8px;padding:6px 12px;font-size:12px;color:var(--muted)}
+.hero-badge b{color:var(--text)}
+
+/* ---- NAV ---- */
+.nav-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px;padding:18px 20px;background:var(--card);border:1px solid var(--border);border-radius:16px}
+.nav-bar-title{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;width:100%}
+.nav-chip{display:inline-flex;align-items:center;gap:6px;text-decoration:none;padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:#0d0f1a;transition:all .2s}
+.nav-chip:hover{background:#1e2330;transform:translateY(-1px)}
+.nav-risk{font-size:10px;font-family:'JetBrains Mono',monospace;padding:2px 6px;border-radius:10px;font-weight:700}
+
+/* ---- SECTION ---- */
+.stock-section{margin-bottom:0;padding-bottom:0}
+.section-divider{border:none;border-top:2px dashed var(--border);margin:36px 0}
+.section-topbar{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:14px}
+.s-logo{width:50px;height:50px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:18px;color:#fff;flex-shrink:0}
+.s-name{font-family:'Playfair Display',serif;font-size:20px;font-weight:700}
+.s-name span{color:var(--muted);font-weight:400;font-size:14px}
+.s-sector{color:var(--muted);font-size:12px}
+.s-price{font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:500}
+.s-change{font-family:'JetBrains Mono',monospace;font-size:13px;text-align:right}
+.s-change.up{color:var(--green)}.s-change.down{color:var(--red)}
+
+/* ---- LAYOUT ---- */
+.row3{display:grid;grid-template-columns:220px 1fr 200px;gap:14px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:900px){.row3{grid-template-columns:1fr 1fr}.row2{grid-template-columns:1fr}}
+@media(max-width:600px){.row3{grid-template-columns:1fr}}
+
+/* ---- PANEL ---- */
+.panel{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px}
+.panel-title{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:12px;font-weight:600}
+
+/* ---- KPI vertical ---- */
+.kpi-v .kv{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(30,35,48,.6);font-size:12px}
+.kpi-v .kv:last-child{border-bottom:none}
+.kpi-v .kv>span:first-child{color:var(--muted)}
+
+/* ---- BADGES ---- */
+.badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px}
+.badge.beat{background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.3)}
+.badge.miss{background:rgba(239,68,68,.15);color:var(--red);border:1px solid rgba(239,68,68,.3)}
+.badge.caution{background:rgba(245,158,11,.15);color:var(--amber);border:1px solid rgba(245,158,11,.3)}
+
+/* ---- SCORE BARS ---- */
+.br-row{margin-bottom:10px}
+.br-hd{display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px}
+.br-hd .mono{font-size:11px}
+.br-track{height:7px;background:#1a1e2a;border-radius:4px;overflow:hidden}
+.br-fill{height:100%;border-radius:4px}
+.fill-g{background:var(--green)}.fill-a{background:var(--amber)}.fill-r{background:var(--red)}
+
+/* ---- EXPLAINER ---- */
+.expl{background:rgba(59,130,246,.07);border:1px solid rgba(59,130,246,.2);border-radius:10px;padding:10px 12px;margin-top:12px;display:flex;gap:8px;font-size:11px;color:#a0b0c8}
+.expl span{font-size:14px;flex-shrink:0}
+
+/* ---- TABLE ---- */
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.04em;padding:7px 10px;text-align:left;border-bottom:1px solid var(--border)}
+td{padding:8px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;border-bottom:1px solid rgba(30,35,48,.5)}
+tr:last-child td{border-bottom:none}
+.beat-cell{color:var(--green)}.miss-cell{color:var(--red)}.caution-cell{color:var(--amber)}
+
+/* ---- CATALYSTS LIST ---- */
+.blist{list-style:none;display:flex;flex-direction:column;gap:7px}
+.blist li{font-size:12px;color:#b0bcd4;display:flex;gap:7px}
+.blist li::before{content:'▸';flex-shrink:0;color:var(--muted)}
+
+/* ---- VERDICT ---- */
+.rating-track{position:relative;height:12px;border-radius:6px;overflow:hidden;background:#1a1e2a;margin-top:14px}
+.rating-pin{position:absolute;top:-4px;width:20px;height:20px;border-radius:50%;background:#fff;border:2.5px solid var(--accent);transform:translateX(-50%);box-shadow:0 0 0 3px rgba(99,102,241,.25)}
+.rating-lbs{display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:4px}
+.verdict-badge{display:inline-block;padding:8px 18px;border-radius:24px;font-weight:700;font-size:13px;letter-spacing:.06em;border:1.5px solid}
+.summary-txt{color:#a0b0c8;font-size:12px;line-height:1.8;margin-top:12px}
+
+/* ---- FADE ---- */
+.fade-in{opacity:0;transform:translateY(20px);transition:opacity .55s ease,transform .55s ease}
+.fade-in.visible{opacity:1;transform:none}
+
+/* ---- BACK TO TOP ---- */
+#back-top{position:fixed;bottom:28px;right:28px;width:42px;height:42px;border-radius:50%;background:var(--accent);color:#fff;border:none;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(99,102,241,.4);z-index:100;transition:opacity .3s}
+</style>
+</head>
+<body>
+<!-- INVESTNOW NAV -->
+<nav style="position:sticky;top:0;z-index:1000;background:rgba(10,12,16,.95);backdrop-filter:blur(14px);border-bottom:1px solid #1e2330;padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:52px;font-family:'DM Sans',sans-serif">
+  <a href="index.html" style="display:flex;align-items:center;gap:8px;text-decoration:none;color:#e8eaf0;font-weight:700;font-size:16px;font-family:'DM Sans',sans-serif">
+    <span style="width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,#06b6d4,#a855f7);display:inline-block;flex-shrink:0"></span>
+    InvestNow
+  </a>
+  <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center">
+    <a href="index.html" style="text-decoration:none;font-size:10px;font-weight:600;padding:4px 10px;border-radius:6px;border:1px solid #1e2330;color:#7b8299;transition:all .2s" onmouseover="this.style.color='#e8eaf0';this.style.borderColor='#a855f7'" onmouseout="this.style.color='#7b8299';this.style.borderColor='#1e2330'">🏠 Home</a>
+    <a href="AI_Infra_Security_Playbook_v2.html" style="text-decoration:none;font-size:10px;font-weight:600;padding:4px 10px;border-radius:6px;border:1px solid #1e2330;color:#7b8299" onmouseover="this.style.color='#06b6d4';this.style.borderColor='#06b6d4'" onmouseout="this.style.color='#7b8299';this.style.borderColor='#1e2330'">🏗️ AI Infra & Security</a>
+    <a href="Quantum_Computing_Playbook.html" style="text-decoration:none;font-size:10px;font-weight:600;padding:4px 10px;border-radius:6px;border:1px solid #1e2330;color:#7b8299" onmouseover="this.style.color='#a78bfa';this.style.borderColor='#7c3aed'" onmouseout="this.style.color='#7b8299';this.style.borderColor='#1e2330'">⚛️ Quantum</a>
+    <a href="AI_Semiconductor_Master_Report.html" style="text-decoration:none;font-size:10px;font-weight:600;padding:4px 10px;border-radius:6px;border:1px solid #1e2330;color:#7b8299" onmouseover="this.style.color='#f59e0b';this.style.borderColor='#f59e0b'" onmouseout="this.style.color='#7b8299';this.style.borderColor='#1e2330'">🔬 Semiconductors</a>
+    <a href="Pure_Play_AI_Playbook.html" style="text-decoration:none;font-size:10px;font-weight:600;padding:4px 10px;border-radius:6px;border:1px solid #1e2330;color:#7b8299" onmouseover="this.style.color='#a855f7';this.style.borderColor='#a855f7'" onmouseout="this.style.color='#7b8299';this.style.borderColor='#1e2330'">🤖 Pure-Play AI</a>
+    <a href="MSFT_Risk_Report.html" style="text-decoration:none;font-size:10px;font-weight:600;padding:4px 10px;border-radius:6px;border:1px solid #1e2330;color:#7b8299" onmouseover="this.style.color='#3b82f6';this.style.borderColor='#3b82f6'" onmouseout="this.style.color='#7b8299';this.style.borderColor='#1e2330'">🛡️ MSFT</a>
+  </div>
+</nav>
+
+
+<div class="wrap">
+
+<!-- HERO -->
+<div class="hero fade-in">
+  <h1>AI &amp; Semiconductor <span>Master Risk Report</span></h1>
+  <p>15 individual 2-page dark risk reports for the leading AI and semiconductor stocks — NVIDIA, Broadcom, TSMC, AMD, Micron, ASML, Qualcomm, Intel, Arm, Marvell, KLA, Applied Materials, Lam Research, Palantir, and Microsoft. Data as of May 2026.</p>
+  <div class="hero-meta">
+    <div class="hero-badge"><b>15 Stocks</b> &nbsp;covered</div>
+    <div class="hero-badge"><b>May 2026</b> &nbsp;data</div>
+    <div class="hero-badge">Risk scores &nbsp;<b>36–72</b></div>
+    <div class="hero-badge">Lowest risk: &nbsp;<b>QCOM (36)</b></div>
+    <div class="hero-badge">Highest risk: &nbsp;<b>INTC (72)</b></div>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav-bar fade-in">
+  <div class="nav-bar-title">Jump to Stock ↓</div>
+  <a href="#NVDA" class="nav-chip" style="border-color:#76b90020"><span style="color:#76b900;font-weight:700">NVDA</span><span class="nav-risk" style="background:#f59e0b22;color:var(--amber);">48</span></a><a href="#AVGO" class="nav-chip" style="border-color:#cc000020"><span style="color:#cc0000;font-weight:700">AVGO</span><span class="nav-risk" style="background:#f59e0b22;color:var(--amber);">52</span></a><a href="#TSM" class="nav-chip" style="border-color:#0078d420"><span style="color:#0078d4;font-weight:700">TSM</span><span class="nav-risk" style="background:#22c55e22;color:var(--green);">38</span></a><a href="#AMD" class="nav-chip" style="border-color:#ed1c2420"><span style="color:#ed1c24;font-weight:700">AMD</span><span class="nav-risk" style="background:#f59e0b22;color:var(--amber);">57</span></a><a href="#MU" class="nav-chip" style="border-color:#00a1e020"><span style="color:#00a1e0;font-weight:700">MU</span><span class="nav-risk" style="background:#f59e0b22;color:var(--amber);">44</span></a><a href="#ASML" class="nav-chip" style="border-color:#0a93d920"><span style="color:#0a93d9;font-weight:700">ASML</span><span class="nav-risk" style="background:#f59e0b22;color:var(--amber);">41</span></a><a href="#QCOM" class="nav-chip" style="border-color:#3253dc20"><span style="color:#3253dc;font-weight:700">QCOM</span><span class="nav-risk" style="background:#22c55e22;color:var(--green);">36</span></a><a href="#INTC" class="nav-chip" style="border-color:#0071c520"><span style="color:#0071c5;font-weight:700">INTC</span><span class="nav-risk" style="background:#ef444422;color:var(--red);">72</span></a><a href="#ARM" class="nav-chip" style="border-color:#00b4f020"><span style="color:#00b4f0;font-weight:700">ARM</span><span class="nav-risk" style="background:#ef444422;color:var(--red);">62</span></a><a href="#MRVL" class="nav-chip" style="border-color:#dc143c20"><span style="color:#dc143c;font-weight:700">MRVL</span><span class="nav-risk" style="background:#f59e0b22;color:var(--amber);">49</span></a><a href="#KLAC" class="nav-chip" style="border-color:#f5a62320"><span style="color:#f5a623;font-weight:700">KLAC</span><span class="nav-risk" style="background:#f59e0b22;color:var(--amber);">40</span></a><a href="#AMAT" class="nav-chip" style="border-color:#0077cc20"><span style="color:#0077cc;font-weight:700">AMAT</span><span class="nav-risk" style="background:#f59e0b22;color:var(--amber);">43</span></a><a href="#LRCX" class="nav-chip" style="border-color:#e3183720"><span style="color:#e31837;font-weight:700">LRCX</span><span class="nav-risk" style="background:#22c55e22;color:var(--green);">37</span></a><a href="#PLTR" class="nav-chip" style="border-color:#80008020"><span style="color:#800080;font-weight:700">PLTR</span><span class="nav-risk" style="background:#ef444422;color:var(--red);">68</span></a><a href="#MSFT" class="nav-chip" style="border-color:#0078d420"><span style="color:#0078d4;font-weight:700">MSFT</span><span class="nav-risk" style="background:#f59e0b22;color:var(--amber);">42</span></a>
+</div>
+
+
+<section id="NVDA" class="stock-section fade-in">
+  <!-- HEADER -->
+  <div class="section-topbar">
+    <div style="display:flex;align-items:center;gap:14px">
+      <div class="s-logo" style="background:linear-gradient(135deg,#76b900,#0a0c10)">N</div>
+      <div>
+        <h2 class="s-name">NVIDIA Corporation <span>(NVDA)</span></h2>
+        <span class="s-sector">AI Chips / GPU</span>
+      </div>
+    </div>
+    <div class="s-price-block">
+      <div class="s-price">$114.50</div>
+      <div class="s-change up">▲ +1.2%</div>
+    </div>
+  </div>
+
+  <!-- ROW 1: GAUGE + BREAKDOWN + KPI -->
+  <div class="row3">
+    <!-- gauge -->
+    <div class="panel" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px">
+      <div class="panel-title">Risk Score</div>
+      <svg viewBox="0 0 220 130" width="200" height="130">
+  <defs><linearGradient id="gNVDA" x1="0%" y1="0%" x2="100%" y2="0%">
+    <stop offset="0%" style="stop-color:#22c55e"/><stop offset="40%" style="stop-color:#f59e0b"/><stop offset="100%" style="stop-color:#ef4444"/>
+  </linearGradient></defs>
+  <path d="M 10 110 A 100 100 0 0 1 210 110" fill="none" stroke="#1e2330" stroke-width="16" stroke-linecap="round"/>
+  <path d="M 10 110 A 100 100 0 0 1 210 110" fill="none" stroke="url(#gNVDA)" stroke-width="16" stroke-linecap="round"
+        stroke-dasharray="314" stroke-dashoffset="163.3"/>
+  <line x1="110" y1="110" x2="110" y2="25" stroke="#fff" stroke-width="2.5" stroke-linecap="round"
+        transform="rotate(-3.6 110 110)"/>
+  <circle cx="110" cy="110" r="5" fill="#6366f1"/>
+  <text x="6" y="126" fill="#7b8299" font-size="9" font-family="JetBrains Mono">0</text>
+  <text x="101" y="14" fill="#7b8299" font-size="9" font-family="JetBrains Mono" text-anchor="middle">50</text>
+  <text x="208" y="126" fill="#7b8299" font-size="9" font-family="JetBrains Mono" text-anchor="end">100</text>
+  <text x="110" y="100" fill="#f59e0b" font-size="22" font-weight="bold" font-family="JetBrains Mono" text-anchor="middle">48</text>
+  <text x="110" y="125" fill="#7b8299" font-size="8" font-family="DM Sans" text-anchor="middle">MODERATE RISK</text>
+</svg>
+    </div>
+    <!-- breakdown -->
+    <div class="panel">
+      <div class="panel-title">Score Breakdown</div>
+      <div class="br-row"><div class="br-hd"><span>Valuation (35%)</span><span class="mono">55/100</span></div>
+        <div class="br-track"><div class="br-fill fill-a" style="width:55%"></div></div></div>
+      <div class="br-row"><div class="br-hd"><span>Fin. Health (35%)</span><span class="mono">25/100</span></div>
+        <div class="br-track"><div class="br-fill fill-g" style="width:25%"></div></div></div>
+      <div class="br-row"><div class="br-hd"><span>Growth (30%)</span><span class="mono">30/100</span></div>
+        <div class="br-track"><div class="br-fill fill-g" style="width:30%"></div></div></div>
+      <!-- explainer -->
+      <div class="expl"><span>💡</span><div><b style="color:var(--blue)">P/E Explained:</b> Price ÷ EPS. NVDA P/E: <span class="mono">40.5×</span>. Higher P/E = more growth priced in = more valuation risk.</div></div>
+    </div>
+    <!-- kpi strip vertical -->
+    <div class="panel kpi-v">
+      <div class="panel-title">Key Metrics</div>
+      <div class="kv"><span>Market Cap</span><span class="mono">$2.79T</span></div>
+      <div class="kv"><span>P/E (TTM)</span><span class="mono badge caution" style="padding:2px 6px">40.5×</span></div>
+      <div class="kv"><span>P/S</span><span class="mono">21.4××</span></div>
+      <div class="kv"><span>PEG</span><span class="mono">0.66</span></div>
+      <div class="kv"><span>Revenue</span><span class="mono">$130.5B</span></div>
+      <div class="kv"><span>Rev Growth</span><span class="mono" style="color:var(--green)">+114%</span></div>
+      <div class="kv"><span>EPS</span><span class="mono">$2.94</span></div>
+      <div class="kv"><span>EPS Growth</span><span class="mono" style="color:var(--green)">+147%</span></div>
+      <div class="kv"><span>Op Margin</span><span class="mono">61.1%</span></div>
+      <div class="kv"><span>FCF Margin</span><span class="mono">52%</span></div>
+      <div class="kv"><span>ROE</span><span class="mono">123%</span></div>
+      <div class="kv"><span>D/E</span><span class="mono">Low</span></div>
+      <div class="kv"><span>Div Yield</span><span class="mono">0.03%</span></div>
+    </div>
+  </div>
+
+  <!-- PRICE CHART -->
+  <div class="panel" style="margin-top:14px">
+    <div class="panel-title">12-Month Price Chart (May 2025 – May 2026)</div>
+    <div style="position:relative;height:180px">
+      <canvas id="chart_NVDA"></canvas>
+    </div>
+  </div>
+
+  <!-- QUARTERLY TABLE -->
+  <div class="panel" style="margin-top:14px;overflow-x:auto">
+    <div class="panel-title">Quarterly Trend — Last 4 Quarters</div>
+    <table><thead><tr><th>Quarter</th><th>Rev (Act)</th><th>Rev Est</th><th>Beat/Miss</th><th>EPS (Act)</th><th>EPS Est</th><th>EPS B/M</th><th>Result</th></tr></thead>
+    <tbody><tr><td>Q4 FY2026 (Feb)</td><td>$39.3B</td><td>$38.0B</td><td class='beat-cell'>+3.4%</td><td>$0.89</td><td>$0.84</td><td class='beat-cell'>+$0.05</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q3 FY2026 (Nov)</td><td>$35.1B</td><td>$33.1B</td><td class='beat-cell'>+6.0%</td><td>$0.81</td><td>$0.74</td><td class='beat-cell'>+$0.07</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q2 FY2026 (Aug)</td><td>$30.0B</td><td>$28.7B</td><td class='beat-cell'>+4.5%</td><td>$0.68</td><td>$0.64</td><td class='beat-cell'>+$0.04</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q1 FY2026 (May)</td><td>$26.0B</td><td>$24.6B</td><td class='beat-cell'>+5.7%</td><td>$0.61</td><td>$0.57</td><td class='beat-cell'>+$0.04</td><td><span class="badge beat">BEAT</span></td></tr>
+</tbody></table>
+  </div>
+
+  <!-- CATALYSTS + RISKS -->
+  <div class="row2" style="margin-top:14px">
+    <div class="panel"><div class="panel-title" style="color:var(--green)">⚡ Catalysts</div><ul class="blist"><li>Blackwell GPU architecture driving hyperscaler demand</li><li>Datacenter revenue +142% YoY, ~87% of total revenue</li><li>CUDA ecosystem moat — >4M developers</li><li>Sovereign AI wave: country-level GPU investments</li><li>Analyst avg. target $180 (+57% upside)</li></ul></div>
+    <div class="panel"><div class="panel-title" style="color:var(--red)">⚠️ Risks</div><ul class="blist"><li>Export restrictions to China (~$15B revenue risk)</li><li>Custom silicon (Google TPU, AWS Trainium) gaining share</li><li>P/E of 40× still pricing in perfection</li><li>High capex cycle could pressure margins</li><li>Geopolitical Taiwan supply-chain risk</li></ul></div>
+  </div>
+
+  <!-- VERDICT -->
+  <div class="panel" style="margin-top:14px">
+    <div class="panel-title">Bottom Line & Verdict</div>
+    <div class="rating-track">
+      <div class="rating-fill" style="background:linear-gradient(to right,var(--green),#84cc16,var(--amber),#f97316,var(--red));height:100%;border-radius:6px"></div>
+      <div class="rating-pin" style="left:15%"></div>
+    </div>
+    <div class="rating-lbs"><span>Strong Buy</span><span>Buy</span><span>Hold</span><span>Sell</span><span>Strong Sell</span></div>
+    <div style="margin-top:10px"><span class="verdict-badge" style="background:rgba(34,197,94,.12);color:var(--green);border-color:rgba(34,197,94,.4)">STRONG BUY</span></div>
+    <p class="summary-txt">NVIDIA remains the undisputed king of AI infrastructure. With Blackwell GPU shipments accelerating, datacenter revenue surging 142% YoY, and a PEG ratio of only 0.66 suggesting undervaluation relative to growth, NVDA commands premium positioning. Primary risks center on China export controls and emerging custom silicon competition, but the CUDA ecosystem moat and sovereign AI demand cycle provide durable tailwinds. Risk score of 48 reflects elevated valuation offset by extraordinary growth execution.</p>
+  </div>
+
+  <script>
+  (function(){
+    var ctx=document.getElementById('chart_NVDA').getContext('2d');
+    var gr=ctx.createLinearGradient(0,0,0,180);
+    gr.addColorStop(0,'rgba(99,102,241,0.3)');
+    gr.addColorStop(1,'rgba(99,102,241,0)');
+    new Chart(ctx,{
+      type:'line',
+      data:{labels:['May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26','Apr 26','May 26'],datasets:[{data:[495, 520, 550, 575, 530, 495, 475, 130, 115, 105, 122, 114, 114],borderColor:'#76b900',borderWidth:2,backgroundColor:gr,fill:true,tension:0.35,pointRadius:3,pointBackgroundColor:'#76b900'}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#12151c',borderColor:'#1e2330',borderWidth:1,titleColor:'#e8eaf0',bodyColor:'#a0b0c8'}},
+        scales:{x:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'}}},
+          y:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},callback:function(v){return '$'+v}}}}
+      }
+    });
+  })();
+  </script>
+</section>
+<hr class="section-divider">
+
+<section id="AVGO" class="stock-section fade-in">
+  <!-- HEADER -->
+  <div class="section-topbar">
+    <div style="display:flex;align-items:center;gap:14px">
+      <div class="s-logo" style="background:linear-gradient(135deg,#cc0000,#0a0c10)">A</div>
+      <div>
+        <h2 class="s-name">Broadcom Inc. <span>(AVGO)</span></h2>
+        <span class="s-sector">AI Chips / Networking</span>
+      </div>
+    </div>
+    <div class="s-price-block">
+      <div class="s-price">$345.75</div>
+      <div class="s-change up">▲ +4.6%</div>
+    </div>
+  </div>
+
+  <!-- ROW 1: GAUGE + BREAKDOWN + KPI -->
+  <div class="row3">
+    <!-- gauge -->
+    <div class="panel" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px">
+      <div class="panel-title">Risk Score</div>
+      <svg viewBox="0 0 220 130" width="200" height="130">
+  <defs><linearGradient id="gAVGO" x1="0%" y1="0%" x2="100%" y2="0%">
+    <stop offset="0%" style="stop-color:#22c55e"/><stop offset="40%" style="stop-color:#f59e0b"/><stop offset="100%" style="stop-color:#ef4444"/>
+  </linearGradient></defs>
+  <path d="M 10 110 A 100 100 0 0 1 210 110" fill="none" stroke="#1e2330" stroke-width="16" stroke-linecap="round"/>
+  <path d="M 10 110 A 100 100 0 0 1 210 110" fill="none" stroke="url(#gAVGO)" stroke-width="16" stroke-linecap="round"
+        stroke-dasharray="314" stroke-dashoffset="150.7"/>
+  <line x1="110" y1="110" x2="110" y2="25" stroke="#fff" stroke-width="2.5" stroke-linecap="round"
+        transform="rotate(3.6 110 110)"/>
+  <circle cx="110" cy="110" r="5" fill="#6366f1"/>
+  <text x="6" y="126" fill="#7b8299" font-size="9" font-family="JetBrains Mono">0</text>
+  <text x="101" y="14" fill="#7b8299" font-size="9" font-family="JetBrains Mono" text-anchor="middle">50</text>
+  <text x="208" y="126" fill="#7b8299" font-size="9" font-family="JetBrains Mono" text-anchor="end">100</text>
+  <text x="110" y="100" fill="#f59e0b" font-size="22" font-weight="bold" font-family="JetBrains Mono" text-anchor="middle">52</text>
+  <text x="110" y="125" fill="#7b8299" font-size="8" font-family="DM Sans" text-anchor="middle">MODERATE RISK</text>
+</svg>
+    </div>
+    <!-- breakdown -->
+    <div class="panel">
+      <div class="panel-title">Score Breakdown</div>
+      <div class="br-row"><div class="br-hd"><span>Valuation (35%)</span><span class="mono">65/100</span></div>
+        <div class="br-track"><div class="br-fill fill-r" style="width:65%"></div></div></div>
+      <div class="br-row"><div class="br-hd"><span>Fin. Health (35%)</span><span class="mono">38/100</span></div>
+        <div class="br-track"><div class="br-fill fill-a" style="width:38%"></div></div></div>
+      <div class="br-row"><div class="br-hd"><span>Growth (30%)</span><span class="mono">42/100</span></div>
+        <div class="br-track"><div class="br-fill fill-a" style="width:42%"></div></div></div>
+      <!-- explainer -->
+      <div class="expl"><span>💡</span><div><b style="color:var(--blue)">P/E Explained:</b> Price ÷ EPS. AVGO P/E: <span class="mono">97.1×</span>. Higher P/E = more growth priced in = more valuation risk.</div></div>
+    </div>
+    <!-- kpi strip vertical -->
+    <div class="panel kpi-v">
+      <div class="panel-title">Key Metrics</div>
+      <div class="kv"><span>Market Cap</span><span class="mono">$1.64T</span></div>
+      <div class="kv"><span>P/E (TTM)</span><span class="mono badge miss" style="padding:2px 6px">97.1×</span></div>
+      <div class="kv"><span>P/S</span><span class="mono">14.2××</span></div>
+      <div class="kv"><span>PEG</span><span class="mono">3.1</span></div>
+      <div class="kv"><span>Revenue</span><span class="mono">$51.6B</span></div>
+      <div class="kv"><span>Rev Growth</span><span class="mono" style="color:var(--green)">+51%</span></div>
+      <div class="kv"><span>EPS</span><span class="mono">$3.56</span></div>
+      <div class="kv"><span>EPS Growth</span><span class="mono" style="color:var(--green)">+22%</span></div>
+      <div class="kv"><span>Op Margin</span><span class="mono">36.8%</span></div>
+      <div class="kv"><span>FCF Margin</span><span class="mono">44%</span></div>
+      <div class="kv"><span>ROE</span><span class="mono">45%</span></div>
+      <div class="kv"><span>D/E</span><span class="mono">Moderate</span></div>
+      <div class="kv"><span>Div Yield</span><span class="mono">1.2%</span></div>
+    </div>
+  </div>
+
+  <!-- PRICE CHART -->
+  <div class="panel" style="margin-top:14px">
+    <div class="panel-title">12-Month Price Chart (May 2025 – May 2026)</div>
+    <div style="position:relative;height:180px">
+      <canvas id="chart_AVGO"></canvas>
+    </div>
+  </div>
+
+  <!-- QUARTERLY TABLE -->
+  <div class="panel" style="margin-top:14px;overflow-x:auto">
+    <div class="panel-title">Quarterly Trend — Last 4 Quarters</div>
+    <table><thead><tr><th>Quarter</th><th>Rev (Act)</th><th>Rev Est</th><th>Beat/Miss</th><th>EPS (Act)</th><th>EPS Est</th><th>EPS B/M</th><th>Result</th></tr></thead>
+    <tbody><tr><td>Q1 FY2026 (Jan)</td><td>$14.92B</td><td>$14.61B</td><td class='beat-cell'>+2.1%</td><td>$1.60</td><td>$1.49</td><td class='beat-cell'>+$0.11</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q4 FY2025 (Oct)</td><td>$14.05B</td><td>$14.09B</td><td class='miss-cell'>-0.3%</td><td>$1.42</td><td>$1.39</td><td class='beat-cell'>+$0.03</td><td><span class="badge caution">CAUTION</span></td></tr>
+<tr><td>Q3 FY2025 (Jul)</td><td>$13.07B</td><td>$12.97B</td><td class='beat-cell'>+0.8%</td><td>$1.24</td><td>$1.22</td><td class='beat-cell'>+$0.02</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q2 FY2025 (Apr)</td><td>$14.9B</td><td>$14.6B</td><td class='beat-cell'>+2.1%</td><td>$1.60</td><td>$1.49</td><td class='beat-cell'>+$0.11</td><td><span class="badge beat">BEAT</span></td></tr>
+</tbody></table>
+  </div>
+
+  <!-- CATALYSTS + RISKS -->
+  <div class="row2" style="margin-top:14px">
+    <div class="panel"><div class="panel-title" style="color:var(--green)">⚡ Catalysts</div><ul class="blist"><li>Custom AI ASIC chips for Google, Meta, Apple</li><li>VMware integration driving software recurring revenue</li><li>AI networking (Ethernet) emerging as key growth driver</li><li>Dividend growth: 11 consecutive years of increases</li><li>$51.6B FY2025 revenue — diversified across AI, broadband, storage</li></ul></div>
+    <div class="panel"><div class="panel-title" style="color:var(--red)">⚠️ Risks</div><ul class="blist"><li>High P/E of 97× driven by VMware amortization distortion</li><li>Heavy debt load from $61B VMware acquisition</li><li>VMware integration execution risk remains</li><li>Concentrated customer risk: Google ~20% of revenue</li><li>FY2026 guidance dependent on AI ASIC ramp</li></ul></div>
+  </div>
+
+  <!-- VERDICT -->
+  <div class="panel" style="margin-top:14px">
+    <div class="panel-title">Bottom Line & Verdict</div>
+    <div class="rating-track">
+      <div class="rating-fill" style="background:linear-gradient(to right,var(--green),#84cc16,var(--amber),#f97316,var(--red));height:100%;border-radius:6px"></div>
+      <div class="rating-pin" style="left:45%"></div>
+    </div>
+    <div class="rating-lbs"><span>Strong Buy</span><span>Buy</span><span>Hold</span><span>Sell</span><span>Strong Sell</span></div>
+    <div style="margin-top:10px"><span class="verdict-badge" style="background:rgba(245,158,11,.12);color:var(--amber);border-color:rgba(245,158,11,.4)">HOLD / BUY DIP</span></div>
+    <p class="summary-txt">Broadcom is executing impressively on two fronts: AI custom silicon and VMware software monetization. Revenue grew 51% in FY2025, and free cash flow margins are a class-leading 44%. However, the headline P/E of 97× overstates risk — much is accounting distortion from VMware amortization — with normalized earnings painting a more reasonable picture. The risk score of 52 is moderate: strong fundamentals tension against high debt and a concentrated AI ASIC revenue dependency on a handful of hyperscalers.</p>
+  </div>
+
+  <script>
+  (function(){
+    var ctx=document.getElementById('chart_AVGO').getContext('2d');
+    var gr=ctx.createLinearGradient(0,0,0,180);
+    gr.addColorStop(0,'rgba(99,102,241,0.3)');
+    gr.addColorStop(1,'rgba(99,102,241,0)');
+    new Chart(ctx,{
+      type:'line',
+      data:{labels:['May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26','Apr 26','May 26'],datasets:[{data:[185, 195, 205, 215, 195, 180, 170, 250, 310, 320, 345, 340, 346],borderColor:'#cc0000',borderWidth:2,backgroundColor:gr,fill:true,tension:0.35,pointRadius:3,pointBackgroundColor:'#cc0000'}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#12151c',borderColor:'#1e2330',borderWidth:1,titleColor:'#e8eaf0',bodyColor:'#a0b0c8'}},
+        scales:{x:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'}}},
+          y:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},callback:function(v){return '$'+v}}}}
+      }
+    });
+  })();
+  </script>
+</section>
+<hr class="section-divider">
+
+<section id="TSM" class="stock-section fade-in">
+  <!-- HEADER -->
+  <div class="section-topbar">
+    <div style="display:flex;align-items:center;gap:14px">
+      <div class="s-logo" style="background:linear-gradient(135deg,#0078d4,#0a0c10)">T</div>
+      <div>
+        <h2 class="s-name">Taiwan Semiconductor <span>(TSM)</span></h2>
+        <span class="s-sector">Foundry / Advanced Process</span>
+      </div>
+    </div>
+    <div class="s-price-block">
+      <div class="s-price">$348.70</div>
+      <div class="s-change up">▲ +2.9%</div>
+    </div>
+  </div>
+
+  <!-- ROW 1: GAUGE + BREAKDOWN + KPI -->
+  <div class="row3">
+    <!-- gauge -->
+    <div class="panel" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px">
+      <div class="panel-title">Risk Score</div>
+      <svg viewBox="0 0 220 130" width="200" height="130">
+  <defs><linearGradient id="gTSM" x1="0%" y1="0%" x2="100%" y2="0%">
+    <stop offset="0%" style="stop-color:#22c55e"/><stop offset="40%" style="stop-color:#f59e0b"/><stop offset="100%" style="stop-color:#ef4444"/>
+  </linearGradient></defs>
+  <path d="M 10 110 A 100 100 0 0 1 210 110" fill="none" stroke="#1e2330" stroke-width="16" stroke-linecap="round"/>
+  <path d="M 10 110 A 100 100 0 0 1 210 110" fill="none" stroke="url(#gTSM)" stroke-width="16" stroke-linecap="round"
+        stroke-dasharray="314" stroke-dashoffset="194.7"/>
+  <line x1="110" y1="110" x2="110" y2="25" stroke="#fff" stroke-width="2.5" stroke-linecap="round"
+        transform="rotate(-21.6 110 110)"/>
+  <circle cx="110" cy="110" r="5" fill="#6366f1"/>
+  <text x="6" y="126" fill="#7b8299" font-size="9" font-family="JetBrains Mono">0</text>
+  <text x="101" y="14" fill="#7b8299" font-size="9" font-family="JetBrains Mono" text-anchor="middle">50</text>
+  <text x="208" y="126" fill="#7b8299" font-size="9" font-family="JetBrains Mono" text-anchor="end">100</text>
+  <text x="110" y="100" fill="#22c55e" font-size="22" font-weight="bold" font-family="JetBrains Mono" text-anchor="middle">38</text>
+  <text x="110" y="125" fill="#7b8299" font-size="8" font-family="DM Sans" text-anchor="middle">LOW RISK</text>
+</svg>
+    </div>
+    <!-- breakdown -->
+    <div class="panel">
+      <div class="panel-title">Score Breakdown</div>
+      <div class="br-row"><div class="br-hd"><span>Valuation (35%)</span><span class="mono">30/100</span></div>
+        <div class="br-track"><div class="br-fill fill-g" style="width:30%"></div></div></div>
+      <div class="br-row"><div class="br-hd"><span>Fin. Health (35%)</span><span class="mono">32/100</span></div>
+        <div class="br-track"><div class="br-fill fill-g" style="width:32%"></div></div></div>
+      <div class="br-row"><div class="br-hd"><span>Growth (30%)</span><span class="mono">45/100</span></div>
+        <div class="br-track"><div class="br-fill fill-a" style="width:45%"></div></div></div>
+      <!-- explainer -->
+      <div class="expl"><span>💡</span><div><b style="color:var(--blue)">P/E Explained:</b> Price ÷ EPS. TSM P/E: <span class="mono">28.4×</span>. Higher P/E = more growth priced in = more valuation risk.</div></div>
+    </div>
+    <!-- kpi strip vertical -->
+    <div class="panel kpi-v">
+      <div class="panel-title">Key Metrics</div>
+      <div class="kv"><span>Market Cap</span><span class="mono">$1.81T</span></div>
+      <div class="kv"><span>P/E (TTM)</span><span class="mono badge beat" style="padding:2px 6px">28.4×</span></div>
+      <div class="kv"><span>P/S</span><span class="mono">10.5××</span></div>
+      <div class="kv"><span>PEG</span><span class="mono">0.44</span></div>
+      <div class="kv"><span>Revenue</span><span class="mono">$115.8B</span></div>
+      <div class="kv"><span>Rev Growth</span><span class="mono" style="color:var(--green)">+40.6%</span></div>
+      <div class="kv"><span>EPS</span><span class="mono">$3.49</span></div>
+      <div class="kv"><span>EPS Growth</span><span class="mono" style="color:var(--green)">+64.6%</span></div>
+      <div class="kv"><span>Op Margin</span><span class="mono">58.1%</span></div>
+      <div class="kv"><span>FCF Margin</span><span class="mono">28%</span></div>
+      <div class="kv"><span>ROE</span><span class="mono">30%</span></div>
+      <div class="kv"><span>D/E</span><span class="mono">Low</span></div>
+      <div class="kv"><span>Div Yield</span><span class="mono">1.4%</span></div>
+    </div>
+  </div>
+
+  <!-- PRICE CHART -->
+  <div class="panel" style="margin-top:14px">
+    <div class="panel-title">12-Month Price Chart (May 2025 – May 2026)</div>
+    <div style="position:relative;height:180px">
+      <canvas id="chart_TSM"></canvas>
+    </div>
+  </div>
+
+  <!-- QUARTERLY TABLE -->
+  <div class="panel" style="margin-top:14px;overflow-x:auto">
+    <div class="panel-title">Quarterly Trend — Last 4 Quarters</div>
+    <table><thead><tr><th>Quarter</th><th>Rev (Act)</th><th>Rev Est</th><th>Beat/Miss</th><th>EPS (Act)</th><th>EPS Est</th><th>EPS B/M</th><th>Result</th></tr></thead>
+    <tbody><tr><td>Q1 2026 (Mar)</td><td>$35.9B</td><td>$35.5B</td><td class='beat-cell'>+1.1%</td><td>$3.49</td><td>$3.31</td><td class='beat-cell'>+$0.18</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q4 2025 (Dec)</td><td>$26.9B</td><td>$26.3B</td><td class='beat-cell'>+2.3%</td><td>$2.24</td><td>$2.21</td><td class='beat-cell'>+$0.03</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q3 2025 (Sep)</td><td>$23.5B</td><td>$22.7B</td><td class='beat-cell'>+3.5%</td><td>$1.94</td><td>$1.83</td><td class='beat-cell'>+$0.11</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q2 2025 (Jun)</td><td>$20.8B</td><td>$20.5B</td><td class='beat-cell'>+1.5%</td><td>$1.62</td><td>$1.55</td><td class='beat-cell'>+$0.07</td><td><span class="badge beat">BEAT</span></td></tr>
+</tbody></table>
+  </div>
+
+  <!-- CATALYSTS + RISKS -->
+  <div class="row2" style="margin-top:14px">
+    <div class="panel"><div class="panel-title" style="color:var(--green)">⚡ Catalysts</div><ul class="blist"><li>Only fab able to produce 3nm/2nm chips at scale</li><li>Apple, NVIDIA, AMD all captive customers</li><li>2nm production capacity boosted by ~70% in 2026</li><li>HPC now 59% of revenue — structural AI shift</li><li>Record 66.2% gross margin in Q1 2026</li></ul></div>
+    <div class="panel"><div class="panel-title" style="color:var(--red)">⚠️ Risks</div><ul class="blist"><li>Geopolitical Taiwan strait risk — black swan event</li><li>US tariff and trade policy uncertainty</li><li>Heavy capex: $38–42B in 2026 capex guidance</li><li>Potential US-imposed restrictions on advanced exports</li><li>Currency risk: TWD/USD fluctuation impact</li></ul></div>
+  </div>
+
+  <!-- VERDICT -->
+  <div class="panel" style="margin-top:14px">
+    <div class="panel-title">Bottom Line & Verdict</div>
+    <div class="rating-track">
+      <div class="rating-fill" style="background:linear-gradient(to right,var(--green),#84cc16,var(--amber),#f97316,var(--red));height:100%;border-radius:6px"></div>
+      <div class="rating-pin" style="left:12%"></div>
+    </div>
+    <div class="rating-lbs"><span>Strong Buy</span><span>Buy</span><span>Hold</span><span>Sell</span><span>Strong Sell</span></div>
+    <div style="margin-top:10px"><span class="verdict-badge" style="background:rgba(34,197,94,.12);color:var(--green);border-color:rgba(34,197,94,.4)">STRONG BUY</span></div>
+    <p class="summary-txt">TSMC is the irreplaceable backbone of global AI hardware. With a PEG of 0.44, operating margins of 58.1%, and four consecutive quarters of record profits, the stock is arguably the most attractive risk-adjusted value in the semiconductor space. The primary overhang is geopolitical — a Taiwan strait scenario would be catastrophic — but short of that, TSMC's technical moat in sub-3nm fabrication is unassailable for the next 5+ years. Risk score of 38 is the lowest in this cohort.</p>
+  </div>
+
+  <script>
+  (function(){
+    var ctx=document.getElementById('chart_TSM').getContext('2d');
+    var gr=ctx.createLinearGradient(0,0,0,180);
+    gr.addColorStop(0,'rgba(99,102,241,0.3)');
+    gr.addColorStop(1,'rgba(99,102,241,0)');
+    new Chart(ctx,{
+      type:'line',
+      data:{labels:['May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26','Apr 26','May 26'],datasets:[{data:[170, 185, 195, 210, 195, 175, 165, 195, 230, 270, 320, 345, 349],borderColor:'#0078d4',borderWidth:2,backgroundColor:gr,fill:true,tension:0.35,pointRadius:3,pointBackgroundColor:'#0078d4'}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#12151c',borderColor:'#1e2330',borderWidth:1,titleColor:'#e8eaf0',bodyColor:'#a0b0c8'}},
+        scales:{x:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'}}},
+          y:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},callback:function(v){return '$'+v}}}}
+      }
+    });
+  })();
+  </script>
+</section>
+<hr class="section-divider">
+
+<section id="AMD" class="stock-section fade-in">
+  <!-- HEADER -->
+  <div class="section-topbar">
+    <div style="display:flex;align-items:center;gap:14px">
+      <div class="s-logo" style="background:linear-gradient(135deg,#ed1c24,#0a0c10)">A</div>
+      <div>
+        <h2 class="s-name">Advanced Micro Devices <span>(AMD)</span></h2>
+        <span class="s-sector">AI GPU / CPU</span>
+      </div>
+    </div>
+    <div class="s-price-block">
+      <div class="s-price">$202.68</div>
+      <div class="s-change up">▲ +5.3%</div>
+    </div>
+  </div>
+
+  <!-- ROW 1: GAUGE + BREAKDOWN + KPI -->
+  <div class="row3">
+    <!-- gauge -->
+    <div class="panel" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px">
+      <div class="panel-title">Risk Score</div>
+      <svg viewBox="0 0 220 130" width="200" height="130">
+  <defs><linearGradient id="gAMD" x1="0%" y1="0%" x2="100%" y2="0%">
+    <stop offset="0%" style="stop-color:#22c55e"/><stop offset="40%" style="stop-color:#f59e0b"/><stop offset="100%" style="stop-color:#ef4444"/>
+  </linearGradient></defs>
+  <path d="M 10 110 A 100 100 0 0 1 210 110" fill="none" stroke="#1e2330" stroke-width="16" stroke-linecap="round"/>
+  <path d="M 10 110 A 100 100 0 0 1 210 110" fill="none" stroke="url(#gAMD)" stroke-width="16" stroke-linecap="round"
+        stroke-dasharray="314" stroke-dashoffset="135.0"/>
+  <line x1="110" y1="110" x2="110" y2="25" stroke="#fff" stroke-width="2.5" stroke-linecap="round"
+        transform="rotate(12.6 110 110)"/>
+  <circle cx="110" cy="110" r="5" fill="#6366f1"/>
+  <text x="6" y="126" fill="#7b8299" font-size="9" font-family="JetBrains Mono">0</text>
+  <text x="101" y="14" fill="#7b8299" font-size="9" font-family="JetBrains Mono" text-anchor="middle">50</text>
+  <text x="208" y="126" fill="#7b8299" font-size="9" font-family="JetBrains Mono" text-anchor="end">100</text>
+  <text x="110" y="100" fill="#f59e0b" font-size="22" font-weight="bold" font-family="JetBrains Mono" text-anchor="middle">57</text>
+  <text x="110" y="125" fill="#7b8299" font-size="8" font-family="DM Sans" text-anchor="middle">MODERATE RISK</text>
+</svg>
+    </div>
+    <!-- breakdown -->
+    <div class="panel">
+      <div class="panel-title">Score Breakdown</div>
+      <div class="br-row"><div class="br-hd"><span>Valuation (35%)</span><span class="mono">68/100</span></div>
+        <div class="br-track"><div class="br-fill fill-r" style="width:68%"></div></div></div>
+      <div class="br-row"><div class="br-hd"><span>Fin. Health (35%)</span><span class="mono">52/100</span></div>
+        <div class="br-track"><div class="br-fill fill-a" style="width:52%"></div></div></div>
+      <div class="br-row"><div class="br-hd"><span>Growth (30%)</span><span class="mono">48/100</span></div>
+        <div class="br-track"><div class="br-fill fill-a" style="width:48%"></div></div></div>
+      <!-- explainer -->
+      <div class="expl"><span>💡</span><div><b style="color:var(--blue)">P/E Explained:</b> Price ÷ EPS. AMD P/E: <span class="mono">108×</span>. Higher P/E = more growth priced in = more valuation risk.</div></div>
+    </div>
+    <!-- kpi strip vertical -->
+    <div class="panel kpi-v">
+      <div class="panel-title">Key Metrics</div>
+      <div class="kv"><span>Market Cap</span><span class="mono">$329B</span></div>
+      <div class="kv"><span>P/E (TTM)</span><span class="mono badge miss" style="padding:2px 6px">108×</span></div>
+      <div class="kv"><span>P/S</span><span class="mono">8.6××</span></div>
+      <div class="kv"><span>PEG</span><span class="mono">2.6</span></div>
+      <div class="kv"><span>Revenue</span><span class="mono">$29.2B</span></div>
+      <div class="kv"><span>Rev Growth</span><span class="mono" style="color:var(--green)">+24%</span></div>
+      <div class="kv"><span>EPS</span><span class="mono">$1.88</span></div>
+      <div class="kv"><span>EPS Growth</span><span class="mono" style="color:var(--green)">+35%</span></div>
+      <div class="kv"><span>Op Margin</span><span class="mono">6.3%</span></div>
+      <div class="kv"><span>FCF Margin</span><span class="mono">9%</span></div>
+      <div class="kv"><span>ROE</span><span class="mono">3.8%</span></div>
+      <div class="kv"><span>D/E</span><span class="mono">Low</span></div>
+      <div class="kv"><span>Div Yield</span><span class="mono">0%</span></div>
+    </div>
+  </div>
+
+  <!-- PRICE CHART -->
+  <div class="panel" style="margin-top:14px">
+    <div class="panel-title">12-Month Price Chart (May 2025 – May 2026)</div>
+    <div style="position:relative;height:180px">
+      <canvas id="chart_AMD"></canvas>
+    </div>
+  </div>
+
+  <!-- QUARTERLY TABLE -->
+  <div class="panel" style="margin-top:14px;overflow-x:auto">
+    <div class="panel-title">Quarterly Trend — Last 4 Quarters</div>
+    <table><thead><tr><th>Quarter</th><th>Rev (Act)</th><th>Rev Est</th><th>Beat/Miss</th><th>EPS (Act)</th><th>EPS Est</th><th>EPS B/M</th><th>Result</th></tr></thead>
+    <tbody><tr><td>Q4 2025 (Dec)</td><td>$7.66B</td><td>$7.53B</td><td class='beat-cell'>+1.7%</td><td>$1.09</td><td>$1.08</td><td class='beat-cell'>+$0.01</td><td><span class="badge caution">CAUTION</span></td></tr>
+<tr><td>Q3 2025 (Sep)</td><td>$6.82B</td><td>$6.71B</td><td class='beat-cell'>+1.6%</td><td>$0.92</td><td>$0.92</td><td class='caution-cell'>$0.00</td><td><span class="badge caution">CAUTION</span></td></tr>
+<tr><td>Q2 2025 (Jun)</td><td>$6.69B</td><td>$6.65B</td><td class='beat-cell'>+0.6%</td><td>$0.88</td><td>$0.86</td><td class='beat-cell'>+$0.02</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q1 2025 (Mar)</td><td>$7.44B</td><td>$7.11B</td><td class='beat-cell'>+4.6%</td><td>$1.01</td><td>$0.94</td><td class='beat-cell'>+$0.07</td><td><span class="badge beat">BEAT</span></td></tr>
+</tbody></table>
+  </div>
+
+  <!-- CATALYSTS + RISKS -->
+  <div class="row2" style="margin-top:14px">
+    <div class="panel"><div class="panel-title" style="color:var(--green)">⚡ Catalysts</div><ul class="blist"><li>MI300X AI GPU gaining datacenter traction</li><li>Q1 2026 revenue guidance $9.8B (+32% YoY)</li><li>Data center revenue $3.7B in Q4 2025</li><li>CPU market share gains vs Intel in server/PC</li><li>MI308 China-compliant GPU opens $100M+ opportunity</li></ul></div>
+    <div class="panel"><div class="panel-title" style="color:var(--red)">⚠️ Risks</div><ul class="blist"><li>NVIDIA CUDA dominance makes MI300X a harder sell</li><li>Low GAAP operating margin (6.3%) vs NVDA (61%)</li><li>P/E of 108× demands flawless execution</li><li>Client/gaming segments volatile</li><li>AI GPU revenue concentration risk in few customers</li></ul></div>
+  </div>
+
+  <!-- VERDICT -->
+  <div class="panel" style="margin-top:14px">
+    <div class="panel-title">Bottom Line & Verdict</div>
+    <div class="rating-track">
+      <div class="rating-fill" style="background:linear-gradient(to right,var(--green),#84cc16,var(--amber),#f97316,var(--red));height:100%;border-radius:6px"></div>
+      <div class="rating-pin" style="left:42%"></div>
+    </div>
+    <div class="rating-lbs"><span>Strong Buy</span><span>Buy</span><span>Hold</span><span>Sell</span><span>Strong Sell</span></div>
+    <div style="margin-top:10px"><span class="verdict-badge" style="background:rgba(245,158,11,.12);color:var(--amber);border-color:rgba(245,158,11,.4)">CAUTIOUS BUY</span></div>
+    <p class="summary-txt">AMD is the clearest challenger to NVIDIA in AI GPUs, but the gap remains wide. Q1 2026 guidance of $9.8B (+32% YoY) signals continued momentum, and MI300X adoption in hyperscalers is accelerating. The concern is profitability: GAAP operating margins of just 6.3% vs NVIDIA's 61% reveal a company still investing heavily to compete. A P/E of 108× demands sustained execution. Risk score of 57 reflects elevated valuation risk and competitive pressure.</p>
+  </div>
+
+  <script>
+  (function(){
+    var ctx=document.getElementById('chart_AMD').getContext('2d');
+    var gr=ctx.createLinearGradient(0,0,0,180);
+    gr.addColorStop(0,'rgba(99,102,241,0.3)');
+    gr.addColorStop(1,'rgba(99,102,241,0)');
+    new Chart(ctx,{
+      type:'line',
+      data:{labels:['May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26','Apr 26','May 26'],datasets:[{data:[165, 180, 190, 185, 150, 135, 125, 140, 155, 175, 195, 195, 203],borderColor:'#ed1c24',borderWidth:2,backgroundColor:gr,fill:true,tension:0.35,pointRadius:3,pointBackgroundColor:'#ed1c24'}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#12151c',borderColor:'#1e2330',borderWidth:1,titleColor:'#e8eaf0',bodyColor:'#a0b0c8'}},
+        scales:{x:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'}}},
+          y:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},callback:function(v){return '$'+v}}}}
+      }
+    });
+  })();
+  </script>
+</section>
+<hr class="section-divider">
+
+<section id="MU" class="stock-section fade-in">
+  <!-- HEADER -->
+  <div class="section-topbar">
+    <div style="display:flex;align-items:center;gap:14px">
+      <div class="s-logo" style="background:linear-gradient(135deg,#00a1e0,#0a0c10)">M</div>
+      <div>
+        <h2 class="s-name">Micron Technology <span>(MU)</span></h2>
+        <span class="s-sector">Memory / HBM</span>
+      </div>
+    </div>
+    <div class="s-price-block">
+      <div class="s-price">$112.30</div>
+      <div class="s-change up">▲ +2.1%</div>
+    </div>
+  </div>
+
+  <!-- ROW 1: GAUGE + BREAKDOWN + KPI -->
+  <div class="row3">
+    <!-- gauge -->
+    <div class="panel" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px">
+      <div class="panel-title">Risk Score</div>
+      <svg viewBox="0 0 220 130" width="200" height="130">
+  <defs><linearGradient id="gMU" x1="0%" y1="0%" x2="100%" y2="0%">
+    <stop offset="0%" style="stop-color:#22c55e"/><stop offset="40%" style="stop-color:#f59e0b"/><stop offset="100%" style="stop-color:#ef4444"/>
+  </linearGradient></defs>
+  <path d="M 10 110 A 100 100 0 0 1 210 110" fill="none" stroke="#1e2330" stroke-width="16" stroke-linecap="round"/>
+  <path d="M 10 110 A 100 100 0 0 1 210 110" fill="none" stroke="url(#gMU)" stroke-width="16" stroke-linecap="round"
+        stroke-dasharray="314" stroke-dashoffset="175.8"/>
+  <line x1="110" y1="110" x2="110" y2="25" stroke="#fff" stroke-width="2.5" stroke-linecap="round"
+        transform="rotate(-10.8 110 110)"/>
+  <circle cx="110" cy="110" r="5" fill="#6366f1"/>
+  <text x="6" y="126" fill="#7b8299" font-size="9" font-family="JetBrains Mono">0</text>
+  <text x="101" y="14" fill="#7b8299" font-size="9" font-family="JetBrains Mono" text-anchor="middle">50</text>
+  <text x="208" y="126" fill="#7b8299" font-size="9" font-family="JetBrains Mono" text-anchor="end">100</text>
+  <text x="110" y="100" fill="#f59e0b" font-size="22" font-weight="bold" font-family="JetBrains Mono" text-anchor="middle">44</text>
+  <text x="110" y="125" fill="#7b8299" font-size="8" font-family="DM Sans" text-anchor="middle">MODERATE RISK</text>
+</svg>
+    </div>
+    <!-- breakdown -->
+    <div class="panel">
+      <div class="panel-title">Score Breakdown</div>
+      <div class="br-row"><div class="br-hd"><span>Valuation (35%)</span><span class="mono">28/100</span></div>
+        <div class="br-track"><div class="br-fill fill-g" style="width:28%"></div></div></div>
+      <div class="br-row"><div class="br-hd"><span>Fin. Health (35%)</span><span class="mono">50/100</span></div>
+        <div class="br-track"><div class="br-fill fill-a" style="width:50%"></div></div></div>
+      <div class="br-row"><div class="br-hd"><span>Growth (30%)</span><span class="mono">40/100</span></div>
+        <div class="br-track"><div class="br-fill fill-a" style="width:40%"></div></div></div>
+      <!-- explainer -->
+      <div class="expl"><span>💡</span><div><b style="color:var(--blue)">P/E Explained:</b> Price ÷ EPS. MU P/E: <span class="mono">19.2×</span>. Higher P/E = more growth priced in = more valuation risk.</div></div>
+    </div>
+    <!-- kpi strip vertical -->
+    <div class="panel kpi-v">
+      <div class="panel-title">Key Metrics</div>
+      <div class="kv"><span>Market Cap</span><span class="mono">$124B</span></div>
+      <div class="kv"><span>P/E (TTM)</span><span class="mono badge beat" style="padding:2px 6px">19.2×</span></div>
+      <div class="kv"><span>P/S</span><span class="mono">3.2××</span></div>
+      <div class="kv"><span>PEG</span><span class="mono">0.18</span></div>
+      <div class="kv"><span>Revenue</span><span class="mono">$38.8B</span></div>
+      <div class="kv"><span>Rev Growth</span><span class="mono" style="color:var(--green)">+62%</span></div>
+      <div class="kv"><span>EPS</span><span class="mono">$5.86</span></div>
+      <div class="kv"><span>EPS Growth</span><span class="mono" style="color:var(--green)">+400%+</span></div>
+      <div class="kv"><span>Op Margin</span><span class="mono">31.5%</span></div>
+      <div class="kv"><span>FCF Margin</span><span class="mono">8%</span></div>
+      <div class="kv"><span>ROE</span><span class="mono">21%</span></div>
+      <div class="kv"><span>D/E</span><span class="mono">Moderate</span></div>
+      <div class="kv"><span>Div Yield</span><span class="mono">0.48%</span></div>
+    </div>
+  </div>
+
+  <!-- PRICE CHART -->
+  <div class="panel" style="margin-top:14px">
+    <div class="panel-title">12-Month Price Chart (May 2025 – May 2026)</div>
+    <div style="position:relative;height:180px">
+      <canvas id="chart_MU"></canvas>
+    </div>
+  </div>
+
+  <!-- QUARTERLY TABLE -->
+  <div class="panel" style="margin-top:14px;overflow-x:auto">
+    <div class="panel-title">Quarterly Trend — Last 4 Quarters</div>
+    <table><thead><tr><th>Quarter</th><th>Rev (Act)</th><th>Rev Est</th><th>Beat/Miss</th><th>EPS (Act)</th><th>EPS Est</th><th>EPS B/M</th><th>Result</th></tr></thead>
+    <tbody><tr><td>Q2 FY2026 (Feb)</td><td>$8.05B</td><td>$7.89B</td><td class='beat-cell'>+2.0%</td><td>$1.56</td><td>$1.43</td><td class='beat-cell'>+$0.13</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q1 FY2026 (Nov)</td><td>$8.71B</td><td>$8.68B</td><td class='beat-cell'>+0.3%</td><td>$1.79</td><td>$1.76</td><td class='beat-cell'>+$0.03</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q4 FY2025 (Aug)</td><td>$7.75B</td><td>$7.63B</td><td class='beat-cell'>+1.6%</td><td>$1.47</td><td>$1.11</td><td class='beat-cell'>+$0.36</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q3 FY2025 (May)</td><td>$7.74B</td><td>$6.67B</td><td class='beat-cell'>+16.1%</td><td>$1.91</td><td>$1.52</td><td class='beat-cell'>+$0.39</td><td><span class="badge beat">BEAT</span></td></tr>
+</tbody></table>
+  </div>
+
+  <!-- CATALYSTS + RISKS -->
+  <div class="row2" style="margin-top:14px">
+    <div class="panel"><div class="panel-title" style="color:var(--green)">⚡ Catalysts</div><ul class="blist"><li>HBM3E AI memory: sole credible supplier alongside SK Hynix</li><li>NVDA H100/H200/B100 all use Micron HBM</li><li>Data center DRAM demand surge from AI inference</li><li>PEG of 0.18 — deeply undervalued vs peers</li><li>HBM capacity sold out through 2026</li></ul></div>
+    <div class="panel"><div class="panel-title" style="color:var(--red)">⚠️ Risks</div><ul class="blist"><li>Memory is cyclical — DRAM/NAND pricing can collapse</li><li>China revenue exposure (~10%) and export risk</li><li>Heavy capex investment cycle ($10B+ annually)</li><li>Samsung price competition pressuring NAND margins</li><li>FCF margin of 8% thin relative to revenue growth</li></ul></div>
+  </div>
+
+  <!-- VERDICT -->
+  <div class="panel" style="margin-top:14px">
+    <div class="panel-title">Bottom Line & Verdict</div>
+    <div class="rating-track">
+      <div class="rating-fill" style="background:linear-gradient(to right,var(--green),#84cc16,var(--amber),#f97316,var(--red));height:100%;border-radius:6px"></div>
+      <div class="rating-pin" style="left:22%"></div>
+    </div>
+    <div class="rating-lbs"><span>Strong Buy</span><span>Buy</span><span>Hold</span><span>Sell</span><span>Strong Sell</span></div>
+    <div style="margin-top:10px"><span class="verdict-badge" style="background:rgba(34,197,94,.12);color:var(--green);border-color:rgba(34,197,94,.4)">BUY</span></div>
+    <p class="summary-txt">Micron is the most undervalued stock in the AI hardware supply chain on a P/E and PEG basis. Its HBM3E memory is essential to every AI GPU — from NVIDIA to AMD to custom ASICs — and capacity is sold out through 2026. Revenue grew 62% in FY2025 and EPS surged 400%+. The cyclicality of memory remains the key risk, but the current AI-driven demand cycle is structurally different from prior downturns. Risk score 44 is moderate-low.</p>
+  </div>
+
+  <script>
+  (function(){
+    var ctx=document.getElementById('chart_MU').getContext('2d');
+    var gr=ctx.createLinearGradient(0,0,0,180);
+    gr.addColorStop(0,'rgba(99,102,241,0.3)');
+    gr.addColorStop(1,'rgba(99,102,241,0)');
+    new Chart(ctx,{
+      type:'line',
+      data:{labels:['May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26','Apr 26','May 26'],datasets:[{data:[105, 115, 130, 140, 115, 100, 85, 90, 100, 108, 112, 110, 112],borderColor:'#00a1e0',borderWidth:2,backgroundColor:gr,fill:true,tension:0.35,pointRadius:3,pointBackgroundColor:'#00a1e0'}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#12151c',borderColor:'#1e2330',borderWidth:1,titleColor:'#e8eaf0',bodyColor:'#a0b0c8'}},
+        scales:{x:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'}}},
+          y:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},callback:function(v){return '$'+v}}}}
+      }
+    });
+  })();
+  </script>
+</section>
+<hr class="section-divider">
+
+<section id="ASML" class="stock-section fade-in">
+  <!-- HEADER -->
+  <div class="section-topbar">
+    <div style="display:flex;align-items:center;gap:14px">
+      <div class="s-logo" style="background:linear-gradient(135deg,#0a93d9,#0a0c10)">A</div>
+      <div>
+        <h2 class="s-name">ASML Holding N.V. <span>(ASML)</span></h2>
+        <span class="s-sector">Semiconductor Equipment / EUV</span>
+      </div>
+    </div>
+    <div class="s-price-block">
+      <div class="s-price">$1,357.42</div>
+      <div class="s-change up">▲ +4.9%</div>
+    </div>
+  </div>
+
+  <!-- ROW 1: GAUGE + BREAKDOWN + KPI -->
+  <div class="row3">
+    <!-- gauge -->
+    <div class="panel" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px">
+      <div class="panel-title">Risk Score</div>
+      <svg viewBox="0 0 220 130" width="200" height="130">
+  <defs><linearGradient id="gASML" x1="0%" y1="0%" x2="100%" y2="0%">
+    <stop offset="0%" style="stop-color:#22c55e"/><stop offset="40%" style="stop-color:#f59e0b"/><stop offset="100%" style="stop-color:#ef4444"/>
+  </linearGradient></defs>
+  <path d="M 10 110 A 100 100 0 0 1 210 110" fill="none" stroke="#1e2330" stroke-width="16" stroke-linecap="round"/>
+  <path d="M 10 110 A 100 100 0 0 1 210 110" fill="none" stroke="url(#gASML)" stroke-width="16" stroke-linecap="round"
+        stroke-dasharray="314" stroke-dashoffset="185.3"/>
+  <line x1="110" y1="110" x2="110" y2="25" stroke="#fff" stroke-width="2.5" stroke-linecap="round"
+        transform="rotate(-16.2 110 110)"/>
+  <circle cx="110" cy="110" r="5" fill="#6366f1"/>
+  <text x="6" y="126" fill="#7b8299" font-size="9" font-family="JetBrains Mono">0</text>
+  <text x="101" y="14" fill="#7b8299" font-size="9" font-family="JetBrains Mono" text-anchor="middle">50</text>
+  <text x="208" y="126" fill="#7b8299" font-size="9" font-family="JetBrains Mono" text-anchor="end">100</text>
+  <text x="110" y="100" fill="#f59e0b" font-size="22" font-weight="bold" font-family="JetBrains Mono" text-anchor="middle">41</text>
+  <text x="110" y="125" fill="#7b8299" font-size="8" font-family="DM Sans" text-anchor="middle">MODERATE RISK</text>
+</svg>
+    </div>
+    <!-- breakdown -->
+    <div class="panel">
+      <div class="panel-title">Score Breakdown</div>
+      <div class="br-row"><div class="br-hd"><span>Valuation (35%)</span><span class="mono">42/100</span></div>
+        <div class="br-track"><div class="br-fill fill-a" style="width:42%"></div></div></div>
+      <div class="br-row"><div class="br-hd"><span>Fin. Health (35%)</span><span class="mono">30/100</span></div>
+        <div class="br-track"><div class="br-fill fill-g" style="width:30%"></div></div></div>
+      <div class="br-row"><div class="br-hd"><span>Growth (30%)</span><span class="mono">45/100</span></div>
+        <div class="br-track"><div class="br-fill fill-a" style="width:45%"></div></div></div>
+      <!-- explainer -->
+      <div class="expl"><span>💡</span><div><b style="color:var(--blue)">P/E Explained:</b> Price ÷ EPS. ASML P/E: <span class="mono">38.4×</span>. Higher P/E = more growth priced in = more valuation risk.</div></div>
+    </div>
+    <!-- kpi strip vertical -->
+    <div class="panel kpi-v">
+      <div class="panel-title">Key Metrics</div>
+      <div class="kv"><span>Market Cap</span><span class="mono">$596B</span></div>
+      <div class="kv"><span>P/E (TTM)</span><span class="mono badge caution" style="padding:2px 6px">38.4×</span></div>
+      <div class="kv"><span>P/S</span><span class="mono">9.8××</span></div>
+      <div class="kv"><span>PEG</span><span class="mono">1.3</span></div>
+      <div class="kv"><span>Revenue</span><span class="mono">$39.7B</span></div>
+      <div class="kv"><span>Rev Growth</span><span class="mono" style="color:var(--green)">+16%</span></div>
+      <div class="kv"><span>EPS</span><span class="mono">$25.13</span></div>
+      <div class="kv"><span>EPS Growth</span><span class="mono" style="color:var(--green)">+29%</span></div>
+      <div class="kv"><span>Op Margin</span><span class="mono">33%</span></div>
+      <div class="kv"><span>FCF Margin</span><span class="mono">20%</span></div>
+      <div class="kv"><span>ROE</span><span class="mono">50%</span></div>
+      <div class="kv"><span>D/E</span><span class="mono">Low</span></div>
+      <div class="kv"><span>Div Yield</span><span class="mono">0.85%</span></div>
+    </div>
+  </div>
+
+  <!-- PRICE CHART -->
+  <div class="panel" style="margin-top:14px">
+    <div class="panel-title">12-Month Price Chart (May 2025 – May 2026)</div>
+    <div style="position:relative;height:180px">
+      <canvas id="chart_ASML"></canvas>
+    </div>
+  </div>
+
+  <!-- QUARTERLY TABLE -->
+  <div class="panel" style="margin-top:14px;overflow-x:auto">
+    <div class="panel-title">Quarterly Trend — Last 4 Quarters</div>
+    <table><thead><tr><th>Quarter</th><th>Rev (Act)</th><th>Rev Est</th><th>Beat/Miss</th><th>EPS (Act)</th><th>EPS Est</th><th>EPS B/M</th><th>Result</th></tr></thead>
+    <tbody><tr><td>Q1 2026 (Mar)</td><td>$7.73B</td><td>$7.80B</td><td class='miss-cell'>-0.9%</td><td>$6.35</td><td>$6.55</td><td class='miss-cell'>-$0.20</td><td><span class="badge caution">CAUTION</span></td></tr>
+<tr><td>Q4 2025 (Dec)</td><td>$9.26B</td><td>$8.93B</td><td class='beat-cell'>+3.7%</td><td>$8.22</td><td>$7.24</td><td class='beat-cell'>+$0.98</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q3 2025 (Sep)</td><td>$7.47B</td><td>$7.52B</td><td class='miss-cell'>-0.7%</td><td>$5.28</td><td>$5.71</td><td class='miss-cell'>-$0.43</td><td><span class="badge miss">MISS</span></td></tr>
+<tr><td>Q2 2025 (Jun)</td><td>$7.68B</td><td>$7.30B</td><td class='beat-cell'>+5.2%</td><td>$5.93</td><td>$4.60</td><td class='beat-cell'>+$1.33</td><td><span class="badge beat">BEAT</span></td></tr>
+</tbody></table>
+  </div>
+
+  <!-- CATALYSTS + RISKS -->
+  <div class="row2" style="margin-top:14px">
+    <div class="panel"><div class="panel-title" style="color:var(--green)">⚡ Catalysts</div><ul class="blist"><li>Sole supplier of EUV lithography machines globally — zero competition</li><li>High-NA EUV (next gen) ramp at TSMC, Intel, Samsung</li><li>Backlog of €35B+ provides 2+ years revenue visibility</li><li>Chipmakers cannot build leading-edge chips without ASML</li><li>AI capex cycle drives demand for advanced node capacity</li></ul></div>
+    <div class="panel"><div class="panel-title" style="color:var(--red)">⚠️ Risks</div><ul class="blist"><li>China export ban: lost ~15% revenue from China EUV orders</li><li>Delivery lumpiness creates quarterly earnings volatility</li><li>High-NA EUV machines ($350M each) adoption pace uncertain</li><li>Rich valuation at P/E 38× for a capital equipment company</li><li>US pressure to further restrict Netherlands tech exports</li></ul></div>
+  </div>
+
+  <!-- VERDICT -->
+  <div class="panel" style="margin-top:14px">
+    <div class="panel-title">Bottom Line & Verdict</div>
+    <div class="rating-track">
+      <div class="rating-fill" style="background:linear-gradient(to right,var(--green),#84cc16,var(--amber),#f97316,var(--red));height:100%;border-radius:6px"></div>
+      <div class="rating-pin" style="left:28%"></div>
+    </div>
+    <div class="rating-lbs"><span>Strong Buy</span><span>Buy</span><span>Hold</span><span>Sell</span><span>Strong Sell</span></div>
+    <div style="margin-top:10px"><span class="verdict-badge" style="background:rgba(34,197,94,.12);color:var(--green);border-color:rgba(34,197,94,.4)">BUY</span></div>
+    <p class="summary-txt">ASML is a monopoly business in the most critical bottleneck of semiconductor manufacturing. Every advanced chip fab — TSMC, Samsung, Intel — requires ASML's EUV machines, and High-NA EUV is already in production at TSMC. The €35B+ backlog provides extraordinary revenue visibility. China export restrictions are a real headwind, but the rest of the AI capex cycle more than compensates. Risk score 41 reflects a high-quality business with manageable geopolitical and cyclical risks.</p>
+  </div>
+
+  <script>
+  (function(){
+    var ctx=document.getElementById('chart_ASML').getContext('2d');
+    var gr=ctx.createLinearGradient(0,0,0,180);
+    gr.addColorStop(0,'rgba(99,102,241,0.3)');
+    gr.addColorStop(1,'rgba(99,102,241,0)');
+    new Chart(ctx,{
+      type:'line',
+      data:{labels:['May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26','Apr 26','May 26'],datasets:[{data:[890, 950, 1010, 1100, 1020, 900, 850, 920, 1050, 1200, 1300, 1300, 1357],borderColor:'#0a93d9',borderWidth:2,backgroundColor:gr,fill:true,tension:0.35,pointRadius:3,pointBackgroundColor:'#0a93d9'}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#12151c',borderColor:'#1e2330',borderWidth:1,titleColor:'#e8eaf0',bodyColor:'#a0b0c8'}},
+        scales:{x:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'}}},
+          y:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},callback:function(v){return '$'+v}}}}
+      }
+    });
+  })();
+  </script>
+</section>
+<hr class="section-divider">
+
+<section id="QCOM" class="stock-section fade-in">
+  <!-- HEADER -->
+  <div class="section-topbar">
+    <div style="display:flex;align-items:center;gap:14px">
+      <div class="s-logo" style="background:linear-gradient(135deg,#3253dc,#0a0c10)">Q</div>
+      <div>
+        <h2 class="s-name">Qualcomm Inc. <span>(QCOM)</span></h2>
+        <span class="s-sector">Mobile AI / Edge Chips</span>
+      </div>
+    </div>
+    <div class="s-price-block">
+      <div class="s-price">$173.20</div>
+      <div class="s-change down">▼ -0.8%</div>
+    </div>
+  </div>
+
+  <!-- ROW 1: GAUGE + BREAKDOWN + KPI -->
+  <div class="row3">
+    <!-- gauge -->
+    <div class="panel" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px">
+      <div class="panel-title">Risk Score</div>
+      <svg viewBox="0 0 220 130" width="200" height="130">
+  <defs><linearGradient id="gQCOM" x1="0%" y1="0%" x2="100%" y2="0%">
+    <stop offset="0%" style="stop-color:#22c55e"/><stop offset="40%" style="stop-color:#f59e0b"/><stop offset="100%" style="stop-color:#ef4444"/>
+  </linearGradient></defs>
+  <path d="M 10 110 A 100 100 0 0 1 210 110" fill="none" stroke="#1e2330" stroke-width="16" stroke-linecap="round"/>
+  <path d="M 10 110 A 100 100 0 0 1 210 110" fill="none" stroke="url(#gQCOM)" stroke-width="16" stroke-linecap="round"
+        stroke-dasharray="314" stroke-dashoffset="201.0"/>
+  <line x1="110" y1="110" x2="110" y2="25" stroke="#fff" stroke-width="2.5" stroke-linecap="round"
+        transform="rotate(-25.2 110 110)"/>
+  <circle cx="110" cy="110" r="5" fill="#6366f1"/>
+  <text x="6" y="126" fill="#7b8299" font-size="9" font-family="JetBrains Mono">0</text>
+  <text x="101" y="14" fill="#7b8299" font-size="9" font-family="JetBrains Mono" text-anchor="middle">50</text>
+  <text x="208" y="126" fill="#7b8299" font-size="9" font-family="JetBrains Mono" text-anchor="end">100</text>
+  <text x="110" y="100" fill="#22c55e" font-size="22" font-weight="bold" font-family="JetBrains Mono" text-anchor="middle">36</text>
+  <text x="110" y="125" fill="#7b8299" font-size="8" font-family="DM Sans" text-anchor="middle">LOW RISK</text>
+</svg>
+    </div>
+    <!-- breakdown -->
+    <div class="panel">
+      <div class="panel-title">Score Breakdown</div>
+      <div class="br-row"><div class="br-hd"><span>Valuation (35%)</span><span class="mono">32/100</span></div>
+        <div class="br-track"><div class="br-fill fill-g" style="width:32%"></div></div></div>
+      <div class="br-row"><div class="br-hd"><span>Fin. Health (35%)</span><span class="mono">28/100</span></div>
+        <div class="br-track"><div class="br-fill fill-g" style="width:28%"></div></div></div>
+      <div class="br-row"><div class="br-hd"><span>Growth (30%)</span><span class="mono">45/100</span></div>
+        <div class="br-track"><div class="br-fill fill-a" style="width:45%"></div></div></div>
+      <!-- explainer -->
+      <div class="expl"><span>💡</span><div><b style="color:var(--blue)">P/E Explained:</b> Price ÷ EPS. QCOM P/E: <span class="mono">21.6×</span>. Higher P/E = more growth priced in = more valuation risk.</div></div>
+    </div>
+    <!-- kpi strip vertical -->
+    <div class="panel kpi-v">
+      <div class="panel-title">Key Metrics</div>
+      <div class="kv"><span>Market Cap</span><span class="mono">$187.7B</span></div>
+      <div class="kv"><span>P/E (TTM)</span><span class="mono badge beat" style="padding:2px 6px">21.6×</span></div>
+      <div class="kv"><span>P/S</span><span class="mono">5.1××</span></div>
+      <div class="kv"><span>PEG</span><span class="mono">1.05</span></div>
+      <div class="kv"><span>Revenue</span><span class="mono">$45.8B</span></div>
+      <div class="kv"><span>Rev Growth</span><span class="mono" style="color:var(--green)">+11%</span></div>
+      <div class="kv"><span>EPS</span><span class="mono">$8.02</span></div>
+      <div class="kv"><span>EPS Growth</span><span class="mono" style="color:var(--green)">+18%</span></div>
+      <div class="kv"><span>Op Margin</span><span class="mono">24.4%</span></div>
+      <div class="kv"><span>FCF Margin</span><span class="mono">30%</span></div>
+      <div class="kv"><span>ROE</span><span class="mono">38.9%</span></div>
+      <div class="kv"><span>D/E</span><span class="mono">Low-Moderate</span></div>
+      <div class="kv"><span>Div Yield</span><span class="mono">2.1%</span></div>
+    </div>
+  </div>
+
+  <!-- PRICE CHART -->
+  <div class="panel" style="margin-top:14px">
+    <div class="panel-title">12-Month Price Chart (May 2025 – May 2026)</div>
+    <div style="position:relative;height:180px">
+      <canvas id="chart_QCOM"></canvas>
+    </div>
+  </div>
+
+  <!-- QUARTERLY TABLE -->
+  <div class="panel" style="margin-top:14px;overflow-x:auto">
+    <div class="panel-title">Quarterly Trend — Last 4 Quarters</div>
+    <table><thead><tr><th>Quarter</th><th>Rev (Act)</th><th>Rev Est</th><th>Beat/Miss</th><th>EPS (Act)</th><th>EPS Est</th><th>EPS B/M</th><th>Result</th></tr></thead>
+    <tbody><tr><td>Q2 FY2026 (Mar)</td><td>$10.84B</td><td>$10.64B</td><td class='beat-cell'>+1.9%</td><td>$2.85</td><td>$2.82</td><td class='beat-cell'>+$0.03</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q1 FY2026 (Dec)</td><td>$11.67B</td><td>$11.55B</td><td class='beat-cell'>+1.0%</td><td>$3.41</td><td>$3.00</td><td class='beat-cell'>+$0.41</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q4 FY2025 (Sep)</td><td>$10.24B</td><td>$9.95B</td><td class='beat-cell'>+2.9%</td><td>$2.69</td><td>$2.56</td><td class='beat-cell'>+$0.13</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q3 FY2025 (Jun)</td><td>$9.39B</td><td>$9.19B</td><td class='beat-cell'>+2.2%</td><td>$2.31</td><td>$2.25</td><td class='beat-cell'>+$0.06</td><td><span class="badge beat">BEAT</span></td></tr>
+</tbody></table>
+  </div>
+
+  <!-- CATALYSTS + RISKS -->
+  <div class="row2" style="margin-top:14px">
+    <div class="panel"><div class="panel-title" style="color:var(--green)">⚡ Catalysts</div><ul class="blist"><li>Snapdragon X Elite winning AI PC market share from Intel</li><li>On-device AI: Snapdragon 8 Elite in all flagship Android</li><li>Automotive: Snapdragon Digital Chassis growing 60%+ YoY</li><li>Licensing (QTL) generates high-margin recurring revenue</li><li>PEG 1.05 — attractively valued vs growth rate</li></ul></div>
+    <div class="panel"><div class="panel-title" style="color:var(--red)">⚠️ Risks</div><ul class="blist"><li>Apple modem displacement risk post in-house modem</li><li>Huawei/China licensing disputes could reduce QTL revenue</li><li>PC AI chip competition from Intel Lunar Lake</li><li>Smartphone market saturation limits handset revenue growth</li><li>Cyclical exposure to consumer electronics downturns</li></ul></div>
+  </div>
+
+  <!-- VERDICT -->
+  <div class="panel" style="margin-top:14px">
+    <div class="panel-title">Bottom Line & Verdict</div>
+    <div class="rating-track">
+      <div class="rating-fill" style="background:linear-gradient(to right,var(--green),#84cc16,var(--amber),#f97316,var(--red));height:100%;border-radius:6px"></div>
+      <div class="rating-pin" style="left:25%"></div>
+    </div>
+    <div class="rating-lbs"><span>Strong Buy</span><span>Buy</span><span>Hold</span><span>Sell</span><span>Strong Sell</span></div>
+    <div style="margin-top:10px"><span class="verdict-badge" style="background:rgba(34,197,94,.12);color:var(--green);border-color:rgba(34,197,94,.4)">BUY</span></div>
+    <p class="summary-txt">Qualcomm is underappreciated as an AI stock. The Snapdragon 8 Elite and X Elite are the most powerful on-device AI chips in mobile and PC markets respectively, while Automotive revenue is compounding at 60%+. Trading at P/E 21.6× with a PEG of 1.05 and 38.9% ROE, QCOM is one of the cheapest high-quality names in the AI universe. The Apple modem risk is real but manageable. Risk score 36 is among the lowest in this cohort.</p>
+  </div>
+
+  <script>
+  (function(){
+    var ctx=document.getElementById('chart_QCOM').getContext('2d');
+    var gr=ctx.createLinearGradient(0,0,0,180);
+    gr.addColorStop(0,'rgba(99,102,241,0.3)');
+    gr.addColorStop(1,'rgba(99,102,241,0)');
+    new Chart(ctx,{
+      type:'line',
+      data:{labels:['May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26','Apr 26','May 26'],datasets:[{data:[155, 165, 170, 185, 180, 165, 155, 160, 165, 170, 172, 170, 173],borderColor:'#3253dc',borderWidth:2,backgroundColor:gr,fill:true,tension:0.35,pointRadius:3,pointBackgroundColor:'#3253dc'}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#12151c',borderColor:'#1e2330',borderWidth:1,titleColor:'#e8eaf0',bodyColor:'#a0b0c8'}},
+        scales:{x:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'}}},
+          y:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},callback:function(v){return '$'+v}}}}
+      }
+    });
+  })();
+  </script>
+</section>
+<hr class="section-divider">
+
+<section id="INTC" class="stock-section fade-in">
+  <!-- HEADER -->
+  <div class="section-topbar">
+    <div style="display:flex;align-items:center;gap:14px">
+      <div class="s-logo" style="background:linear-gradient(135deg,#0071c5,#0a0c10)">I</div>
+      <div>
+        <h2 class="s-name">Intel Corporation <span>(INTC)</span></h2>
+        <span class="s-sector">CPU / Foundry Turnaround</span>
+      </div>
+    </div>
+    <div class="s-price-block">
+      <div class="s-price">$24.80</div>
+      <div class="s-change up">▲ +3.2%</div>
+    </div>
+  </div>
+
+  <!-- ROW 1: GAUGE + BREAKDOWN + KPI -->
+  <div class="row3">
+    <!-- gauge -->
+    <div class="panel" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px">
+      <div class="panel-title">Risk Score</div>
+      <svg viewBox="0 0 220 130" width="200" height="130">
+  <defs><linearGradient id="gINTC" x1="0%" y1="0%" x2="100%" y2="0%">
+    <stop offset="0%" style="stop-color:#22c55e"/><stop offset="40%" style="stop-color:#f59e0b"/><stop offset="100%" style="stop-color:#ef4444"/>
+  </linearGradient></defs>
+  <path d="M 10 110 A 100 100 0 0 1 210 110" fill="none" stroke="#1e2330" stroke-width="16" stroke-linecap="round"/>
+  <path d="M 10 110 A 100 100 0 0 1 210 110" fill="none" stroke="url(#gINTC)" stroke-width="16" stroke-linecap="round"
+        stroke-dasharray="314" stroke-dashoffset="87.9"/>
+  <line x1="110" y1="110" x2="110" y2="25" stroke="#fff" stroke-width="2.5" stroke-linecap="round"
+        transform="rotate(39.6 110 110)"/>
+  <circle cx="110" cy="110" r="5" fill="#6366f1"/>
+  <text x="6" y="126" fill="#7b8299" font-size="9" font-family="JetBrains Mono">0</text>
+  <text x="101" y="14" fill="#7b8299" font-size="9" font-family="JetBrains Mono" text-anchor="middle">50</text>
+  <text x="208" y="126" fill="#7b8299" font-size="9" font-family="JetBrains Mono" text-anchor="end">100</text>
+  <text x="110" y="100" fill="#ef4444" font-size="22" font-weight="bold" font-family="JetBrains Mono" text-anchor="middle">72</text>
+  <text x="110" y="125" fill="#7b8299" font-size="8" font-family="DM Sans" text-anchor="middle">ELEVATED RISK</text>
+</svg>
+    </div>
+    <!-- breakdown -->
+    <div class="panel">
+      <div class="panel-title">Score Breakdown</div>
+      <div class="br-row"><div class="br-hd"><span>Valuation (35%)</span><span class="mono">60/100</span></div>
+        <div class="br-track"><div class="br-fill fill-r" style="width:60%"></div></div></div>
+      <div class="br-row"><div class="br-hd"><span>Fin. Health (35%)</span><span class="mono">78/100</span></div>
+        <div class="br-track"><div class="br-fill fill-r" style="width:78%"></div></div></div>
+      <div class="br-row"><div class="br-hd"><span>Growth (30%)</span><span class="mono">75/100</span></div>
+        <div class="br-track"><div class="br-fill fill-r" style="width:75%"></div></div></div>
+      <!-- explainer -->
+      <div class="expl"><span>💡</span><div><b style="color:var(--blue)">P/E Explained:</b> Price ÷ EPS. INTC P/E: <span class="mono">N/A</span>. Higher P/E = more growth priced in = more valuation risk.</div></div>
+    </div>
+    <!-- kpi strip vertical -->
+    <div class="panel kpi-v">
+      <div class="panel-title">Key Metrics</div>
+      <div class="kv"><span>Market Cap</span><span class="mono">$106B</span></div>
+      <div class="kv"><span>P/E (TTM)</span><span class="mono badge miss" style="padding:2px 6px">N/A</span></div>
+      <div class="kv"><span>P/S</span><span class="mono">2.0××</span></div>
+      <div class="kv"><span>PEG</span><span class="mono">N/A</span></div>
+      <div class="kv"><span>Revenue</span><span class="mono">$53.1B</span></div>
+      <div class="kv"><span>Rev Growth</span><span class="mono" style="color:var(--green)">-2%</span></div>
+      <div class="kv"><span>EPS</span><span class="mono">-$4.38</span></div>
+      <div class="kv"><span>EPS Growth</span><span class="mono" style="color:var(--green)">Loss</span></div>
+      <div class="kv"><span>Op Margin</span><span class="mono">-15%</span></div>
+      <div class="kv"><span>FCF Margin</span><span class="mono">-22%</span></div>
+      <div class="kv"><span>ROE</span><span class="mono">-15%</span></div>
+      <div class="kv"><span>D/E</span><span class="mono">High</span></div>
+      <div class="kv"><span>Div Yield</span><span class="mono">0%</span></div>
+    </div>
+  </div>
+
+  <!-- PRICE CHART -->
+  <div class="panel" style="margin-top:14px">
+    <div class="panel-title">12-Month Price Chart (May 2025 – May 2026)</div>
+    <div style="position:relative;height:180px">
+      <canvas id="chart_INTC"></canvas>
+    </div>
+  </div>
+
+  <!-- QUARTERLY TABLE -->
+  <div class="panel" style="margin-top:14px;overflow-x:auto">
+    <div class="panel-title">Quarterly Trend — Last 4 Quarters</div>
+    <table><thead><tr><th>Quarter</th><th>Rev (Act)</th><th>Rev Est</th><th>Beat/Miss</th><th>EPS (Act)</th><th>EPS Est</th><th>EPS B/M</th><th>Result</th></tr></thead>
+    <tbody><tr><td>Q1 2026 (Mar)</td><td>$12.67B</td><td>$12.37B</td><td class='beat-cell'>+2.4%</td><td>-$0.19</td><td>$0.07</td><td class='miss-cell'>-$0.26</td><td><span class="badge miss">MISS</span></td></tr>
+<tr><td>Q4 2025 (Dec)</td><td>$14.26B</td><td>$13.80B</td><td class='beat-cell'>+3.3%</td><td>$0.13</td><td>$0.12</td><td class='beat-cell'>+$0.01</td><td><span class="badge caution">CAUTION</span></td></tr>
+<tr><td>Q3 2025 (Sep)</td><td>$13.28B</td><td>$13.02B</td><td class='beat-cell'>+2.0%</td><td>-$0.46</td><td>$0.02</td><td class='miss-cell'>-$0.48</td><td><span class="badge miss">MISS</span></td></tr>
+<tr><td>Q2 2025 (Jun)</td><td>$12.93B</td><td>$12.73B</td><td class='beat-cell'>+1.6%</td><td>$0.02</td><td>-$0.04</td><td class='beat-cell'>+$0.06</td><td><span class="badge caution">CAUTION</span></td></tr>
+</tbody></table>
+  </div>
+
+  <!-- CATALYSTS + RISKS -->
+  <div class="row2" style="margin-top:14px">
+    <div class="panel"><div class="panel-title" style="color:var(--green)">⚡ Catalysts</div><ul class="blist"><li>New CEO Lip-Bu Tan restructuring plan gaining credibility</li><li>Intel 18A process node key for US CHIPS Act foundry</li><li>Potential acquisition target (TSMC/Broadcom interest)</li><li>P/S of 2.0× deeply discounts any recovery scenario</li><li>US government strategic interest in domestic foundry</li></ul></div>
+    <div class="panel"><div class="panel-title" style="color:var(--red)">⚠️ Risks</div><ul class="blist"><li>Consecutive net losses; no dividend; balance sheet stressed</li><li>Lost AI GPU market to NVIDIA entirely</li><li>18A process node yield risk — critical execution milestone</li><li>Foundry customers slow to commit vs TSMC alternatives</li><li>$9B+ annual capex with negative FCF is unsustainable</li></ul></div>
+  </div>
+
+  <!-- VERDICT -->
+  <div class="panel" style="margin-top:14px">
+    <div class="panel-title">Bottom Line & Verdict</div>
+    <div class="rating-track">
+      <div class="rating-fill" style="background:linear-gradient(to right,var(--green),#84cc16,var(--amber),#f97316,var(--red));height:100%;border-radius:6px"></div>
+      <div class="rating-pin" style="left:68%"></div>
+    </div>
+    <div class="rating-lbs"><span>Strong Buy</span><span>Buy</span><span>Hold</span><span>Sell</span><span>Strong Sell</span></div>
+    <div style="margin-top:10px"><span class="verdict-badge" style="background:rgba(239,68,68,.12);color:var(--red);border-color:rgba(239,68,68,.4)">SPECULATIVE HOLD</span></div>
+    <p class="summary-txt">Intel is the highest-risk stock in this cohort and requires a turnaround thesis to invest. The company is posting net losses, cut its dividend entirely, and ceded the AI GPU market to NVIDIA. New CEO Lip-Bu Tan has a credible restructuring plan, and Intel 18A could be a game-changer for US semiconductor sovereignty, but execution risk is extreme. P/S of 2.0× prices in significant disappointment already. Risk score 72 — elevated — suitable only for high-risk-tolerant investors.</p>
+  </div>
+
+  <script>
+  (function(){
+    var ctx=document.getElementById('chart_INTC').getContext('2d');
+    var gr=ctx.createLinearGradient(0,0,0,180);
+    gr.addColorStop(0,'rgba(99,102,241,0.3)');
+    gr.addColorStop(1,'rgba(99,102,241,0)');
+    new Chart(ctx,{
+      type:'line',
+      data:{labels:['May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26','Apr 26','May 26'],datasets:[{data:[38, 36, 35, 32, 28, 24, 20, 22, 24, 25, 26, 25, 24.8],borderColor:'#0071c5',borderWidth:2,backgroundColor:gr,fill:true,tension:0.35,pointRadius:3,pointBackgroundColor:'#0071c5'}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#12151c',borderColor:'#1e2330',borderWidth:1,titleColor:'#e8eaf0',bodyColor:'#a0b0c8'}},
+        scales:{x:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'}}},
+          y:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},callback:function(v){return '$'+v}}}}
+      }
+    });
+  })();
+  </script>
+</section>
+<hr class="section-divider">
+
+<section id="ARM" class="stock-section fade-in">
+  <!-- HEADER -->
+  <div class="section-topbar">
+    <div style="display:flex;align-items:center;gap:14px">
+      <div class="s-logo" style="background:linear-gradient(135deg,#00b4f0,#0a0c10)">A</div>
+      <div>
+        <h2 class="s-name">Arm Holdings plc <span>(ARM)</span></h2>
+        <span class="s-sector">CPU IP / AI Architecture</span>
+      </div>
+    </div>
+    <div class="s-price-block">
+      <div class="s-price">$148.60</div>
+      <div class="s-change up">▲ +2.8%</div>
+    </div>
+  </div>
+
+  <!-- ROW 1: GAUGE + BREAKDOWN + KPI -->
+  <div class="row3">
+    <!-- gauge -->
+    <div class="panel" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px">
+      <div class="panel-title">Risk Score</div>
+      <svg viewBox="0 0 220 130" width="200" height="130">
+  <defs><linearGradient id="gARM" x1="0%" y1="0%" x2="100%" y2="0%">
+    <stop offset="0%" style="stop-color:#22c55e"/><stop offset="40%" style="stop-color:#f59e0b"/><stop offset="100%" style="stop-color:#ef4444"/>
+  </linearGradient></defs>
+  <path d="M 10 110 A 100 100 0 0 1 210 110" fill="none" stroke="#1e2330" stroke-width="16" stroke-linecap="round"/>
+  <path d="M 10 110 A 100 100 0 0 1 210 110" fill="none" stroke="url(#gARM)" stroke-width="16" stroke-linecap="round"
+        stroke-dasharray="314" stroke-dashoffset="119.3"/>
+  <line x1="110" y1="110" x2="110" y2="25" stroke="#fff" stroke-width="2.5" stroke-linecap="round"
+        transform="rotate(21.6 110 110)"/>
+  <circle cx="110" cy="110" r="5" fill="#6366f1"/>
+  <text x="6" y="126" fill="#7b8299" font-size="9" font-family="JetBrains Mono">0</text>
+  <text x="101" y="14" fill="#7b8299" font-size="9" font-family="JetBrains Mono" text-anchor="middle">50</text>
+  <text x="208" y="126" fill="#7b8299" font-size="9" font-family="JetBrains Mono" text-anchor="end">100</text>
+  <text x="110" y="100" fill="#ef4444" font-size="22" font-weight="bold" font-family="JetBrains Mono" text-anchor="middle">62</text>
+  <text x="110" y="125" fill="#7b8299" font-size="8" font-family="DM Sans" text-anchor="middle">ELEVATED RISK</text>
+</svg>
+    </div>
+    <!-- breakdown -->
+    <div class="panel">
+      <div class="panel-title">Score Breakdown</div>
+      <div class="br-row"><div class="br-hd"><span>Valuation (35%)</span><span class="mono">80/100</span></div>
+        <div class="br-track"><div class="br-fill fill-r" style="width:80%"></div></div></div>
+      <div class="br-row"><div class="br-hd"><span>Fin. Health (35%)</span><span class="mono">35/100</span></div>
+        <div class="br-track"><div class="br-fill fill-g" style="width:35%"></div></div></div>
+      <div class="br-row"><div class="br-hd"><span>Growth (30%)</span><span class="mono">45/100</span></div>
+        <div class="br-track"><div class="br-fill fill-a" style="width:45%"></div></div></div>
+      <!-- explainer -->
+      <div class="expl"><span>💡</span><div><b style="color:var(--blue)">P/E Explained:</b> Price ÷ EPS. ARM P/E: <span class="mono">200×</span>. Higher P/E = more growth priced in = more valuation risk.</div></div>
+    </div>
+    <!-- kpi strip vertical -->
+    <div class="panel kpi-v">
+      <div class="panel-title">Key Metrics</div>
+      <div class="kv"><span>Market Cap</span><span class="mono">$157B</span></div>
+      <div class="kv"><span>P/E (TTM)</span><span class="mono badge miss" style="padding:2px 6px">200×</span></div>
+      <div class="kv"><span>P/S</span><span class="mono">36××</span></div>
+      <div class="kv"><span>PEG</span><span class="mono">5.8</span></div>
+      <div class="kv"><span>Revenue</span><span class="mono">$4.3B</span></div>
+      <div class="kv"><span>Rev Growth</span><span class="mono" style="color:var(--green)">+34%</span></div>
+      <div class="kv"><span>EPS</span><span class="mono">$0.74</span></div>
+      <div class="kv"><span>EPS Growth</span><span class="mono" style="color:var(--green)">+68%</span></div>
+      <div class="kv"><span>Op Margin</span><span class="mono">28%</span></div>
+      <div class="kv"><span>FCF Margin</span><span class="mono">38%</span></div>
+      <div class="kv"><span>ROE</span><span class="mono">22%</span></div>
+      <div class="kv"><span>D/E</span><span class="mono">Low</span></div>
+      <div class="kv"><span>Div Yield</span><span class="mono">0%</span></div>
+    </div>
+  </div>
+
+  <!-- PRICE CHART -->
+  <div class="panel" style="margin-top:14px">
+    <div class="panel-title">12-Month Price Chart (May 2025 – May 2026)</div>
+    <div style="position:relative;height:180px">
+      <canvas id="chart_ARM"></canvas>
+    </div>
+  </div>
+
+  <!-- QUARTERLY TABLE -->
+  <div class="panel" style="margin-top:14px;overflow-x:auto">
+    <div class="panel-title">Quarterly Trend — Last 4 Quarters</div>
+    <table><thead><tr><th>Quarter</th><th>Rev (Act)</th><th>Rev Est</th><th>Beat/Miss</th><th>EPS (Act)</th><th>EPS Est</th><th>EPS B/M</th><th>Result</th></tr></thead>
+    <tbody><tr><td>Q3 FY2026 (Dec)</td><td>$983M</td><td>$950M</td><td class='beat-cell'>+3.5%</td><td>$0.39</td><td>$0.34</td><td class='beat-cell'>+$0.05</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q2 FY2026 (Sep)</td><td>$844M</td><td>$812M</td><td class='beat-cell'>+3.9%</td><td>$0.30</td><td>$0.26</td><td class='beat-cell'>+$0.04</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q1 FY2026 (Jun)</td><td>$939M</td><td>$890M</td><td class='beat-cell'>+5.5%</td><td>$0.38</td><td>$0.31</td><td class='beat-cell'>+$0.07</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q4 FY2025 (Mar)</td><td>$1.24B</td><td>$1.17B</td><td class='beat-cell'>+6.0%</td><td>$0.55</td><td>$0.48</td><td class='beat-cell'>+$0.07</td><td><span class="badge beat">BEAT</span></td></tr>
+</tbody></table>
+  </div>
+
+  <!-- CATALYSTS + RISKS -->
+  <div class="row2" style="margin-top:14px">
+    <div class="panel"><div class="panel-title" style="color:var(--green)">⚡ Catalysts</div><ul class="blist"><li>ARM architecture in every smartphone, most AI edge devices</li><li>CSS (Compute Subsystems) royalty model drives higher ASPs</li><li>AI datacenter adoption: AWS Graviton, Ampere, Google Axion</li><li>v9 architecture transition commanding 2× prior royalty rates</li><li>NVIDIA, Apple, Google, Amazon all ARM-based chip designers</li></ul></div>
+    <div class="panel"><div class="panel-title" style="color:var(--red)">⚠️ Risks</div><ul class="blist"><li>P/E of 200× is the most extreme valuation in this cohort</li><li>SoftBank owns 90%+ — controlling shareholder risk</li><li>Revenue concentration: royalties lumpy with chip cycles</li><li>RISC-V open-source alternative long-term threat</li><li>Any growth deceleration could trigger sharp de-rating</li></ul></div>
+  </div>
+
+  <!-- VERDICT -->
+  <div class="panel" style="margin-top:14px">
+    <div class="panel-title">Bottom Line & Verdict</div>
+    <div class="rating-track">
+      <div class="rating-fill" style="background:linear-gradient(to right,var(--green),#84cc16,var(--amber),#f97316,var(--red));height:100%;border-radius:6px"></div>
+      <div class="rating-pin" style="left:55%"></div>
+    </div>
+    <div class="rating-lbs"><span>Strong Buy</span><span>Buy</span><span>Hold</span><span>Sell</span><span>Strong Sell</span></div>
+    <div style="margin-top:10px"><span class="verdict-badge" style="background:rgba(245,158,11,.12);color:var(--amber);border-color:rgba(245,158,11,.4)">HOLD / TRIM</span></div>
+    <p class="summary-txt">Arm is an exceptional business — every connected device runs on ARM IP — but at a P/E of 200× and P/S of 36×, the valuation leaves virtually no room for error. The v9 architecture transition is genuinely driving higher royalty rates, and AI accelerators are increasingly ARM-based, supporting the growth thesis. However, the risk score of 62 reflects that the stock is pricing in a decade of perfection. Best entered on significant pullbacks.</p>
+  </div>
+
+  <script>
+  (function(){
+    var ctx=document.getElementById('chart_ARM').getContext('2d');
+    var gr=ctx.createLinearGradient(0,0,0,180);
+    gr.addColorStop(0,'rgba(99,102,241,0.3)');
+    gr.addColorStop(1,'rgba(99,102,241,0)');
+    new Chart(ctx,{
+      type:'line',
+      data:{labels:['May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26','Apr 26','May 26'],datasets:[{data:[120, 135, 145, 165, 155, 140, 130, 135, 140, 145, 150, 147, 148.6],borderColor:'#00b4f0',borderWidth:2,backgroundColor:gr,fill:true,tension:0.35,pointRadius:3,pointBackgroundColor:'#00b4f0'}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#12151c',borderColor:'#1e2330',borderWidth:1,titleColor:'#e8eaf0',bodyColor:'#a0b0c8'}},
+        scales:{x:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'}}},
+          y:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},callback:function(v){return '$'+v}}}}
+      }
+    });
+  })();
+  </script>
+</section>
+<hr class="section-divider">
+
+<section id="MRVL" class="stock-section fade-in">
+  <!-- HEADER -->
+  <div class="section-topbar">
+    <div style="display:flex;align-items:center;gap:14px">
+      <div class="s-logo" style="background:linear-gradient(135deg,#dc143c,#0a0c10)">M</div>
+      <div>
+        <h2 class="s-name">Marvell Technology <span>(MRVL)</span></h2>
+        <span class="s-sector">Custom AI Chips / Networking</span>
+      </div>
+    </div>
+    <div class="s-price-block">
+      <div class="s-price">$165.00</div>
+      <div class="s-change up">▲ +67%</div>
+    </div>
+  </div>
+
+  <!-- ROW 1: GAUGE + BREAKDOWN + KPI -->
+  <div class="row3">
+    <!-- gauge -->
+    <div class="panel" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px">
+      <div class="panel-title">Risk Score</div>
+      <svg viewBox="0 0 220 130" width="200" height="130">
+  <defs><linearGradient id="gMRVL" x1="0%" y1="0%" x2="100%" y2="0%">
+    <stop offset="0%" style="stop-color:#22c55e"/><stop offset="40%" style="stop-color:#f59e0b"/><stop offset="100%" style="stop-color:#ef4444"/>
+  </linearGradient></defs>
+  <path d="M 10 110 A 100 100 0 0 1 210 110" fill="none" stroke="#1e2330" stroke-width="16" stroke-linecap="round"/>
+  <path d="M 10 110 A 100 100 0 0 1 210 110" fill="none" stroke="url(#gMRVL)" stroke-width="16" stroke-linecap="round"
+        stroke-dasharray="314" stroke-dashoffset="160.1"/>
+  <line x1="110" y1="110" x2="110" y2="25" stroke="#fff" stroke-width="2.5" stroke-linecap="round"
+        transform="rotate(-1.8 110 110)"/>
+  <circle cx="110" cy="110" r="5" fill="#6366f1"/>
+  <text x="6" y="126" fill="#7b8299" font-size="9" font-family="JetBrains Mono">0</text>
+  <text x="101" y="14" fill="#7b8299" font-size="9" font-family="JetBrains Mono" text-anchor="middle">50</text>
+  <text x="208" y="126" fill="#7b8299" font-size="9" font-family="JetBrains Mono" text-anchor="end">100</text>
+  <text x="110" y="100" fill="#f59e0b" font-size="22" font-weight="bold" font-family="JetBrains Mono" text-anchor="middle">49</text>
+  <text x="110" y="125" fill="#7b8299" font-size="8" font-family="DM Sans" text-anchor="middle">MODERATE RISK</text>
+</svg>
+    </div>
+    <!-- breakdown -->
+    <div class="panel">
+      <div class="panel-title">Score Breakdown</div>
+      <div class="br-row"><div class="br-hd"><span>Valuation (35%)</span><span class="mono">52/100</span></div>
+        <div class="br-track"><div class="br-fill fill-a" style="width:52%"></div></div></div>
+      <div class="br-row"><div class="br-hd"><span>Fin. Health (35%)</span><span class="mono">40/100</span></div>
+        <div class="br-track"><div class="br-fill fill-a" style="width:40%"></div></div></div>
+      <div class="br-row"><div class="br-hd"><span>Growth (30%)</span><span class="mono">42/100</span></div>
+        <div class="br-track"><div class="br-fill fill-a" style="width:42%"></div></div></div>
+      <!-- explainer -->
+      <div class="expl"><span>💡</span><div><b style="color:var(--blue)">P/E Explained:</b> Price ÷ EPS. MRVL P/E: <span class="mono">53.7×</span>. Higher P/E = more growth priced in = more valuation risk.</div></div>
+    </div>
+    <!-- kpi strip vertical -->
+    <div class="panel kpi-v">
+      <div class="panel-title">Key Metrics</div>
+      <div class="kv"><span>Market Cap</span><span class="mono">$144B</span></div>
+      <div class="kv"><span>P/E (TTM)</span><span class="mono badge beat" style="padding:2px 6px">53.7×</span></div>
+      <div class="kv"><span>P/S</span><span class="mono">17.8××</span></div>
+      <div class="kv"><span>PEG</span><span class="mono">1.1</span></div>
+      <div class="kv"><span>Revenue</span><span class="mono">$8.1B</span></div>
+      <div class="kv"><span>Rev Growth</span><span class="mono" style="color:var(--green)">+46%</span></div>
+      <div class="kv"><span>EPS</span><span class="mono">$3.07</span></div>
+      <div class="kv"><span>EPS Growth</span><span class="mono" style="color:var(--green)">+52%</span></div>
+      <div class="kv"><span>Op Margin</span><span class="mono">21%</span></div>
+      <div class="kv"><span>FCF Margin</span><span class="mono">28%</span></div>
+      <div class="kv"><span>ROE</span><span class="mono">9%</span></div>
+      <div class="kv"><span>D/E</span><span class="mono">Moderate</span></div>
+      <div class="kv"><span>Div Yield</span><span class="mono">0.24%</span></div>
+    </div>
+  </div>
+
+  <!-- PRICE CHART -->
+  <div class="panel" style="margin-top:14px">
+    <div class="panel-title">12-Month Price Chart (May 2025 – May 2026)</div>
+    <div style="position:relative;height:180px">
+      <canvas id="chart_MRVL"></canvas>
+    </div>
+  </div>
+
+  <!-- QUARTERLY TABLE -->
+  <div class="panel" style="margin-top:14px;overflow-x:auto">
+    <div class="panel-title">Quarterly Trend — Last 4 Quarters</div>
+    <table><thead><tr><th>Quarter</th><th>Rev (Act)</th><th>Rev Est</th><th>Beat/Miss</th><th>EPS (Act)</th><th>EPS Est</th><th>EPS B/M</th><th>Result</th></tr></thead>
+    <tbody><tr><td>Q4 FY2025 (Jan)</td><td>$1.82B</td><td>$1.79B</td><td class='beat-cell'>+1.7%</td><td>$0.60</td><td>$0.59</td><td class='beat-cell'>+$0.01</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q3 FY2025 (Oct)</td><td>$1.52B</td><td>$1.45B</td><td class='beat-cell'>+4.8%</td><td>$0.43</td><td>$0.41</td><td class='beat-cell'>+$0.02</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q2 FY2025 (Jul)</td><td>$1.36B</td><td>$1.26B</td><td class='beat-cell'>+7.9%</td><td>$0.37</td><td>$0.34</td><td class='beat-cell'>+$0.03</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q1 FY2025 (Apr)</td><td>$1.16B</td><td>$1.15B</td><td class='beat-cell'>+0.9%</td><td>$0.31</td><td>$0.30</td><td class='beat-cell'>+$0.01</td><td><span class="badge beat">BEAT</span></td></tr>
+</tbody></table>
+  </div>
+
+  <!-- CATALYSTS + RISKS -->
+  <div class="row2" style="margin-top:14px">
+    <div class="panel"><div class="panel-title" style="color:var(--green)">⚡ Catalysts</div><ul class="blist"><li>Custom AI ASIC co-design with Amazon, Google, Microsoft</li><li>Electra optical chip (1.6T) for next-gen AI data centers</li><li>AI/Cloud now 73% of revenue — structural re-rating</li><li>April 2026: stock surged 67% in one month on AI contracts</li><li>5nm and 3nm custom silicon pipeline expanding rapidly</li></ul></div>
+    <div class="panel"><div class="panel-title" style="color:var(--red)">⚠️ Risks</div><ul class="blist"><li>High customer concentration: top 2 customers ~50% revenue</li><li>P/S of 17.8× expensive for a fabless chip designer</li><li>Custom ASIC ramp timeline could slip</li><li>Telecom/carrier segment remains a weak drag</li><li>Small revenue base ($8.1B) makes percentage moves lumpy</li></ul></div>
+  </div>
+
+  <!-- VERDICT -->
+  <div class="panel" style="margin-top:14px">
+    <div class="panel-title">Bottom Line & Verdict</div>
+    <div class="rating-track">
+      <div class="rating-fill" style="background:linear-gradient(to right,var(--green),#84cc16,var(--amber),#f97316,var(--red));height:100%;border-radius:6px"></div>
+      <div class="rating-pin" style="left:30%"></div>
+    </div>
+    <div class="rating-lbs"><span>Strong Buy</span><span>Buy</span><span>Hold</span><span>Sell</span><span>Strong Sell</span></div>
+    <div style="margin-top:10px"><span class="verdict-badge" style="background:rgba(34,197,94,.12);color:var(--green);border-color:rgba(34,197,94,.4)">BUY / WATCH MOMENTUM</span></div>
+    <p class="summary-txt">Marvell has transformed into an AI custom silicon powerhouse. The April 2026 stock surge of 67% reflects a genuine re-rating as hyperscalers confirm multi-year ASIC engagements. With a PEG of 1.1, revenue growing 46%, and AI/cloud now 73% of the business, Marvell is among the most compelling AI infrastructure plays outside of NVIDIA. Customer concentration is the primary risk. Risk score 49 is moderate.</p>
+  </div>
+
+  <script>
+  (function(){
+    var ctx=document.getElementById('chart_MRVL').getContext('2d');
+    var gr=ctx.createLinearGradient(0,0,0,180);
+    gr.addColorStop(0,'rgba(99,102,241,0.3)');
+    gr.addColorStop(1,'rgba(99,102,241,0)');
+    new Chart(ctx,{
+      type:'line',
+      data:{labels:['May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26','Apr 26','May 26'],datasets:[{data:[60, 65, 75, 80, 75, 70, 65, 75, 90, 100, 99, 160, 165],borderColor:'#dc143c',borderWidth:2,backgroundColor:gr,fill:true,tension:0.35,pointRadius:3,pointBackgroundColor:'#dc143c'}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#12151c',borderColor:'#1e2330',borderWidth:1,titleColor:'#e8eaf0',bodyColor:'#a0b0c8'}},
+        scales:{x:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'}}},
+          y:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},callback:function(v){return '$'+v}}}}
+      }
+    });
+  })();
+  </script>
+</section>
+<hr class="section-divider">
+
+<section id="KLAC" class="stock-section fade-in">
+  <!-- HEADER -->
+  <div class="section-topbar">
+    <div style="display:flex;align-items:center;gap:14px">
+      <div class="s-logo" style="background:linear-gradient(135deg,#f5a623,#0a0c10)">K</div>
+      <div>
+        <h2 class="s-name">KLA Corporation <span>(KLAC)</span></h2>
+        <span class="s-sector">Process Control Equipment</span>
+      </div>
+    </div>
+    <div class="s-price-block">
+      <div class="s-price">$1,726.26</div>
+      <div class="s-change down">▼ -1.4%</div>
+    </div>
+  </div>
+
+  <!-- ROW 1: GAUGE + BREAKDOWN + KPI -->
+  <div class="row3">
+    <!-- gauge -->
+    <div class="panel" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px">
+      <div class="panel-title">Risk Score</div>
+      <svg viewBox="0 0 220 130" width="200" height="130">
+  <defs><linearGradient id="gKLAC" x1="0%" y1="0%" x2="100%" y2="0%">
+    <stop offset="0%" style="stop-color:#22c55e"/><stop offset="40%" style="stop-color:#f59e0b"/><stop offset="100%" style="stop-color:#ef4444"/>
+  </linearGradient></defs>
+  <path d="M 10 110 A 100 100 0 0 1 210 110" fill="none" stroke="#1e2330" stroke-width="16" stroke-linecap="round"/>
+  <path d="M 10 110 A 100 100 0 0 1 210 110" fill="none" stroke="url(#gKLAC)" stroke-width="16" stroke-linecap="round"
+        stroke-dasharray="314" stroke-dashoffset="188.4"/>
+  <line x1="110" y1="110" x2="110" y2="25" stroke="#fff" stroke-width="2.5" stroke-linecap="round"
+        transform="rotate(-18.0 110 110)"/>
+  <circle cx="110" cy="110" r="5" fill="#6366f1"/>
+  <text x="6" y="126" fill="#7b8299" font-size="9" font-family="JetBrains Mono">0</text>
+  <text x="101" y="14" fill="#7b8299" font-size="9" font-family="JetBrains Mono" text-anchor="middle">50</text>
+  <text x="208" y="126" fill="#7b8299" font-size="9" font-family="JetBrains Mono" text-anchor="end">100</text>
+  <text x="110" y="100" fill="#f59e0b" font-size="22" font-weight="bold" font-family="JetBrains Mono" text-anchor="middle">40</text>
+  <text x="110" y="125" fill="#7b8299" font-size="8" font-family="DM Sans" text-anchor="middle">MODERATE RISK</text>
+</svg>
+    </div>
+    <!-- breakdown -->
+    <div class="panel">
+      <div class="panel-title">Score Breakdown</div>
+      <div class="br-row"><div class="br-hd"><span>Valuation (35%)</span><span class="mono">42/100</span></div>
+        <div class="br-track"><div class="br-fill fill-a" style="width:42%"></div></div></div>
+      <div class="br-row"><div class="br-hd"><span>Fin. Health (35%)</span><span class="mono">28/100</span></div>
+        <div class="br-track"><div class="br-fill fill-g" style="width:28%"></div></div></div>
+      <div class="br-row"><div class="br-hd"><span>Growth (30%)</span><span class="mono">42/100</span></div>
+        <div class="br-track"><div class="br-fill fill-a" style="width:42%"></div></div></div>
+      <!-- explainer -->
+      <div class="expl"><span>💡</span><div><b style="color:var(--blue)">P/E Explained:</b> Price ÷ EPS. KLAC P/E: <span class="mono">41.9×</span>. Higher P/E = more growth priced in = more valuation risk.</div></div>
+    </div>
+    <!-- kpi strip vertical -->
+    <div class="panel kpi-v">
+      <div class="panel-title">Key Metrics</div>
+      <div class="kv"><span>Market Cap</span><span class="mono">$226B</span></div>
+      <div class="kv"><span>P/E (TTM)</span><span class="mono badge beat" style="padding:2px 6px">41.9×</span></div>
+      <div class="kv"><span>P/S</span><span class="mono">17.8××</span></div>
+      <div class="kv"><span>PEG</span><span class="mono">1.4</span></div>
+      <div class="kv"><span>Revenue</span><span class="mono">$12.7B</span></div>
+      <div class="kv"><span>Rev Growth</span><span class="mono" style="color:var(--green)">+17.5%</span></div>
+      <div class="kv"><span>EPS</span><span class="mono">$34.37</span></div>
+      <div class="kv"><span>EPS Growth</span><span class="mono" style="color:var(--green)">+44.7%</span></div>
+      <div class="kv"><span>Op Margin</span><span class="mono">41%</span></div>
+      <div class="kv"><span>FCF Margin</span><span class="mono">35%</span></div>
+      <div class="kv"><span>ROE</span><span class="mono">80%</span></div>
+      <div class="kv"><span>D/E</span><span class="mono">Low-Moderate</span></div>
+      <div class="kv"><span>Div Yield</span><span class="mono">0.52%</span></div>
+    </div>
+  </div>
+
+  <!-- PRICE CHART -->
+  <div class="panel" style="margin-top:14px">
+    <div class="panel-title">12-Month Price Chart (May 2025 – May 2026)</div>
+    <div style="position:relative;height:180px">
+      <canvas id="chart_KLAC"></canvas>
+    </div>
+  </div>
+
+  <!-- QUARTERLY TABLE -->
+  <div class="panel" style="margin-top:14px;overflow-x:auto">
+    <div class="panel-title">Quarterly Trend — Last 4 Quarters</div>
+    <table><thead><tr><th>Quarter</th><th>Rev (Act)</th><th>Rev Est</th><th>Beat/Miss</th><th>EPS (Act)</th><th>EPS Est</th><th>EPS B/M</th><th>Result</th></tr></thead>
+    <tbody><tr><td>Q3 FY2026 (Mar)</td><td>$3.415B</td><td>$3.35B</td><td class='beat-cell'>+1.9%</td><td>$9.40</td><td>$8.84</td><td class='beat-cell'>+$0.56</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q2 FY2026 (Dec)</td><td>$3.076B</td><td>$3.02B</td><td class='beat-cell'>+1.9%</td><td>$8.01</td><td>$7.72</td><td class='beat-cell'>+$0.29</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q1 FY2026 (Sep)</td><td>$2.841B</td><td>$2.78B</td><td class='beat-cell'>+2.2%</td><td>$7.33</td><td>$7.24</td><td class='beat-cell'>+$0.09</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q4 FY2025 (Jun)</td><td>$2.772B</td><td>$2.70B</td><td class='beat-cell'>+2.7%</td><td>$6.60</td><td>$6.29</td><td class='beat-cell'>+$0.31</td><td><span class="badge beat">BEAT</span></td></tr>
+</tbody></table>
+  </div>
+
+  <!-- CATALYSTS + RISKS -->
+  <div class="row2" style="margin-top:14px">
+    <div class="panel"><div class="panel-title" style="color:var(--green)">⚡ Catalysts</div><ul class="blist"><li>Process control monopoly: yield management is non-negotiable</li><li>AI chip complexity (3nm/2nm) requires MORE KLA inspection</li><li>WFE market growing to $135B in 2026 (+23% YoY)</li><li>80% ROE — exceptional capital efficiency</li><li>Q3 FY2026 guidance: $3.575B revenue (continuing beat trend)</li></ul></div>
+    <div class="panel"><div class="panel-title" style="color:var(--red)">⚠️ Risks</div><ul class="blist"><li>China revenue ~30% — vulnerable to export restrictions</li><li>WFE spending is cyclical and can contract sharply</li><li>P/E 42× pricing in continued AI spend acceleration</li><li>Concentration in leading-edge fab customers (TSMC, Samsung)</li><li>Any AI capex slowdown would hit orders rapidly</li></ul></div>
+  </div>
+
+  <!-- VERDICT -->
+  <div class="panel" style="margin-top:14px">
+    <div class="panel-title">Bottom Line & Verdict</div>
+    <div class="rating-track">
+      <div class="rating-fill" style="background:linear-gradient(to right,var(--green),#84cc16,var(--amber),#f97316,var(--red));height:100%;border-radius:6px"></div>
+      <div class="rating-pin" style="left:26%"></div>
+    </div>
+    <div class="rating-lbs"><span>Strong Buy</span><span>Buy</span><span>Hold</span><span>Sell</span><span>Strong Sell</span></div>
+    <div style="margin-top:10px"><span class="verdict-badge" style="background:rgba(34,197,94,.12);color:var(--green);border-color:rgba(34,197,94,.4)">BUY</span></div>
+    <p class="summary-txt">KLA is the process control oligopoly of the chip industry — as chips get more complex at 3nm and 2nm, the number of inspection and metrology steps required multiplies, making KLA indispensable. ROE of 80%, operating margins of 41%, and four consecutive earnings beats illustrate exceptional execution. The main risk is China exposure (~30% of revenue) and the cyclical nature of WFE spending. Risk score of 40 reflects high quality with modest geopolitical/cyclical risks.</p>
+  </div>
+
+  <script>
+  (function(){
+    var ctx=document.getElementById('chart_KLAC').getContext('2d');
+    var gr=ctx.createLinearGradient(0,0,0,180);
+    gr.addColorStop(0,'rgba(99,102,241,0.3)');
+    gr.addColorStop(1,'rgba(99,102,241,0)');
+    new Chart(ctx,{
+      type:'line',
+      data:{labels:['May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26','Apr 26','May 26'],datasets:[{data:[670, 730, 790, 850, 800, 750, 720, 800, 900, 1100, 1500, 1680, 1726],borderColor:'#f5a623',borderWidth:2,backgroundColor:gr,fill:true,tension:0.35,pointRadius:3,pointBackgroundColor:'#f5a623'}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#12151c',borderColor:'#1e2330',borderWidth:1,titleColor:'#e8eaf0',bodyColor:'#a0b0c8'}},
+        scales:{x:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'}}},
+          y:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},callback:function(v){return '$'+v}}}}
+      }
+    });
+  })();
+  </script>
+</section>
+<hr class="section-divider">
+
+<section id="AMAT" class="stock-section fade-in">
+  <!-- HEADER -->
+  <div class="section-topbar">
+    <div style="display:flex;align-items:center;gap:14px">
+      <div class="s-logo" style="background:linear-gradient(135deg,#0077cc,#0a0c10)">A</div>
+      <div>
+        <h2 class="s-name">Applied Materials Inc. <span>(AMAT)</span></h2>
+        <span class="s-sector">Semiconductor Equipment</span>
+      </div>
+    </div>
+    <div class="s-price-block">
+      <div class="s-price">$389.08</div>
+      <div class="s-change down">▼ -1.4%</div>
+    </div>
+  </div>
+
+  <!-- ROW 1: GAUGE + BREAKDOWN + KPI -->
+  <div class="row3">
+    <!-- gauge -->
+    <div class="panel" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px">
+      <div class="panel-title">Risk Score</div>
+      <svg viewBox="0 0 220 130" width="200" height="130">
+  <defs><linearGradient id="gAMAT" x1="0%" y1="0%" x2="100%" y2="0%">
+    <stop offset="0%" style="stop-color:#22c55e"/><stop offset="40%" style="stop-color:#f59e0b"/><stop offset="100%" style="stop-color:#ef4444"/>
+  </linearGradient></defs>
+  <path d="M 10 110 A 100 100 0 0 1 210 110" fill="none" stroke="#1e2330" stroke-width="16" stroke-linecap="round"/>
+  <path d="M 10 110 A 100 100 0 0 1 210 110" fill="none" stroke="url(#gAMAT)" stroke-width="16" stroke-linecap="round"
+        stroke-dasharray="314" stroke-dashoffset="179.0"/>
+  <line x1="110" y1="110" x2="110" y2="25" stroke="#fff" stroke-width="2.5" stroke-linecap="round"
+        transform="rotate(-12.6 110 110)"/>
+  <circle cx="110" cy="110" r="5" fill="#6366f1"/>
+  <text x="6" y="126" fill="#7b8299" font-size="9" font-family="JetBrains Mono">0</text>
+  <text x="101" y="14" fill="#7b8299" font-size="9" font-family="JetBrains Mono" text-anchor="middle">50</text>
+  <text x="208" y="126" fill="#7b8299" font-size="9" font-family="JetBrains Mono" text-anchor="end">100</text>
+  <text x="110" y="100" fill="#f59e0b" font-size="22" font-weight="bold" font-family="JetBrains Mono" text-anchor="middle">43</text>
+  <text x="110" y="125" fill="#7b8299" font-size="8" font-family="DM Sans" text-anchor="middle">MODERATE RISK</text>
+</svg>
+    </div>
+    <!-- breakdown -->
+    <div class="panel">
+      <div class="panel-title">Score Breakdown</div>
+      <div class="br-row"><div class="br-hd"><span>Valuation (35%)</span><span class="mono">45/100</span></div>
+        <div class="br-track"><div class="br-fill fill-a" style="width:45%"></div></div></div>
+      <div class="br-row"><div class="br-hd"><span>Fin. Health (35%)</span><span class="mono">32/100</span></div>
+        <div class="br-track"><div class="br-fill fill-g" style="width:32%"></div></div></div>
+      <div class="br-row"><div class="br-hd"><span>Growth (30%)</span><span class="mono">48/100</span></div>
+        <div class="br-track"><div class="br-fill fill-a" style="width:48%"></div></div></div>
+      <!-- explainer -->
+      <div class="expl"><span>💡</span><div><b style="color:var(--blue)">P/E Explained:</b> Price ÷ EPS. AMAT P/E: <span class="mono">39×</span>. Higher P/E = more growth priced in = more valuation risk.</div></div>
+    </div>
+    <!-- kpi strip vertical -->
+    <div class="panel kpi-v">
+      <div class="panel-title">Key Metrics</div>
+      <div class="kv"><span>Market Cap</span><span class="mono">$309B</span></div>
+      <div class="kv"><span>P/E (TTM)</span><span class="mono badge beat" style="padding:2px 6px">39×</span></div>
+      <div class="kv"><span>P/S</span><span class="mono">10.9××</span></div>
+      <div class="kv"><span>PEG</span><span class="mono">2.2</span></div>
+      <div class="kv"><span>Revenue</span><span class="mono">$28.2B</span></div>
+      <div class="kv"><span>Rev Growth</span><span class="mono" style="color:var(--green)">+7%</span></div>
+      <div class="kv"><span>EPS</span><span class="mono">$9.97</span></div>
+      <div class="kv"><span>EPS Growth</span><span class="mono" style="color:var(--green)">+11%</span></div>
+      <div class="kv"><span>Op Margin</span><span class="mono">28.5%</span></div>
+      <div class="kv"><span>FCF Margin</span><span class="mono">26%</span></div>
+      <div class="kv"><span>ROE</span><span class="mono">42%</span></div>
+      <div class="kv"><span>D/E</span><span class="mono">Low</span></div>
+      <div class="kv"><span>Div Yield</span><span class="mono">0.82%</span></div>
+    </div>
+  </div>
+
+  <!-- PRICE CHART -->
+  <div class="panel" style="margin-top:14px">
+    <div class="panel-title">12-Month Price Chart (May 2025 – May 2026)</div>
+    <div style="position:relative;height:180px">
+      <canvas id="chart_AMAT"></canvas>
+    </div>
+  </div>
+
+  <!-- QUARTERLY TABLE -->
+  <div class="panel" style="margin-top:14px;overflow-x:auto">
+    <div class="panel-title">Quarterly Trend — Last 4 Quarters</div>
+    <table><thead><tr><th>Quarter</th><th>Rev (Act)</th><th>Rev Est</th><th>Beat/Miss</th><th>EPS (Act)</th><th>EPS Est</th><th>EPS B/M</th><th>Result</th></tr></thead>
+    <tbody><tr><td>Q1 FY2026 (Jan)</td><td>$7.17B</td><td>$7.14B</td><td class='beat-cell'>+0.4%</td><td>$2.38</td><td>$2.29</td><td class='beat-cell'>+$0.09</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q4 FY2025 (Oct)</td><td>$7.05B</td><td>$7.00B</td><td class='beat-cell'>+0.7%</td><td>$2.32</td><td>$2.18</td><td class='beat-cell'>+$0.14</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q3 FY2025 (Jul)</td><td>$6.99B</td><td>$6.97B</td><td class='beat-cell'>+0.3%</td><td>$2.12</td><td>$2.09</td><td class='beat-cell'>+$0.03</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q2 FY2025 (Apr)</td><td>$7.10B</td><td>$7.00B</td><td class='beat-cell'>+1.4%</td><td>$2.09</td><td>$2.05</td><td class='beat-cell'>+$0.04</td><td><span class="badge beat">BEAT</span></td></tr>
+</tbody></table>
+  </div>
+
+  <!-- CATALYSTS + RISKS -->
+  <div class="row2" style="margin-top:14px">
+    <div class="panel"><div class="panel-title" style="color:var(--green)">⚡ Catalysts</div><ul class="blist"><li>Broadest semiconductor equipment portfolio: CVD, PVD, etch, CMP</li><li>AI chip advanced packaging (Gate-All-Around) driving new demand</li><li>WFE growing to $135B in 2026 — AMAT captures ~25% share</li><li>ICAPS (IoT/auto/power) segment provides non-AI diversification</li><li>$28.2B revenue — largest semiconductor equipment company by revenue</li></ul></div>
+    <div class="panel"><div class="panel-title" style="color:var(--red)">⚠️ Risks</div><ul class="blist"><li>China export restrictions impacted revenue by ~$400M/qtr</li><li>Slower revenue growth (7%) vs peers KLAC, LRCX</li><li>P/E 39× vs peers, lower growth rate compresses relative value</li><li>Customer concentration: TSMC, Samsung, Intel top 3</li><li>WFE spending cyclicality risk</li></ul></div>
+  </div>
+
+  <!-- VERDICT -->
+  <div class="panel" style="margin-top:14px">
+    <div class="panel-title">Bottom Line & Verdict</div>
+    <div class="rating-track">
+      <div class="rating-fill" style="background:linear-gradient(to right,var(--green),#84cc16,var(--amber),#f97316,var(--red));height:100%;border-radius:6px"></div>
+      <div class="rating-pin" style="left:44%"></div>
+    </div>
+    <div class="rating-lbs"><span>Strong Buy</span><span>Buy</span><span>Hold</span><span>Sell</span><span>Strong Sell</span></div>
+    <div style="margin-top:10px"><span class="verdict-badge" style="background:rgba(245,158,11,.12);color:var(--amber);border-color:rgba(245,158,11,.4)">HOLD / ACCUMULATE</span></div>
+    <p class="summary-txt">Applied Materials is the largest semiconductor equipment company globally and a steady compounder. While growth is more moderate (7% vs KLAC's 17%), the breadth of its product portfolio provides resilience, and Gate-All-Around transistor adoption at 2nm is a genuine new revenue catalyst. China headwinds are a known drag. At P/E 39× with consistent earnings beats, AMAT is fairly valued — risk score of 43 reflects a balanced risk-reward profile.</p>
+  </div>
+
+  <script>
+  (function(){
+    var ctx=document.getElementById('chart_AMAT').getContext('2d');
+    var gr=ctx.createLinearGradient(0,0,0,180);
+    gr.addColorStop(0,'rgba(99,102,241,0.3)');
+    gr.addColorStop(1,'rgba(99,102,241,0)');
+    new Chart(ctx,{
+      type:'line',
+      data:{labels:['May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26','Apr 26','May 26'],datasets:[{data:[185, 200, 215, 245, 225, 200, 185, 200, 220, 250, 280, 380, 389],borderColor:'#0077cc',borderWidth:2,backgroundColor:gr,fill:true,tension:0.35,pointRadius:3,pointBackgroundColor:'#0077cc'}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#12151c',borderColor:'#1e2330',borderWidth:1,titleColor:'#e8eaf0',bodyColor:'#a0b0c8'}},
+        scales:{x:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'}}},
+          y:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},callback:function(v){return '$'+v}}}}
+      }
+    });
+  })();
+  </script>
+</section>
+<hr class="section-divider">
+
+<section id="LRCX" class="stock-section fade-in">
+  <!-- HEADER -->
+  <div class="section-topbar">
+    <div style="display:flex;align-items:center;gap:14px">
+      <div class="s-logo" style="background:linear-gradient(135deg,#e31837,#0a0c10)">L</div>
+      <div>
+        <h2 class="s-name">Lam Research Corporation <span>(LRCX)</span></h2>
+        <span class="s-sector">Etch & Deposition Equipment</span>
+      </div>
+    </div>
+    <div class="s-price-block">
+      <div class="s-price">$256.72</div>
+      <div class="s-change up">▲ +0.4%</div>
+    </div>
+  </div>
+
+  <!-- ROW 1: GAUGE + BREAKDOWN + KPI -->
+  <div class="row3">
+    <!-- gauge -->
+    <div class="panel" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px">
+      <div class="panel-title">Risk Score</div>
+      <svg viewBox="0 0 220 130" width="200" height="130">
+  <defs><linearGradient id="gLRCX" x1="0%" y1="0%" x2="100%" y2="0%">
+    <stop offset="0%" style="stop-color:#22c55e"/><stop offset="40%" style="stop-color:#f59e0b"/><stop offset="100%" style="stop-color:#ef4444"/>
+  </linearGradient></defs>
+  <path d="M 10 110 A 100 100 0 0 1 210 110" fill="none" stroke="#1e2330" stroke-width="16" stroke-linecap="round"/>
+  <path d="M 10 110 A 100 100 0 0 1 210 110" fill="none" stroke="url(#gLRCX)" stroke-width="16" stroke-linecap="round"
+        stroke-dasharray="314" stroke-dashoffset="197.8"/>
+  <line x1="110" y1="110" x2="110" y2="25" stroke="#fff" stroke-width="2.5" stroke-linecap="round"
+        transform="rotate(-23.4 110 110)"/>
+  <circle cx="110" cy="110" r="5" fill="#6366f1"/>
+  <text x="6" y="126" fill="#7b8299" font-size="9" font-family="JetBrains Mono">0</text>
+  <text x="101" y="14" fill="#7b8299" font-size="9" font-family="JetBrains Mono" text-anchor="middle">50</text>
+  <text x="208" y="126" fill="#7b8299" font-size="9" font-family="JetBrains Mono" text-anchor="end">100</text>
+  <text x="110" y="100" fill="#22c55e" font-size="22" font-weight="bold" font-family="JetBrains Mono" text-anchor="middle">37</text>
+  <text x="110" y="125" fill="#7b8299" font-size="8" font-family="DM Sans" text-anchor="middle">LOW RISK</text>
+</svg>
+    </div>
+    <!-- breakdown -->
+    <div class="panel">
+      <div class="panel-title">Score Breakdown</div>
+      <div class="br-row"><div class="br-hd"><span>Valuation (35%)</span><span class="mono">32/100</span></div>
+        <div class="br-track"><div class="br-fill fill-g" style="width:32%"></div></div></div>
+      <div class="br-row"><div class="br-hd"><span>Fin. Health (35%)</span><span class="mono">35/100</span></div>
+        <div class="br-track"><div class="br-fill fill-g" style="width:35%"></div></div></div>
+      <div class="br-row"><div class="br-hd"><span>Growth (30%)</span><span class="mono">40/100</span></div>
+        <div class="br-track"><div class="br-fill fill-a" style="width:40%"></div></div></div>
+      <!-- explainer -->
+      <div class="expl"><span>💡</span><div><b style="color:var(--blue)">P/E Explained:</b> Price ÷ EPS. LRCX P/E: <span class="mono">28×</span>. Higher P/E = more growth priced in = more valuation risk.</div></div>
+    </div>
+    <!-- kpi strip vertical -->
+    <div class="panel kpi-v">
+      <div class="panel-title">Key Metrics</div>
+      <div class="kv"><span>Market Cap</span><span class="mono">$111B</span></div>
+      <div class="kv"><span>P/E (TTM)</span><span class="mono badge beat" style="padding:2px 6px">28×</span></div>
+      <div class="kv"><span>P/S</span><span class="mono">5.4××</span></div>
+      <div class="kv"><span>PEG</span><span class="mono">0.8</span></div>
+      <div class="kv"><span>Revenue</span><span class="mono">$20.6B</span></div>
+      <div class="kv"><span>Rev Growth</span><span class="mono" style="color:var(--green)">+27%</span></div>
+      <div class="kv"><span>EPS</span><span class="mono">$4.89</span></div>
+      <div class="kv"><span>EPS Growth</span><span class="mono" style="color:var(--green)">+49%</span></div>
+      <div class="kv"><span>Op Margin</span><span class="mono">34%</span></div>
+      <div class="kv"><span>FCF Margin</span><span class="mono">30%</span></div>
+      <div class="kv"><span>ROE</span><span class="mono">68%</span></div>
+      <div class="kv"><span>D/E</span><span class="mono">Moderate</span></div>
+      <div class="kv"><span>Div Yield</span><span class="mono">1.1%</span></div>
+    </div>
+  </div>
+
+  <!-- PRICE CHART -->
+  <div class="panel" style="margin-top:14px">
+    <div class="panel-title">12-Month Price Chart (May 2025 – May 2026)</div>
+    <div style="position:relative;height:180px">
+      <canvas id="chart_LRCX"></canvas>
+    </div>
+  </div>
+
+  <!-- QUARTERLY TABLE -->
+  <div class="panel" style="margin-top:14px;overflow-x:auto">
+    <div class="panel-title">Quarterly Trend — Last 4 Quarters</div>
+    <table><thead><tr><th>Quarter</th><th>Rev (Act)</th><th>Rev Est</th><th>Beat/Miss</th><th>EPS (Act)</th><th>EPS Est</th><th>EPS B/M</th><th>Result</th></tr></thead>
+    <tbody><tr><td>Q2 FY2026 (Mar)</td><td>$5.76B</td><td>$5.70B</td><td class='beat-cell'>+1.1%</td><td>$1.41</td><td>$1.35</td><td class='beat-cell'>+$0.06</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q1 FY2026 (Dec)</td><td>$5.34B</td><td>$5.09B</td><td class='beat-cell'>+4.9%</td><td>$1.27</td><td>$1.01</td><td class='beat-cell'>+$0.26</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q4 FY2025 (Sep)</td><td>$5.32B</td><td>$5.17B</td><td class='beat-cell'>+2.9%</td><td>$1.26</td><td>$1.20</td><td class='beat-cell'>+$0.06</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q3 FY2025 (Jun)</td><td>$4.87B</td><td>$4.75B</td><td class='beat-cell'>+2.5%</td><td>$1.15</td><td>$1.10</td><td class='beat-cell'>+$0.05</td><td><span class="badge beat">BEAT</span></td></tr>
+</tbody></table>
+  </div>
+
+  <!-- CATALYSTS + RISKS -->
+  <div class="row2" style="margin-top:14px">
+    <div class="panel"><div class="panel-title" style="color:var(--green)">⚡ Catalysts</div><ul class="blist"><li>Leading etch/deposition tools for 3D NAND and DRAM</li><li>Memory capex recovery: HBM build-out requires LRCX tools</li><li>WFE forecast growth to $135B in 2026 — LRCX key beneficiary</li><li>PEG 0.8 — attractively priced vs 27% revenue growth</li><li>Record $20.6B revenue in 2025; Q2 2026 guidance $5.7B</li></ul></div>
+    <div class="panel"><div class="panel-title" style="color:var(--red)">⚠️ Risks</div><ul class="blist"><li>China restrictions — meaningful revenue exposure</li><li>Memory customers (Samsung, Micron, SK Hynix) cyclical</li><li>Lower profile vs NVDA/ASML limits narrative premium</li><li>NAND oversupply scenario would hit orders</li><li>Gross margin 49.9% has limited expansion room</li></ul></div>
+  </div>
+
+  <!-- VERDICT -->
+  <div class="panel" style="margin-top:14px">
+    <div class="panel-title">Bottom Line & Verdict</div>
+    <div class="rating-track">
+      <div class="rating-fill" style="background:linear-gradient(to right,var(--green),#84cc16,var(--amber),#f97316,var(--red));height:100%;border-radius:6px"></div>
+      <div class="rating-pin" style="left:20%"></div>
+    </div>
+    <div class="rating-lbs"><span>Strong Buy</span><span>Buy</span><span>Hold</span><span>Sell</span><span>Strong Sell</span></div>
+    <div style="margin-top:10px"><span class="verdict-badge" style="background:rgba(34,197,94,.12);color:var(--green);border-color:rgba(34,197,94,.4)">BUY</span></div>
+    <p class="summary-txt">Lam Research is one of the most attractively valued picks in semiconductor equipment, with a PEG of 0.8 and P/E of 28× despite 27% revenue growth and 49% EPS growth in 2025. Its dominance in etch and deposition is critical for both advanced logic (TSMC, Intel) and memory (Micron, Samsung HBM). Four consecutive earnings beats and a 68% ROE demonstrate operational excellence. Risk score of 37 is among the lowest in this cohort.</p>
+  </div>
+
+  <script>
+  (function(){
+    var ctx=document.getElementById('chart_LRCX').getContext('2d');
+    var gr=ctx.createLinearGradient(0,0,0,180);
+    gr.addColorStop(0,'rgba(99,102,241,0.3)');
+    gr.addColorStop(1,'rgba(99,102,241,0)');
+    new Chart(ctx,{
+      type:'line',
+      data:{labels:['May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26','Apr 26','May 26'],datasets:[{data:[85, 90, 100, 105, 95, 85, 75, 80, 90, 100, 120, 140, 256.72],borderColor:'#e31837',borderWidth:2,backgroundColor:gr,fill:true,tension:0.35,pointRadius:3,pointBackgroundColor:'#e31837'}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#12151c',borderColor:'#1e2330',borderWidth:1,titleColor:'#e8eaf0',bodyColor:'#a0b0c8'}},
+        scales:{x:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'}}},
+          y:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},callback:function(v){return '$'+v}}}}
+      }
+    });
+  })();
+  </script>
+</section>
+<hr class="section-divider">
+
+<section id="PLTR" class="stock-section fade-in">
+  <!-- HEADER -->
+  <div class="section-topbar">
+    <div style="display:flex;align-items:center;gap:14px">
+      <div class="s-logo" style="background:linear-gradient(135deg,#800080,#0a0c10)">P</div>
+      <div>
+        <h2 class="s-name">Palantir Technologies <span>(PLTR)</span></h2>
+        <span class="s-sector">AI Software / Data Analytics</span>
+      </div>
+    </div>
+    <div class="s-price-block">
+      <div class="s-price">$123.50</div>
+      <div class="s-change up">▲ +3.2%</div>
+    </div>
+  </div>
+
+  <!-- ROW 1: GAUGE + BREAKDOWN + KPI -->
+  <div class="row3">
+    <!-- gauge -->
+    <div class="panel" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px">
+      <div class="panel-title">Risk Score</div>
+      <svg viewBox="0 0 220 130" width="200" height="130">
+  <defs><linearGradient id="gPLTR" x1="0%" y1="0%" x2="100%" y2="0%">
+    <stop offset="0%" style="stop-color:#22c55e"/><stop offset="40%" style="stop-color:#f59e0b"/><stop offset="100%" style="stop-color:#ef4444"/>
+  </linearGradient></defs>
+  <path d="M 10 110 A 100 100 0 0 1 210 110" fill="none" stroke="#1e2330" stroke-width="16" stroke-linecap="round"/>
+  <path d="M 10 110 A 100 100 0 0 1 210 110" fill="none" stroke="url(#gPLTR)" stroke-width="16" stroke-linecap="round"
+        stroke-dasharray="314" stroke-dashoffset="100.5"/>
+  <line x1="110" y1="110" x2="110" y2="25" stroke="#fff" stroke-width="2.5" stroke-linecap="round"
+        transform="rotate(32.4 110 110)"/>
+  <circle cx="110" cy="110" r="5" fill="#6366f1"/>
+  <text x="6" y="126" fill="#7b8299" font-size="9" font-family="JetBrains Mono">0</text>
+  <text x="101" y="14" fill="#7b8299" font-size="9" font-family="JetBrains Mono" text-anchor="middle">50</text>
+  <text x="208" y="126" fill="#7b8299" font-size="9" font-family="JetBrains Mono" text-anchor="end">100</text>
+  <text x="110" y="100" fill="#ef4444" font-size="22" font-weight="bold" font-family="JetBrains Mono" text-anchor="middle">68</text>
+  <text x="110" y="125" fill="#7b8299" font-size="8" font-family="DM Sans" text-anchor="middle">ELEVATED RISK</text>
+</svg>
+    </div>
+    <!-- breakdown -->
+    <div class="panel">
+      <div class="panel-title">Score Breakdown</div>
+      <div class="br-row"><div class="br-hd"><span>Valuation (35%)</span><span class="mono">90/100</span></div>
+        <div class="br-track"><div class="br-fill fill-r" style="width:90%"></div></div></div>
+      <div class="br-row"><div class="br-hd"><span>Fin. Health (35%)</span><span class="mono">42/100</span></div>
+        <div class="br-track"><div class="br-fill fill-a" style="width:42%"></div></div></div>
+      <div class="br-row"><div class="br-hd"><span>Growth (30%)</span><span class="mono">50/100</span></div>
+        <div class="br-track"><div class="br-fill fill-a" style="width:50%"></div></div></div>
+      <!-- explainer -->
+      <div class="expl"><span>💡</span><div><b style="color:var(--blue)">P/E Explained:</b> Price ÷ EPS. PLTR P/E: <span class="mono">510×</span>. Higher P/E = more growth priced in = more valuation risk.</div></div>
+    </div>
+    <!-- kpi strip vertical -->
+    <div class="panel kpi-v">
+      <div class="panel-title">Key Metrics</div>
+      <div class="kv"><span>Market Cap</span><span class="mono">$273B</span></div>
+      <div class="kv"><span>P/E (TTM)</span><span class="mono badge miss" style="padding:2px 6px">510×</span></div>
+      <div class="kv"><span>P/S</span><span class="mono">80××</span></div>
+      <div class="kv"><span>PEG</span><span class="mono">14</span></div>
+      <div class="kv"><span>Revenue</span><span class="mono">$3.39B</span></div>
+      <div class="kv"><span>Rev Growth</span><span class="mono" style="color:var(--green)">+36%</span></div>
+      <div class="kv"><span>EPS</span><span class="mono">$0.24</span></div>
+      <div class="kv"><span>EPS Growth</span><span class="mono" style="color:var(--green)">+118%</span></div>
+      <div class="kv"><span>Op Margin</span><span class="mono">16%</span></div>
+      <div class="kv"><span>FCF Margin</span><span class="mono">34%</span></div>
+      <div class="kv"><span>ROE</span><span class="mono">12%</span></div>
+      <div class="kv"><span>D/E</span><span class="mono">None</span></div>
+      <div class="kv"><span>Div Yield</span><span class="mono">0%</span></div>
+    </div>
+  </div>
+
+  <!-- PRICE CHART -->
+  <div class="panel" style="margin-top:14px">
+    <div class="panel-title">12-Month Price Chart (May 2025 – May 2026)</div>
+    <div style="position:relative;height:180px">
+      <canvas id="chart_PLTR"></canvas>
+    </div>
+  </div>
+
+  <!-- QUARTERLY TABLE -->
+  <div class="panel" style="margin-top:14px;overflow-x:auto">
+    <div class="panel-title">Quarterly Trend — Last 4 Quarters</div>
+    <table><thead><tr><th>Quarter</th><th>Rev (Act)</th><th>Rev Est</th><th>Beat/Miss</th><th>EPS (Act)</th><th>EPS Est</th><th>EPS B/M</th><th>Result</th></tr></thead>
+    <tbody><tr><td>Q1 2026 (Mar)</td><td>$884M</td><td>$863M</td><td class='beat-cell'>+2.4%</td><td>$0.13</td><td>$0.12</td><td class='beat-cell'>+$0.01</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q4 2025 (Dec)</td><td>$828M</td><td>$808M</td><td class='beat-cell'>+2.5%</td><td>$0.14</td><td>$0.11</td><td class='beat-cell'>+$0.03</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q3 2025 (Sep)</td><td>$726M</td><td>$701M</td><td class='beat-cell'>+3.6%</td><td>$0.10</td><td>$0.09</td><td class='beat-cell'>+$0.01</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q2 2025 (Jun)</td><td>$678M</td><td>$651M</td><td class='beat-cell'>+4.1%</td><td>$0.09</td><td>$0.08</td><td class='beat-cell'>+$0.01</td><td><span class="badge beat">BEAT</span></td></tr>
+</tbody></table>
+  </div>
+
+  <!-- CATALYSTS + RISKS -->
+  <div class="row2" style="margin-top:14px">
+    <div class="panel"><div class="panel-title" style="color:var(--green)">⚡ Catalysts</div><ul class="blist"><li>AIP (AI Platform) enterprise adoption accelerating rapidly</li><li>US Government contracts growing — defense AI spending surge</li><li>S&P 500 inclusion drove institutional ownership surge</li><li>Commercial US revenue growing 55% YoY</li><li>AI-native architecture gives moat vs legacy analytics</li></ul></div>
+    <div class="panel"><div class="panel-title" style="color:var(--red)">⚠️ Risks</div><ul class="blist"><li>P/E 510× — most extreme valuation in software sector</li><li>P/S 80× prices in decades of perfect execution</li><li>Slowing European growth; geopolitical government client risk</li><li>Alex Karp insider selling pressure</li><li>Requires 10× revenue growth just to justify current valuation</li></ul></div>
+  </div>
+
+  <!-- VERDICT -->
+  <div class="panel" style="margin-top:14px">
+    <div class="panel-title">Bottom Line & Verdict</div>
+    <div class="rating-track">
+      <div class="rating-fill" style="background:linear-gradient(to right,var(--green),#84cc16,var(--amber),#f97316,var(--red));height:100%;border-radius:6px"></div>
+      <div class="rating-pin" style="left:65%"></div>
+    </div>
+    <div class="rating-lbs"><span>Strong Buy</span><span>Buy</span><span>Hold</span><span>Sell</span><span>Strong Sell</span></div>
+    <div style="margin-top:10px"><span class="verdict-badge" style="background:rgba(239,68,68,.12);color:var(--red);border-color:rgba(239,68,68,.4)">HOLD / SPECULATIVE</span></div>
+    <p class="summary-txt">Palantir is a genuine AI software leader — AIP is arguably the most sophisticated enterprise AI deployment platform available — but the valuation is in a category of its own. A P/E of 510× and P/S of 80× require near-flawless execution for the next decade to justify. Commercial US revenue growing at 55% is impressive, and government contracts are a durable moat, but the risk score of 68 reflects that investors are paying a substantial premium for the growth story. Only suitable for investors with a long horizon and high risk tolerance.</p>
+  </div>
+
+  <script>
+  (function(){
+    var ctx=document.getElementById('chart_PLTR').getContext('2d');
+    var gr=ctx.createLinearGradient(0,0,0,180);
+    gr.addColorStop(0,'rgba(99,102,241,0.3)');
+    gr.addColorStop(1,'rgba(99,102,241,0)');
+    new Chart(ctx,{
+      type:'line',
+      data:{labels:['May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26','Apr 26','May 26'],datasets:[{data:[35, 40, 50, 65, 80, 90, 85, 90, 100, 110, 115, 120, 123.5],borderColor:'#800080',borderWidth:2,backgroundColor:gr,fill:true,tension:0.35,pointRadius:3,pointBackgroundColor:'#800080'}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#12151c',borderColor:'#1e2330',borderWidth:1,titleColor:'#e8eaf0',bodyColor:'#a0b0c8'}},
+        scales:{x:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'}}},
+          y:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},callback:function(v){return '$'+v}}}}
+      }
+    });
+  })();
+  </script>
+</section>
+<hr class="section-divider">
+
+<section id="MSFT" class="stock-section fade-in">
+  <!-- HEADER -->
+  <div class="section-topbar">
+    <div style="display:flex;align-items:center;gap:14px">
+      <div class="s-logo" style="background:linear-gradient(135deg,#0078d4,#0a0c10)">M</div>
+      <div>
+        <h2 class="s-name">Microsoft Corporation <span>(MSFT)</span></h2>
+        <span class="s-sector">AI Cloud / Software</span>
+      </div>
+    </div>
+    <div class="s-price-block">
+      <div class="s-price">$402.44</div>
+      <div class="s-change down">▼ -5.2%</div>
+    </div>
+  </div>
+
+  <!-- ROW 1: GAUGE + BREAKDOWN + KPI -->
+  <div class="row3">
+    <!-- gauge -->
+    <div class="panel" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px">
+      <div class="panel-title">Risk Score</div>
+      <svg viewBox="0 0 220 130" width="200" height="130">
+  <defs><linearGradient id="gMSFT" x1="0%" y1="0%" x2="100%" y2="0%">
+    <stop offset="0%" style="stop-color:#22c55e"/><stop offset="40%" style="stop-color:#f59e0b"/><stop offset="100%" style="stop-color:#ef4444"/>
+  </linearGradient></defs>
+  <path d="M 10 110 A 100 100 0 0 1 210 110" fill="none" stroke="#1e2330" stroke-width="16" stroke-linecap="round"/>
+  <path d="M 10 110 A 100 100 0 0 1 210 110" fill="none" stroke="url(#gMSFT)" stroke-width="16" stroke-linecap="round"
+        stroke-dasharray="314" stroke-dashoffset="182.1"/>
+  <line x1="110" y1="110" x2="110" y2="25" stroke="#fff" stroke-width="2.5" stroke-linecap="round"
+        transform="rotate(-14.4 110 110)"/>
+  <circle cx="110" cy="110" r="5" fill="#6366f1"/>
+  <text x="6" y="126" fill="#7b8299" font-size="9" font-family="JetBrains Mono">0</text>
+  <text x="101" y="14" fill="#7b8299" font-size="9" font-family="JetBrains Mono" text-anchor="middle">50</text>
+  <text x="208" y="126" fill="#7b8299" font-size="9" font-family="JetBrains Mono" text-anchor="end">100</text>
+  <text x="110" y="100" fill="#f59e0b" font-size="22" font-weight="bold" font-family="JetBrains Mono" text-anchor="middle">42</text>
+  <text x="110" y="125" fill="#7b8299" font-size="8" font-family="DM Sans" text-anchor="middle">MODERATE RISK</text>
+</svg>
+    </div>
+    <!-- breakdown -->
+    <div class="panel">
+      <div class="panel-title">Score Breakdown</div>
+      <div class="br-row"><div class="br-hd"><span>Valuation (35%)</span><span class="mono">44/100</span></div>
+        <div class="br-track"><div class="br-fill fill-a" style="width:44%"></div></div></div>
+      <div class="br-row"><div class="br-hd"><span>Fin. Health (35%)</span><span class="mono">36/100</span></div>
+        <div class="br-track"><div class="br-fill fill-a" style="width:36%"></div></div></div>
+      <div class="br-row"><div class="br-hd"><span>Growth (30%)</span><span class="mono">47/100</span></div>
+        <div class="br-track"><div class="br-fill fill-a" style="width:47%"></div></div></div>
+      <!-- explainer -->
+      <div class="expl"><span>💡</span><div><b style="color:var(--blue)">P/E Explained:</b> Price ÷ EPS. MSFT P/E: <span class="mono">37.7×</span>. Higher P/E = more growth priced in = more valuation risk.</div></div>
+    </div>
+    <!-- kpi strip vertical -->
+    <div class="panel kpi-v">
+      <div class="panel-title">Key Metrics</div>
+      <div class="kv"><span>Market Cap</span><span class="mono">$3.07T</span></div>
+      <div class="kv"><span>P/E (TTM)</span><span class="mono badge beat" style="padding:2px 6px">37.7×</span></div>
+      <div class="kv"><span>P/S</span><span class="mono">10.1××</span></div>
+      <div class="kv"><span>PEG</span><span class="mono">2.06</span></div>
+      <div class="kv"><span>Revenue</span><span class="mono">$281.7B</span></div>
+      <div class="kv"><span>Rev Growth</span><span class="mono" style="color:var(--green)">+14.9%</span></div>
+      <div class="kv"><span>EPS</span><span class="mono">$13.64</span></div>
+      <div class="kv"><span>EPS Growth</span><span class="mono" style="color:var(--green)">+15.6%</span></div>
+      <div class="kv"><span>Op Margin</span><span class="mono">46.3%</span></div>
+      <div class="kv"><span>FCF Margin</span><span class="mono">29%</span></div>
+      <div class="kv"><span>ROE</span><span class="mono">33.3%</span></div>
+      <div class="kv"><span>D/E</span><span class="mono">Low</span></div>
+      <div class="kv"><span>Div Yield</span><span class="mono">0.88%</span></div>
+    </div>
+  </div>
+
+  <!-- PRICE CHART -->
+  <div class="panel" style="margin-top:14px">
+    <div class="panel-title">12-Month Price Chart (May 2025 – May 2026)</div>
+    <div style="position:relative;height:180px">
+      <canvas id="chart_MSFT"></canvas>
+    </div>
+  </div>
+
+  <!-- QUARTERLY TABLE -->
+  <div class="panel" style="margin-top:14px;overflow-x:auto">
+    <div class="panel-title">Quarterly Trend — Last 4 Quarters</div>
+    <table><thead><tr><th>Quarter</th><th>Rev (Act)</th><th>Rev Est</th><th>Beat/Miss</th><th>EPS (Act)</th><th>EPS Est</th><th>EPS B/M</th><th>Result</th></tr></thead>
+    <tbody><tr><td>Q3 FY2026 (Mar)</td><td>$70.07B</td><td>$68.42B</td><td class='beat-cell'>+2.4%</td><td>$4.27</td><td>$4.06</td><td class='beat-cell'>+$0.21</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q2 FY2026 (Dec)</td><td>$69.6B</td><td>$68.7B</td><td class='beat-cell'>+1.3%</td><td>$4.14</td><td>$3.91</td><td class='beat-cell'>+$0.23</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q1 FY2026 (Sep)</td><td>$65.6B</td><td>$64.5B</td><td class='beat-cell'>+1.7%</td><td>$4.13</td><td>$3.65</td><td class='beat-cell'>+$0.48</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q4 FY2025 (Jun)</td><td>$76.44B</td><td>$73.79B</td><td class='beat-cell'>+3.6%</td><td>$3.65</td><td>$3.37</td><td class='beat-cell'>+$0.28</td><td><span class="badge beat">BEAT</span></td></tr>
+</tbody></table>
+  </div>
+
+  <!-- CATALYSTS + RISKS -->
+  <div class="row2" style="margin-top:14px">
+    <div class="panel"><div class="panel-title" style="color:var(--green)">⚡ Catalysts</div><ul class="blist"><li>Azure AI growing ~18% YoY driven by AI workloads</li><li>Copilot integration driving M365 commercial ARPU uplift</li><li>GitHub Copilot at 15M+ paid users</li><li>Activision gaming integration generating $25B+ gaming revenues</li><li>Analyst avg target $556 (+38% upside)</li></ul></div>
+    <div class="panel"><div class="panel-title" style="color:var(--red)">⚠️ Risks</div><ul class="blist"><li>P/E 37.7× — 70% above S&P 500 average</li><li>ROE declining: 47.1% (2021) → 33.3% (2025)</li><li>Heavy AI capex pressuring FCF margins</li><li>Regulatory scrutiny — EU AI Act and antitrust</li><li>Stock YTD -4.4%; off June 2025 highs of ~$512</li></ul></div>
+  </div>
+
+  <!-- VERDICT -->
+  <div class="panel" style="margin-top:14px">
+    <div class="panel-title">Bottom Line & Verdict</div>
+    <div class="rating-track">
+      <div class="rating-fill" style="background:linear-gradient(to right,var(--green),#84cc16,var(--amber),#f97316,var(--red));height:100%;border-radius:6px"></div>
+      <div class="rating-pin" style="left:42%"></div>
+    </div>
+    <div class="rating-lbs"><span>Strong Buy</span><span>Buy</span><span>Hold</span><span>Sell</span><span>Strong Sell</span></div>
+    <div style="margin-top:10px"><span class="verdict-badge" style="background:rgba(245,158,11,.12);color:var(--amber);border-color:rgba(245,158,11,.4)">MODERATE HOLD / BUY DIP</span></div>
+    <p class="summary-txt">Microsoft is the most diversified AI compounder in this cohort, with Azure, Copilot, Office 365, LinkedIn, and Xbox all contributing. Four consecutive earnings beats and operating margins of 46.3% are exceptional. The stock's near-term weakness (YTD -4.4%, off $512 highs) creates an accumulation opportunity for long-term holders. Risk score 42 is moderate, reflecting premium valuation balanced against world-class execution and business quality.</p>
+  </div>
+
+  <script>
+  (function(){
+    var ctx=document.getElementById('chart_MSFT').getContext('2d');
+    var gr=ctx.createLinearGradient(0,0,0,180);
+    gr.addColorStop(0,'rgba(99,102,241,0.3)');
+    gr.addColorStop(1,'rgba(99,102,241,0)');
+    new Chart(ctx,{
+      type:'line',
+      data:{labels:['May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26','Apr 26','May 26'],datasets:[{data:[460, 497, 512, 495, 478, 462, 445, 430, 420, 399, 365, 407, 402],borderColor:'#0078d4',borderWidth:2,backgroundColor:gr,fill:true,tension:0.35,pointRadius:3,pointBackgroundColor:'#0078d4'}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#12151c',borderColor:'#1e2330',borderWidth:1,titleColor:'#e8eaf0',bodyColor:'#a0b0c8'}},
+        scales:{x:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'}}},
+          y:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},callback:function(v){return '$'+v}}}}
+      }
+    });
+  })();
+  </script>
+</section>
+<hr class="section-divider">
+
+
+</div><!-- /wrap -->
+
+<button id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+const io = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); }), {threshold:0.08});
+document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
+</script>
+</body>
+</html>

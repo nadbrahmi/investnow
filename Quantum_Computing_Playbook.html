@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Quantum Computing Playbook 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0a0c10;--card:#12151c;--border:#1e2330;--text:#e8eaf0;--muted:#7b8299;
+  --green:#22c55e;--red:#ef4444;--amber:#f59e0b;--purple:#a855f7;
+  --purple-dim:rgba(168,85,247,.12);--purple-border:rgba(168,85,247,.28);
+  --q:#7c3aed;--q-dim:rgba(124,58,237,.1);--q-border:rgba(124,58,237,.25);}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.6}
+.mono{font-family:'JetBrains Mono',monospace}
+.page{max-width:1280px;margin:0 auto;padding:28px 20px 80px}
+.fade-in{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s ease}
+.fade-in.visible{opacity:1;transform:none}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#0d0015,#080c18);border:1px solid var(--border);
+  border-radius:20px;padding:44px;margin-bottom:28px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-100px;right:-100px;width:500px;height:500px;border-radius:50%;
+  background:radial-gradient(circle,rgba(124,58,237,.14),transparent 60%);pointer-events:none}
+.hero::after{content:'';position:absolute;bottom:-80px;left:100px;width:350px;height:350px;border-radius:50%;
+  background:radial-gradient(circle,rgba(6,182,212,.07),transparent 65%);pointer-events:none}
+.hero-tag{display:inline-block;background:var(--q-dim);border:1px solid var(--q-border);
+  color:#a78bfa;border-radius:20px;padding:4px 14px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px}
+.hero h1{font-family:'Playfair Display',serif;font-size:38px;font-weight:700;line-height:1.2;margin-bottom:10px}
+.hero h1 .q1{color:#a78bfa}.hero h1 .q2{color:#06b6d4}
+.hero-sub{color:var(--muted);font-size:13px;max-width:740px;line-height:1.75}
+.hero-meta{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+.hm{background:#1a1e2a;border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-size:12px;color:var(--muted)}
+.hm b{color:var(--text)}
+
+/* NAV */
+.nav-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px;padding:16px 20px;
+  background:var(--card);border:1px solid var(--border);border-radius:14px}
+.nav-bar-lbl{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;width:100%}
+.nav-chip{display:inline-flex;align-items:center;gap:6px;text-decoration:none;padding:5px 12px;
+  border-radius:8px;border:1px solid var(--border);background:#0d0f1a;transition:all .2s}
+.nav-chip:hover{background:#1e2330;transform:translateY(-1px)}
+.nr{font-size:10px;font-family:'JetBrains Mono',monospace;padding:2px 6px;border-radius:10px;font-weight:700}
+
+/* SEC TITLE */
+.sec-title{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;margin-bottom:16px}
+.sec-title .q1{color:#a78bfa}.sec-title .q2{color:#06b6d4}
+
+/* ANALYST SUMMARY */
+.analyst-summary{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px;margin-bottom:28px;overflow-x:auto}
+.analyst-summary h2{font-family:'Playfair Display',serif;font-size:18px;margin-bottom:4px}
+.analyst-summary .desc{color:var(--muted);font-size:11px;margin-bottom:16px}
+
+/* CHARTS */
+.charts-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:28px}
+@media(max-width:900px){.charts-row{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.charts-row{grid-template-columns:1fr}}
+.chart-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px}
+.chart-card h3{font-family:'Playfair Display',serif;font-size:15px;margin-bottom:4px}
+.chart-desc{color:var(--muted);font-size:10px;margin-bottom:12px}
+.chart-wrap{position:relative;height:210px}
+
+/* TECHNOLOGY BREAKDOWN */
+.tech-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-bottom:28px}
+.tech-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px}
+.tech-card h4{font-size:13px;font-weight:700;margin-bottom:6px}
+.tech-card p{font-size:11px;color:#a0b0c8;line-height:1.7}
+.tech-badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:10px;font-weight:700;margin-bottom:8px}
+
+/* STOCK SECTION */
+.stock-section{margin-bottom:20px}
+.s-topbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:14px}
+.s-logo{width:46px;height:46px;border-radius:10px;display:flex;align-items:center;justify-content:center;
+  font-family:'Playfair Display',serif;font-weight:700;font-size:17px;color:#fff;flex-shrink:0}
+.s-name{font-family:'Playfair Display',serif;font-size:19px;font-weight:700}
+.s-name span{color:var(--muted);font-weight:400;font-size:13px}
+.s-sub{color:var(--muted);font-size:11px;display:block}
+.s-price{font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:500}
+.s-chg{font-family:'JetBrains Mono',monospace;font-size:12px;text-align:right}
+.s-pblock{text-align:right}
+.up{color:var(--green)}.down{color:var(--red)}
+
+/* PANELS */
+.row3{display:grid;grid-template-columns:220px 1fr 1fr;gap:12px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:900px){.row3{grid-template-columns:1fr 1fr}.row2{grid-template-columns:1fr}}
+@media(max-width:600px){.row3{grid-template-columns:1fr}}
+.panel{background:rgba(18,21,28,.9);border:1px solid var(--border);border-radius:12px;padding:16px}
+.ptitle{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:10px;font-weight:600}
+.kpi-v .kv{display:flex;justify-content:space-between;align-items:center;padding:4px 0;
+  border-bottom:1px solid rgba(30,35,48,.5);font-size:11px}
+.kpi-v .kv:last-child{border-bottom:none}
+.kpi-v .kv>span:first-child{color:var(--muted)}
+
+/* ANALYST PANEL */
+.analyst-panel{background:linear-gradient(135deg,rgba(168,85,247,.06),rgba(6,182,212,.04))!important;
+  border-color:var(--purple-border)!important}
+.ap-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:4px}
+@media(max-width:700px){.ap-grid{grid-template-columns:1fr}}
+
+/* SCORE BARS */
+.br-row{margin-bottom:8px}
+.br-hd{display:flex;justify-content:space-between;font-size:10px;margin-bottom:3px;color:var(--muted)}
+.br-hd b{color:var(--text)}
+.br-track{height:6px;background:#1a1e2a;border-radius:3px;overflow:hidden}
+.br-fill{height:100%;border-radius:3px}
+.fill-g{background:var(--green)}.fill-a{background:var(--amber)}.fill-r{background:var(--red)}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse;font-size:11px}
+th{color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.04em;padding:6px 8px;text-align:left;border-bottom:1px solid var(--border)}
+td{padding:7px 8px;font-family:'JetBrains Mono',monospace;font-size:10px;border-bottom:1px solid rgba(30,35,48,.4)}
+tr:last-child td{border-bottom:none}
+.beat-cell{color:var(--green)}.miss-cell{color:var(--red)}.caution-cell{color:var(--amber)}
+.badge{font-size:9px;font-weight:700;padding:2px 7px;border-radius:16px}
+.badge.beat{background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.3)}
+.badge.miss{background:rgba(239,68,68,.15);color:var(--red);border:1px solid rgba(239,68,68,.3)}
+.badge.caution{background:rgba(245,158,11,.15);color:var(--amber);border:1px solid rgba(245,158,11,.3)}
+
+/* BULL BEAR */
+.blist{list-style:none;display:flex;flex-direction:column;gap:5px}
+.blist li{font-size:11px;color:#b0bcd4;display:flex;gap:6px}
+.bull li::before{content:'▲';color:var(--green);flex-shrink:0}
+.bear li::before{content:'▼';color:var(--red);flex-shrink:0}
+
+/* VERDICT */
+.rating-bar{height:10px;border-radius:5px;background:linear-gradient(to right,var(--green),#84cc16,var(--amber),#f97316,var(--red));
+  position:relative;margin:12px 0 4px}
+.rating-pin{position:absolute;top:-5px;width:20px;height:20px;border-radius:50%;background:#fff;
+  border:2px solid var(--purple);transform:translateX(-50%);box-shadow:0 0 0 3px var(--purple-dim)}
+.rating-lbs{display:flex;justify-content:space-between;font-size:8px;color:var(--muted);margin-bottom:10px}
+.vbadge{display:inline-block;padding:6px 14px;border-radius:20px;font-weight:700;font-size:12px;letter-spacing:.06em;border:1.5px solid;margin-bottom:8px}
+.vsummary{color:#a0b0c8;font-size:11px;line-height:1.8}
+
+/* EXPLAINER */
+.explainer{background:var(--purple-dim);border:1px solid var(--purple-border);border-radius:10px;
+  padding:12px 16px;margin-bottom:14px;display:flex;gap:10px}
+.expl-icon{font-size:15px;flex-shrink:0;margin-top:1px}
+.explainer h4{color:var(--purple);font-size:11px;font-weight:700;margin-bottom:3px}
+.explainer p{color:#c4b5fd;font-size:10px;line-height:1.6}
+
+/* PC stats for analyst panel */
+.pc-stat{background:#0d0f1a;border-radius:6px;padding:7px 9px}
+.pc-stat .lbl{color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
+.pc-stat .val{font-family:'JetBrains Mono',monospace;font-size:13px}
+
+#btt{position:fixed;bottom:24px;right:24px;width:40px;height:40px;border-radius:50%;
+  background:linear-gradient(135deg,#7c3aed,#06b6d4);color:#fff;border:none;cursor:pointer;
+  font-size:16px;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 14px rgba(124,58,237,.4);z-index:99}
+</style>
+</head>
+<body>
+<!-- INVESTNOW NAV -->
+<nav style="position:sticky;top:0;z-index:1000;background:rgba(10,12,16,.95);backdrop-filter:blur(14px);border-bottom:1px solid #1e2330;padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:52px;font-family:'DM Sans',sans-serif">
+  <a href="index.html" style="display:flex;align-items:center;gap:8px;text-decoration:none;color:#e8eaf0;font-weight:700;font-size:16px;font-family:'DM Sans',sans-serif">
+    <span style="width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,#06b6d4,#a855f7);display:inline-block;flex-shrink:0"></span>
+    InvestNow
+  </a>
+  <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center">
+    <a href="index.html" style="text-decoration:none;font-size:10px;font-weight:600;padding:4px 10px;border-radius:6px;border:1px solid #1e2330;color:#7b8299;transition:all .2s" onmouseover="this.style.color='#e8eaf0';this.style.borderColor='#a855f7'" onmouseout="this.style.color='#7b8299';this.style.borderColor='#1e2330'">🏠 Home</a>
+    <a href="AI_Infra_Security_Playbook_v2.html" style="text-decoration:none;font-size:10px;font-weight:600;padding:4px 10px;border-radius:6px;border:1px solid #1e2330;color:#7b8299" onmouseover="this.style.color='#06b6d4';this.style.borderColor='#06b6d4'" onmouseout="this.style.color='#7b8299';this.style.borderColor='#1e2330'">🏗️ AI Infra & Security</a>
+    <a href="Quantum_Computing_Playbook.html" style="text-decoration:none;font-size:10px;font-weight:600;padding:4px 10px;border-radius:6px;border:1px solid #1e2330;color:#7b8299" onmouseover="this.style.color='#a78bfa';this.style.borderColor='#7c3aed'" onmouseout="this.style.color='#7b8299';this.style.borderColor='#1e2330'">⚛️ Quantum</a>
+    <a href="AI_Semiconductor_Master_Report.html" style="text-decoration:none;font-size:10px;font-weight:600;padding:4px 10px;border-radius:6px;border:1px solid #1e2330;color:#7b8299" onmouseover="this.style.color='#f59e0b';this.style.borderColor='#f59e0b'" onmouseout="this.style.color='#7b8299';this.style.borderColor='#1e2330'">🔬 Semiconductors</a>
+    <a href="Pure_Play_AI_Playbook.html" style="text-decoration:none;font-size:10px;font-weight:600;padding:4px 10px;border-radius:6px;border:1px solid #1e2330;color:#7b8299" onmouseover="this.style.color='#a855f7';this.style.borderColor='#a855f7'" onmouseout="this.style.color='#7b8299';this.style.borderColor='#1e2330'">🤖 Pure-Play AI</a>
+    <a href="MSFT_Risk_Report.html" style="text-decoration:none;font-size:10px;font-weight:600;padding:4px 10px;border-radius:6px;border:1px solid #1e2330;color:#7b8299" onmouseover="this.style.color='#3b82f6';this.style.borderColor='#3b82f6'" onmouseout="this.style.color='#7b8299';this.style.borderColor='#1e2330'">🛡️ MSFT</a>
+  </div>
+</nav>
+
+<div class="page">
+
+<!-- HERO -->
+<div class="hero fade-in">
+  <div class="hero-tag">⚛️ Special Report · May 2026</div>
+  <h1>The <span class="q1">Quantum Computing</span><br><span class="q2">Playbook</span></h1>
+  <p class="hero-sub">A deep-dive research report across 6 quantum computing stocks — 4 pure-play pure-risk names (IonQ, Rigetti, D-Wave, Quantum Computing Inc.) and 2 mega-cap quantum plays (IBM, Google). Covers technology types, risk scores, quarterly earnings, analyst predictions, and verdicts. Data baked in May 2026.</p>
+  <div class="hero-meta">
+    <div class="hm"><b>4</b> Pure-Play Quantum</div>
+    <div class="hm"><b>2</b> Mega-Cap Quantum</div>
+    <div class="hm">Risk range: <b>30–94</b></div>
+    <div class="hm">Safest: <b>GOOGL (30)</b></div>
+    <div class="hm">Most Dangerous: <b>QUBT (94)</b></div>
+    <div class="hm">Biggest Upside: <b>RGTI +131%</b></div>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav-bar fade-in">
+  <div class="nav-bar-lbl">Jump to Stock ↓</div>
+  <a href="#IONQ" class="nav-chip" style="--nc:#a855f7"><span style="color:#a855f7;font-weight:700">IONQ</span><span class="nr" style="background:#ef444422;color:var(--red);">72</span></a><a href="#RGTI" class="nav-chip" style="--nc:#06b6d4"><span style="color:#06b6d4;font-weight:700">RGTI</span><span class="nr" style="background:#ef444422;color:var(--red);">88</span></a><a href="#QBTS" class="nav-chip" style="--nc:#22c55e"><span style="color:#22c55e;font-weight:700">QBTS</span><span class="nr" style="background:#ef444422;color:var(--red);">82</span></a><a href="#QUBT" class="nav-chip" style="--nc:#f59e0b"><span style="color:#f59e0b;font-weight:700">QUBT</span><span class="nr" style="background:#ef444422;color:var(--red);">94</span></a><a href="#IBM" class="nav-chip" style="--nc:#3b82f6"><span style="color:#3b82f6;font-weight:700">IBM</span><span class="nr" style="background:#22c55e22;color:var(--green);">35</span></a><a href="#GOOGL" class="nav-chip" style="--nc:#ef4444"><span style="color:#ef4444;font-weight:700">GOOGL</span><span class="nr" style="background:#22c55e22;color:var(--green);">30</span></a>
+</div>
+
+<!-- ANALYST SUMMARY TABLE -->
+<div class="analyst-summary fade-in">
+  <h2>📊 Analyst Predictions — All 6 Quantum Stocks</h2>
+  <p class="desc">12-month price targets, consensus ratings, and implied upside vs current prices · May 2026</p>
+  <div class="explainer" style="margin-bottom:14px"><div class="expl-icon">💡</div><div>
+    <h4>Warning: Quantum Stocks Are Uniquely Speculative</h4>
+    <p>Unlike AI software stocks where revenue exists today, most quantum computing stocks have little to no commercial revenue. Analyst targets reflect 5–10 year technology thesis bets, not near-term earnings. <b style="color:#e8eaf0">These are highly speculative investments</b> — never a large portfolio allocation. IBM and Google are safer alternatives offering quantum optionality without existential company risk.</p>
+  </div></div>
+  <table>
+    <thead><tr><th>Ticker</th><th>Technology</th><th>Price</th><th>YTD</th><th>Avg Target</th><th>Upside</th><th>Risk</th><th>Consensus</th><th>Ratings</th></tr></thead>
+    <tbody><tr>
+      <td><b style="color:#a855f7">IONQ</b></td>
+      <td style="color:var(--muted);font-size:10px">Trapped-Ion Quantum Compu</td>
+      <td class="mono">$46.30</td>
+      <td class="mono" style="color:var(--green)">+28% YTD</td>
+      <td class="mono" style="color:var(--purple)">$58</td>
+      <td class="mono" style="color:#22c55e">+26.0%</td>
+      <td><span style="background:#ef444422;color:#ef4444;border:1px solid #ef444444;font-size:9px;padding:2px 7px;border-radius:10px;font-weight:700">72</span></td>
+      <td><span style="background:#f59e0b15;color:#f59e0b;border:1px solid #f59e0b40;font-size:9px;padding:2px 7px;border-radius:10px;font-weight:700">Moderate Buy</span></td>
+      <td class="mono" style="font-size:10px">7B/5H/2S</td>
+    </tr>
+<tr>
+      <td><b style="color:#06b6d4">RGTI</b></td>
+      <td style="color:var(--muted);font-size:10px">Superconducting Qubit Sys</td>
+      <td class="mono">$13.30</td>
+      <td class="mono" style="color:var(--red)">-35% YTD</td>
+      <td class="mono" style="color:var(--purple)">$31</td>
+      <td class="mono" style="color:#22c55e">+131.4%</td>
+      <td><span style="background:#ef444422;color:#ef4444;border:1px solid #ef444444;font-size:9px;padding:2px 7px;border-radius:10px;font-weight:700">88</span></td>
+      <td><span style="background:#22c55e15;color:#22c55e;border:1px solid #22c55e40;font-size:9px;padding:2px 7px;border-radius:10px;font-weight:700">Strong Buy</span></td>
+      <td class="mono" style="font-size:10px">7B/2H/0S</td>
+    </tr>
+<tr>
+      <td><b style="color:#22c55e">QBTS</b></td>
+      <td style="color:var(--muted);font-size:10px">Quantum Annealing / Gate-</td>
+      <td class="mono">$20.27</td>
+      <td class="mono" style="color:var(--green)">+62% YTD</td>
+      <td class="mono" style="color:var(--purple)">$36</td>
+      <td class="mono" style="color:#22c55e">+75.3%</td>
+      <td><span style="background:#ef444422;color:#ef4444;border:1px solid #ef444444;font-size:9px;padding:2px 7px;border-radius:10px;font-weight:700">82</span></td>
+      <td><span style="background:#f59e0b15;color:#f59e0b;border:1px solid #f59e0b40;font-size:9px;padding:2px 7px;border-radius:10px;font-weight:700">Moderate Buy</span></td>
+      <td class="mono" style="font-size:10px">5B/3H/1S</td>
+    </tr>
+<tr>
+      <td><b style="color:#f59e0b">QUBT</b></td>
+      <td style="color:var(--muted);font-size:10px">Photonic / Nanophotonic C</td>
+      <td class="mono">$9.17</td>
+      <td class="mono" style="color:var(--red)">-42% YTD</td>
+      <td class="mono" style="color:var(--purple)">$18</td>
+      <td class="mono" style="color:#22c55e">+90.8%</td>
+      <td><span style="background:#ef444422;color:#ef4444;border:1px solid #ef444444;font-size:9px;padding:2px 7px;border-radius:10px;font-weight:700">94</span></td>
+      <td><span style="background:#86efac15;color:#86efac;border:1px solid #86efac40;font-size:9px;padding:2px 7px;border-radius:10px;font-weight:700">Buy</span></td>
+      <td class="mono" style="font-size:10px">4B/2H/0S</td>
+    </tr>
+<tr>
+      <td><b style="color:#3b82f6">IBM</b></td>
+      <td style="color:var(--muted);font-size:10px">Quantum-Classic Hybrid / </td>
+      <td class="mono">$247.30</td>
+      <td class="mono" style="color:var(--green)">+18% YTD</td>
+      <td class="mono" style="color:var(--purple)">$270</td>
+      <td class="mono" style="color:#f59e0b">+9.2%</td>
+      <td><span style="background:#22c55e22;color:#22c55e;border:1px solid #22c55e44;font-size:9px;padding:2px 7px;border-radius:10px;font-weight:700">35</span></td>
+      <td><span style="background:#f59e0b15;color:#f59e0b;border:1px solid #f59e0b40;font-size:9px;padding:2px 7px;border-radius:10px;font-weight:700">Moderate Buy</span></td>
+      <td class="mono" style="font-size:10px">9B/8H/2S</td>
+    </tr>
+<tr>
+      <td><b style="color:#ef4444">GOOGL</b></td>
+      <td style="color:var(--muted);font-size:10px">Willow Quantum Chip / Sup</td>
+      <td class="mono">$158.50</td>
+      <td class="mono" style="color:var(--red)">-18% YTD</td>
+      <td class="mono" style="color:var(--purple)">$210</td>
+      <td class="mono" style="color:#22c55e">+32.5%</td>
+      <td><span style="background:#22c55e22;color:#22c55e;border:1px solid #22c55e44;font-size:9px;padding:2px 7px;border-radius:10px;font-weight:700">30</span></td>
+      <td><span style="background:#22c55e15;color:#22c55e;border:1px solid #22c55e40;font-size:9px;padding:2px 7px;border-radius:10px;font-weight:700">Strong Buy</span></td>
+      <td class="mono" style="font-size:10px">35B/6H/1S</td>
+    </tr>
+</tbody>
+  </table>
+</div>
+
+<!-- TECH BREAKDOWN -->
+<div class="fade-in">
+<div class="sec-title"><span class="q1">Quantum</span> Technology <span class="q2">Types</span></div>
+<div class="explainer"><div class="expl-icon">💡</div><div>
+  <h4>Why Technology Type Matters</h4>
+  <p>Quantum computers work differently depending on their qubit technology. Each approach has tradeoffs between error rates, scalability, operating temperature, and commercial readiness. You are essentially betting on which technology wins the race to fault-tolerant quantum computing.</p>
+</div></div>
+<div class="tech-grid">
+  <div class="tech-card"><span class="tech-badge" style="background:rgba(168,85,247,.15);color:#a855f7;border:1px solid rgba(168,85,247,.3)">IONQ</span>
+    <h4 style="color:#a855f7">⚛️ Trapped-Ion</h4>
+    <p>Uses laser-cooled ytterbium atoms as qubits. Best error rates in the industry — key metric for practical use. Scales via networking multiple processors. <b style="color:#e8eaf0">Industry-leading fidelity.</b> Requires cryogenic-level isolation but not dilution refrigerators.</p>
+  </div>
+  <div class="tech-card"><span class="tech-badge" style="background:rgba(6,182,212,.15);color:#06b6d4;border:1px solid rgba(6,182,212,.3)">RGTI · IBM · GOOGL</span>
+    <h4 style="color:#06b6d4">🌀 Superconducting</h4>
+    <p>Uses superconducting circuits cooled to near absolute zero (-273°C). Most widely researched approach. IBM Eagle/Heron and Google Willow are superconducting. <b style="color:#e8eaf0">Fastest gate speeds.</b> Main challenge: very short coherence times require quantum error correction.</p>
+  </div>
+  <div class="tech-card"><span class="tech-badge" style="background:rgba(34,197,94,.15);color:#22c55e;border:1px solid rgba(34,197,94,.3)">QBTS</span>
+    <h4 style="color:#22c55e">🔄 Quantum Annealing</h4>
+    <p>Specialized for optimization problems — finds the lowest energy state of a system. Not a universal quantum computer but commercially deployed TODAY for logistics, finance, and drug discovery. <b style="color:#e8eaf0">Only approach with proven commercial clients.</b></p>
+  </div>
+  <div class="tech-card"><span class="tech-badge" style="background:rgba(245,158,11,.15);color:#f59e0b;border:1px solid rgba(245,158,11,.3)">QUBT</span>
+    <h4 style="color:#f59e0b">📸 Photonic / Nanophotonic</h4>
+    <p>Uses photons (light particles) as qubits. Key advantage: <b style="color:#e8eaf0">operates at room temperature</b> — no cryogenic cooling required. QUBT's Fab 1 foundry manufactures photonic chips using standard semiconductor supply chains. Earliest commercial stage.</p>
+  </div>
+</div>
+</div>
+
+<!-- COMPARISON CHARTS -->
+<div class="fade-in">
+<div class="sec-title"><span class="q1">Quantum</span> Stock <span class="q2">Comparison</span></div>
+<div class="charts-row">
+  <div class="chart-card fade-in">
+    <h3>Revenue Growth YoY %</h3>
+    <p class="chart-desc">From tiny base — absolute revenue still small</p>
+    <div class="chart-wrap"><canvas id="growthChart"></canvas></div>
+  </div>
+  <div class="chart-card fade-in">
+    <h3>Risk Score (0–100)</h3>
+    <p class="chart-desc">🟢 Low &lt;45 · 🟡 Moderate 45–65 · 🔴 High &gt;65</p>
+    <div class="chart-wrap"><canvas id="riskChart"></canvas></div>
+  </div>
+  <div class="chart-card fade-in">
+    <h3>Analyst Implied Upside %</h3>
+    <p class="chart-desc">12-month avg target vs current price</p>
+    <div class="chart-wrap"><canvas id="upsideChart"></canvas></div>
+  </div>
+</div>
+</div>
+
+<!-- INDIVIDUAL DEEP DIVES -->
+<div class="fade-in">
+<div class="sec-title">Individual <span class="q1">Deep Dives</span></div>
+
+<section id="IONQ" class="stock-section fade-in" style="background:rgba(168,85,247,.04);border:1px solid rgba(168,85,247,.2);border-radius:20px;padding:24px;margin-bottom:20px">
+  <div class="s-topbar">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="s-logo" style="background:linear-gradient(135deg,#a855f7,#0a0c10)">I</div>
+      <div>
+        <h2 class="s-name">IonQ Inc. <span>(IONQ)</span></h2>
+        <span class="s-sub">Trapped-Ion Quantum Computing</span>
+      </div>
+    </div>
+    <div class="s-pblock">
+      <div class="s-price">$46.30</div>
+      <div class="s-chg up">▲ +28% YTD</div>
+    </div>
+  </div>
+
+  <div class="row3">
+    <div class="panel" style="display:flex;flex-direction:column;align-items:center;padding:16px">
+      <div style="font-size:11px;text-transform:uppercase;color:var(--muted);letter-spacing:.06em;margin-bottom:10px">Risk Score</div>
+      <svg viewBox="0 0 200 120" width="180" height="120">
+        <defs><linearGradient id="grdIONQ" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:#22c55e"/><stop offset="40%" style="stop-color:#f59e0b"/>
+          <stop offset="100%" style="stop-color:#ef4444"/>
+        </linearGradient></defs>
+        <path d="M 10 100 A 90 90 0 0 1 190 100" fill="none" stroke="#1e2330" stroke-width="14" stroke-linecap="round"/>
+        <path d="M 10 100 A 90 90 0 0 1 190 100" fill="none" stroke="url(#grdIONQ)" stroke-width="14" stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="79.2"/>
+        <line x1="100" y1="100" x2="100" y2="22" stroke="white" stroke-width="2" stroke-linecap="round" transform="rotate(39.6 100 100)"/>
+        <circle cx="100" cy="100" r="5" fill="#a855f7"/>
+        <text x="100" y="88" fill="#ef4444" font-size="20" font-weight="bold" font-family="JetBrains Mono" text-anchor="middle">72</text>
+        <text x="100" y="112" fill="#7b8299" font-size="8" font-family="DM Sans" text-anchor="middle">HIGH RISK</text>
+      </svg>
+      <div style="width:100%;margin-top:6px">
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Valuation</b><span class="mono" style="font-size:10px">85/100</span></div>
+          <div class="br-track"><div class="br-fill fill-r" style="width:85%"></div></div></div>
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Execution</b><span class="mono" style="font-size:10px">45/100</span></div>
+          <div class="br-track"><div class="br-fill fill-a" style="width:45%"></div></div></div>
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Macro</b><span class="mono" style="font-size:10px">70/100</span></div>
+          <div class="br-track"><div class="br-fill fill-r" style="width:70%"></div></div></div>
+      </div>
+    </div>
+    <div class="panel kpi-v">
+      <div class="ptitle">Key Metrics</div>
+      <div class="kv"><span>Market Cap</span><span class="mono">$16.9B</span></div>
+      <div class="kv"><span>P/E (TTM)</span><span class="mono">N/A (loss)</span></div>
+      <div class="kv"><span>Revenue (TTM)</span><span class="mono">$116M</span></div>
+      <div class="kv"><span>Rev Growth</span><span class="mono" style="color:var(--green)">+202%</span></div>
+      <div class="kv"><span>EPS</span><span class="mono">-$0.58</span></div>
+      <div class="kv"><span>FCF Margin</span><span class="mono">-62%</span></div>
+      <div class="kv"><span>Op Margin</span><span class="mono">-280%</span></div>
+      <div class="kv"><span>Dividend</span><span class="mono">0%</span></div>
+      <div class="kv" style="background:var(--purple-dim);border-radius:4px;padding:4px 6px;margin-top:4px">
+        <span style="color:var(--purple);font-weight:600">Analyst Target</span>
+        <span class="mono" style="color:var(--purple)">$58</span>
+      </div>
+      <div class="kv"><span style="color:var(--muted)">Implied Upside</span>
+        <span class="mono" style="color:var(--green)">+26.0%</span>
+      </div>
+    </div>
+    <div class="panel" style="padding:16px">
+      <div class="ptitle">12-Month Price + Analyst Target</div>
+      <div style="position:relative;height:200px"><canvas id="c_IONQ"></canvas></div>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top:14px;overflow-x:auto">
+    <div class="ptitle">Quarterly Trend</div>
+    <table><thead><tr><th>Quarter</th><th>Rev Act</th><th>Rev Est</th><th>Rev Δ</th><th>EPS Act</th><th>EPS Est</th><th>EPS Δ</th><th>Result</th></tr></thead>
+    <tbody><tr><td>Q4 2025</td><td>$43.1M</td><td>$40.4M</td><td class='beat-cell'>+6.7%</td><td>-$0.20</td><td>-$0.47</td><td class='beat-cell'>+$0.27</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q3 2025</td><td>$39.9M</td><td>$27.0M</td><td class='beat-cell'>+47.8%</td><td>-$0.24</td><td>-$0.21</td><td class='miss-cell'>-$0.03</td><td><span class="badge caution">CAUTION</span></td></tr>
+<tr><td>Q2 2025</td><td>$22.3M</td><td>$20.7M</td><td class='beat-cell'>+7.7%</td><td>-$0.25</td><td>-$0.23</td><td class='miss-cell'>-$0.02</td><td><span class="badge caution">CAUTION</span></td></tr>
+<tr><td>Q1 2025</td><td>$7.6M</td><td>$7.5M</td><td class='beat-cell'>+1.3%</td><td>-$0.20</td><td>-$0.21</td><td class='beat-cell'>+$0.01</td><td><span class="badge beat">BEAT</span></td></tr>
+</tbody></table>
+  </div>
+
+  
+<div class="panel analyst-panel" style="margin-top:14px">
+  <div class="ptitle" style="color:#a855f7">📊 Analyst Predictions</div>
+  <div class="ap-grid">
+    <div class="ap-left">
+      <div style="margin-bottom:12px">
+        <span class="vbadge" style="background:#f59e0b15;color:#f59e0b;border-color:#f59e0b45;font-size:11px">MODERATE BUY</span>
+        <span style="font-size:10px;color:var(--muted);margin-left:8px">14 analysts</span>
+      </div>
+      <div style="margin-bottom:12px">
+        <div style="display:flex;border-radius:6px;overflow:hidden;height:26px;gap:2px">
+          <div style="width:50%;background:rgba(34,197,94,.25);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--green)">BUY 7</div>
+          <div style="width:36%;background:rgba(245,158,11,.2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--amber)">HOLD 5</div>
+          <div style="width:14%;background:rgba(239,68,68,.2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--red)">SELL 2</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:3px">
+          <span>50% bullish</span><span>36% neutral</span><span style="color:var(--red)">14% bearish</span>
+        </div>
+      </div>
+      <div style="font-size:10px;color:var(--muted);margin-bottom:5px">12-Month Price Target Range</div>
+      <div style="position:relative;height:28px;margin-bottom:4px">
+        <div style="position:absolute;top:11px;left:0;right:0;height:6px;background:#1a1e2a;border-radius:3px"></div>
+        <div style="position:absolute;top:11px;left:23.3%;width:3px;height:6px;background:#fff;transform:translateX(-50%)"></div>
+        <div style="position:absolute;top:2px;left:40.5%;transform:translateX(-50%);background:var(--purple);color:#fff;font-size:8px;font-family:'JetBrains Mono',monospace;padding:1px 5px;border-radius:4px;white-space:nowrap">▼ $58</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted)">
+        <span>Low $30</span>
+        <span class="mono" style="font-weight:700;color:#22c55e">+26.0% upside</span>
+        <span>High $100</span>
+      </div>
+    </div>
+    <div class="ap-right">
+      <div style="font-size:10px;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em">Key Metrics</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+        <div class="pc-stat"><div class="lbl">Avg Target</div><div class="val mono" style="color:var(--purple)">$58</div></div>
+        <div class="pc-stat"><div class="lbl">High Target</div><div class="val mono" style="color:var(--green)">$100</div></div>
+        <div class="pc-stat"><div class="lbl">Low Target</div><div class="val mono" style="color:var(--muted)">$30</div></div>
+        <div class="pc-stat"><div class="lbl">Analysts</div><div class="val mono">14</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="row2" style="margin-top:14px">
+    <div class="panel"><div class="ptitle" style="color:var(--green)">⚡ Bull Case</div><ul class="blist bull"><li>2025 revenue +202% YoY — fastest growing quantum company</li><li>$225–245M 2026 guidance — 120%+ implied growth</li><li>$370M contract backlog providing rare revenue visibility</li><li>256-qubit system delivery in 2026 — industry-leading scale</li><li>Partnerships: AWS Braket, Azure Quantum, Google Cloud all active</li></ul></div>
+    <div class="panel"><div class="ptitle" style="color:var(--red)">⚠️ Bear Case</div><ul class="blist bear"><li>Market cap $16.9B on $116M revenue = 146× P/S — extreme</li><li>Net losses of $300M+ annually — cash burn accelerating</li><li>Technology risk: trapped-ion unproven at commercial scale</li><li>SkyWater acquisition adds execution complexity</li><li>IBM, Google internal quantum programs could obsolete pure-plays</li></ul></div>
+  </div>
+
+  <div class="panel" style="margin-top:14px">
+    <div class="ptitle">Verdict</div>
+    <div class="rating-bar"><div class="rating-pin" style="left:52%"></div></div>
+    <div class="rating-lbs"><span>Strong Buy</span><span>Buy</span><span>Hold</span><span>Sell</span><span>Strong Sell</span></div>
+    <div style="margin-top:10px"><span class="vbadge" style="background:rgba(245,158,11,.12);color:var(--amber);border-color:rgba(245,158,11,.4)">SPECULATIVE HOLD</span></div>
+    <p class="vsummary">IonQ is the market leader among pure-play quantum stocks with 202% revenue growth in 2025 and a $225–245M 2026 guide. The $370M backlog and presence on AWS, Azure, and Google Cloud give it real commercial traction. However, P/S of 146× and $300M+ annual cash burn make this a pure speculative position. Only for investors with a 5–7 year time horizon and high risk tolerance.</p>
+  </div>
+
+  <script>(function(){
+    var ctx=document.getElementById('c_IONQ').getContext('2d');
+    var gr=ctx.createLinearGradient(0,0,0,200);
+    gr.addColorStop(0,'rgba(168,85,247,0.28)');gr.addColorStop(1,'rgba(168,85,247,0)');
+    new Chart(ctx,{type:'line',data:{labels:['May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26','Apr 26','May 26'],datasets:[
+      {data:[28, 35, 42, 58, 52, 44, 38, 44, 50, 48, 40, 42, 46],borderColor:'#a855f7',borderWidth:2,backgroundColor:gr,fill:true,tension:0.35,pointRadius:3,pointBackgroundColor:'#a855f7',label:'Price'},
+      {data:[58.33,58.33,58.33,58.33,58.33,58.33,58.33,58.33,58.33,58.33,58.33,58.33,58.33],borderColor:'rgba(168,85,247,.6)',borderWidth:1.5,borderDash:[5,4],backgroundColor:'transparent',fill:false,pointRadius:0,label:'Analyst Target'}
+    ]},options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,position:'top',labels:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},boxWidth:20}},
+        tooltip:{backgroundColor:'#12151c',borderColor:'#1e2330',borderWidth:1,titleColor:'#e8eaf0',bodyColor:'#a0b0c8',callbacks:{label:c=>` $`+c.raw}}},
+      scales:{x:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'}}},
+        y:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},callback:v=>'$'+v}}}}
+    });})();
+  </script>
+</section>
+<section id="RGTI" class="stock-section fade-in" style="background:rgba(6,182,212,.04);border:1px solid rgba(6,182,212,.2);border-radius:20px;padding:24px;margin-bottom:20px">
+  <div class="s-topbar">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="s-logo" style="background:linear-gradient(135deg,#06b6d4,#0a0c10)">R</div>
+      <div>
+        <h2 class="s-name">Rigetti Computing <span>(RGTI)</span></h2>
+        <span class="s-sub">Superconducting Qubit Systems</span>
+      </div>
+    </div>
+    <div class="s-pblock">
+      <div class="s-price">$13.30</div>
+      <div class="s-chg down">▼ -35% YTD</div>
+    </div>
+  </div>
+
+  <div class="row3">
+    <div class="panel" style="display:flex;flex-direction:column;align-items:center;padding:16px">
+      <div style="font-size:11px;text-transform:uppercase;color:var(--muted);letter-spacing:.06em;margin-bottom:10px">Risk Score</div>
+      <svg viewBox="0 0 200 120" width="180" height="120">
+        <defs><linearGradient id="grdRGTI" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:#22c55e"/><stop offset="40%" style="stop-color:#f59e0b"/>
+          <stop offset="100%" style="stop-color:#ef4444"/>
+        </linearGradient></defs>
+        <path d="M 10 100 A 90 90 0 0 1 190 100" fill="none" stroke="#1e2330" stroke-width="14" stroke-linecap="round"/>
+        <path d="M 10 100 A 90 90 0 0 1 190 100" fill="none" stroke="url(#grdRGTI)" stroke-width="14" stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="34.0"/>
+        <line x1="100" y1="100" x2="100" y2="22" stroke="white" stroke-width="2" stroke-linecap="round" transform="rotate(68.4 100 100)"/>
+        <circle cx="100" cy="100" r="5" fill="#06b6d4"/>
+        <text x="100" y="88" fill="#ef4444" font-size="20" font-weight="bold" font-family="JetBrains Mono" text-anchor="middle">88</text>
+        <text x="100" y="112" fill="#7b8299" font-size="8" font-family="DM Sans" text-anchor="middle">HIGH RISK</text>
+      </svg>
+      <div style="width:100%;margin-top:6px">
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Valuation</b><span class="mono" style="font-size:10px">75/100</span></div>
+          <div class="br-track"><div class="br-fill fill-r" style="width:75%"></div></div></div>
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Execution</b><span class="mono" style="font-size:10px">82/100</span></div>
+          <div class="br-track"><div class="br-fill fill-r" style="width:82%"></div></div></div>
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Macro</b><span class="mono" style="font-size:10px">80/100</span></div>
+          <div class="br-track"><div class="br-fill fill-r" style="width:80%"></div></div></div>
+      </div>
+    </div>
+    <div class="panel kpi-v">
+      <div class="ptitle">Key Metrics</div>
+      <div class="kv"><span>Market Cap</span><span class="mono">$1.95B</span></div>
+      <div class="kv"><span>P/E (TTM)</span><span class="mono">N/A (loss)</span></div>
+      <div class="kv"><span>Revenue (TTM)</span><span class="mono">$7.5M</span></div>
+      <div class="kv"><span>Rev Growth</span><span class="mono" style="color:var(--green)">+198%</span></div>
+      <div class="kv"><span>EPS</span><span class="mono">-$0.68</span></div>
+      <div class="kv"><span>FCF Margin</span><span class="mono">-85%</span></div>
+      <div class="kv"><span>Op Margin</span><span class="mono">-890%</span></div>
+      <div class="kv"><span>Dividend</span><span class="mono">0%</span></div>
+      <div class="kv" style="background:var(--purple-dim);border-radius:4px;padding:4px 6px;margin-top:4px">
+        <span style="color:var(--purple);font-weight:600">Analyst Target</span>
+        <span class="mono" style="color:var(--purple)">$31</span>
+      </div>
+      <div class="kv"><span style="color:var(--muted)">Implied Upside</span>
+        <span class="mono" style="color:var(--green)">+131.4%</span>
+      </div>
+    </div>
+    <div class="panel" style="padding:16px">
+      <div class="ptitle">12-Month Price + Analyst Target</div>
+      <div style="position:relative;height:200px"><canvas id="c_RGTI"></canvas></div>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top:14px;overflow-x:auto">
+    <div class="ptitle">Quarterly Trend</div>
+    <table><thead><tr><th>Quarter</th><th>Rev Act</th><th>Rev Est</th><th>Rev Δ</th><th>EPS Act</th><th>EPS Est</th><th>EPS Δ</th><th>Result</th></tr></thead>
+    <tbody><tr><td>Q4 2025</td><td>$2.2M</td><td>$2.3M</td><td class='miss-cell'>-4.3%</td><td>-$0.07</td><td>-$0.05</td><td class='miss-cell'>-$0.02</td><td><span class="badge miss">MISS</span></td></tr>
+<tr><td>Q3 2025</td><td>$2.4M</td><td>$2.1M</td><td class='beat-cell'>+14.3%</td><td>-$0.06</td><td>-$0.07</td><td class='beat-cell'>+$0.01</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q2 2025</td><td>$1.9M</td><td>$1.8M</td><td class='beat-cell'>+5.6%</td><td>-$0.05</td><td>-$0.06</td><td class='beat-cell'>+$0.01</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q1 2025</td><td>$0.98M</td><td>$0.9M</td><td class='beat-cell'>+8.9%</td><td>-$0.04</td><td>-$0.05</td><td class='beat-cell'>+$0.01</td><td><span class="badge beat">BEAT</span></td></tr>
+</tbody></table>
+  </div>
+
+  
+<div class="panel analyst-panel" style="margin-top:14px">
+  <div class="ptitle" style="color:#a855f7">📊 Analyst Predictions</div>
+  <div class="ap-grid">
+    <div class="ap-left">
+      <div style="margin-bottom:12px">
+        <span class="vbadge" style="background:#22c55e15;color:#22c55e;border-color:#22c55e45;font-size:11px">STRONG BUY</span>
+        <span style="font-size:10px;color:var(--muted);margin-left:8px">9 analysts</span>
+      </div>
+      <div style="margin-bottom:12px">
+        <div style="display:flex;border-radius:6px;overflow:hidden;height:26px;gap:2px">
+          <div style="width:78%;background:rgba(34,197,94,.25);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--green)">BUY 7</div>
+          <div style="width:22%;background:rgba(245,158,11,.2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--amber)">HOLD 2</div>
+          
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:3px">
+          <span>78% bullish</span><span>22% neutral</span><span style="color:transparent">0% bearish</span>
+        </div>
+      </div>
+      <div style="font-size:10px;color:var(--muted);margin-bottom:5px">12-Month Price Target Range</div>
+      <div style="position:relative;height:28px;margin-bottom:4px">
+        <div style="position:absolute;top:11px;left:0;right:0;height:6px;background:#1a1e2a;border-radius:3px"></div>
+        <div style="position:absolute;top:11px;left:12.6%;width:3px;height:6px;background:#fff;transform:translateX(-50%)"></div>
+        <div style="position:absolute;top:2px;left:54.2%;transform:translateX(-50%);background:var(--purple);color:#fff;font-size:8px;font-family:'JetBrains Mono',monospace;padding:1px 5px;border-radius:4px;white-space:nowrap">▼ $31</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted)">
+        <span>Low $8</span>
+        <span class="mono" style="font-weight:700;color:#22c55e">+131.4% upside</span>
+        <span>High $50</span>
+      </div>
+    </div>
+    <div class="ap-right">
+      <div style="font-size:10px;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em">Key Metrics</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+        <div class="pc-stat"><div class="lbl">Avg Target</div><div class="val mono" style="color:var(--purple)">$31</div></div>
+        <div class="pc-stat"><div class="lbl">High Target</div><div class="val mono" style="color:var(--green)">$50</div></div>
+        <div class="pc-stat"><div class="lbl">Low Target</div><div class="val mono" style="color:var(--muted)">$8</div></div>
+        <div class="pc-stat"><div class="lbl">Analysts</div><div class="val mono">9</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="row2" style="margin-top:14px">
+    <div class="panel"><div class="ptitle" style="color:var(--green)">⚡ Bull Case</div><ul class="blist bull"><li>108-qubit system deployment in 2026 — key commercialization milestone</li><li>150+ qubit target by year-end 2026 — roadmap on track</li><li>$590M cash balance — 5+ years of runway secured</li><li>2026 revenue consensus +198% growth — hypergrowth from tiny base</li><li>Analyst Strong Buy consensus with $30.78 avg target (+131% upside)</li></ul></div>
+    <div class="panel"><div class="ptitle" style="color:var(--red)">⚠️ Bear Case</div><ul class="blist bear"><li>Revenue only $7.5M TTM — quantum commercial viability unproven</li><li>Loss per share -$0.68 on minimal revenue — extreme burn</li><li>-890% net margin — not a typo</li><li>Q4 2025 revenue miss — execution inconsistency</li><li>Superconducting approach faces decoherence challenges at scale</li></ul></div>
+  </div>
+
+  <div class="panel" style="margin-top:14px">
+    <div class="ptitle">Verdict</div>
+    <div class="rating-bar"><div class="rating-pin" style="left:68%"></div></div>
+    <div class="rating-lbs"><span>Strong Buy</span><span>Buy</span><span>Hold</span><span>Sell</span><span>Strong Sell</span></div>
+    <div style="margin-top:10px"><span class="vbadge" style="background:rgba(239,68,68,.1);color:var(--red);border-color:rgba(239,68,68,.35)">AVOID / HIGH RISK ONLY</span></div>
+    <p class="vsummary">Rigetti is pure quantum lottery. $7.5M TTM revenue against a $1.95B market cap means you are paying entirely for the future. The $590M cash pile gives management time to execute the 108-qubit roadmap, and the 2026 growth consensus of +198% would be transformative — but from a microscopic base. Only for the highest-risk portfolios as a sub-1% position.</p>
+  </div>
+
+  <script>(function(){
+    var ctx=document.getElementById('c_RGTI').getContext('2d');
+    var gr=ctx.createLinearGradient(0,0,0,200);
+    gr.addColorStop(0,'rgba(6,182,212,0.28)');gr.addColorStop(1,'rgba(6,182,212,0)');
+    new Chart(ctx,{type:'line',data:{labels:['May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26','Apr 26','May 26'],datasets:[
+      {data:[48, 42, 38, 50, 35, 25, 18, 22, 28, 22, 16, 14, 13],borderColor:'#06b6d4',borderWidth:2,backgroundColor:gr,fill:true,tension:0.35,pointRadius:3,pointBackgroundColor:'#06b6d4',label:'Price'},
+      {data:[30.78,30.78,30.78,30.78,30.78,30.78,30.78,30.78,30.78,30.78,30.78,30.78,30.78],borderColor:'rgba(168,85,247,.6)',borderWidth:1.5,borderDash:[5,4],backgroundColor:'transparent',fill:false,pointRadius:0,label:'Analyst Target'}
+    ]},options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,position:'top',labels:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},boxWidth:20}},
+        tooltip:{backgroundColor:'#12151c',borderColor:'#1e2330',borderWidth:1,titleColor:'#e8eaf0',bodyColor:'#a0b0c8',callbacks:{label:c=>` $`+c.raw}}},
+      scales:{x:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'}}},
+        y:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},callback:v=>'$'+v}}}}
+    });})();
+  </script>
+</section>
+<section id="QBTS" class="stock-section fade-in" style="background:rgba(34,197,94,.04);border:1px solid rgba(34,197,94,.2);border-radius:20px;padding:24px;margin-bottom:20px">
+  <div class="s-topbar">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="s-logo" style="background:linear-gradient(135deg,#22c55e,#0a0c10)">Q</div>
+      <div>
+        <h2 class="s-name">D-Wave Quantum <span>(QBTS)</span></h2>
+        <span class="s-sub">Quantum Annealing / Gate-Model</span>
+      </div>
+    </div>
+    <div class="s-pblock">
+      <div class="s-price">$20.27</div>
+      <div class="s-chg up">▲ +62% YTD</div>
+    </div>
+  </div>
+
+  <div class="row3">
+    <div class="panel" style="display:flex;flex-direction:column;align-items:center;padding:16px">
+      <div style="font-size:11px;text-transform:uppercase;color:var(--muted);letter-spacing:.06em;margin-bottom:10px">Risk Score</div>
+      <svg viewBox="0 0 200 120" width="180" height="120">
+        <defs><linearGradient id="grdQBTS" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:#22c55e"/><stop offset="40%" style="stop-color:#f59e0b"/>
+          <stop offset="100%" style="stop-color:#ef4444"/>
+        </linearGradient></defs>
+        <path d="M 10 100 A 90 90 0 0 1 190 100" fill="none" stroke="#1e2330" stroke-width="14" stroke-linecap="round"/>
+        <path d="M 10 100 A 90 90 0 0 1 190 100" fill="none" stroke="url(#grdQBTS)" stroke-width="14" stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="50.9"/>
+        <line x1="100" y1="100" x2="100" y2="22" stroke="white" stroke-width="2" stroke-linecap="round" transform="rotate(57.6 100 100)"/>
+        <circle cx="100" cy="100" r="5" fill="#22c55e"/>
+        <text x="100" y="88" fill="#ef4444" font-size="20" font-weight="bold" font-family="JetBrains Mono" text-anchor="middle">82</text>
+        <text x="100" y="112" fill="#7b8299" font-size="8" font-family="DM Sans" text-anchor="middle">HIGH RISK</text>
+      </svg>
+      <div style="width:100%;margin-top:6px">
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Valuation</b><span class="mono" style="font-size:10px">78/100</span></div>
+          <div class="br-track"><div class="br-fill fill-r" style="width:78%"></div></div></div>
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Execution</b><span class="mono" style="font-size:10px">55/100</span></div>
+          <div class="br-track"><div class="br-fill fill-a" style="width:55%"></div></div></div>
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Macro</b><span class="mono" style="font-size:10px">75/100</span></div>
+          <div class="br-track"><div class="br-fill fill-r" style="width:75%"></div></div></div>
+      </div>
+    </div>
+    <div class="panel kpi-v">
+      <div class="ptitle">Key Metrics</div>
+      <div class="kv"><span>Market Cap</span><span class="mono">$7.6B</span></div>
+      <div class="kv"><span>P/E (TTM)</span><span class="mono">N/A (loss)</span></div>
+      <div class="kv"><span>Revenue (TTM)</span><span class="mono">$24.6M</span></div>
+      <div class="kv"><span>Rev Growth</span><span class="mono" style="color:var(--green)">+179%</span></div>
+      <div class="kv"><span>EPS</span><span class="mono">-$1.11</span></div>
+      <div class="kv"><span>FCF Margin</span><span class="mono">-72%</span></div>
+      <div class="kv"><span>Op Margin</span><span class="mono">-1443%</span></div>
+      <div class="kv"><span>Dividend</span><span class="mono">0%</span></div>
+      <div class="kv" style="background:var(--purple-dim);border-radius:4px;padding:4px 6px;margin-top:4px">
+        <span style="color:var(--purple);font-weight:600">Analyst Target</span>
+        <span class="mono" style="color:var(--purple)">$36</span>
+      </div>
+      <div class="kv"><span style="color:var(--muted)">Implied Upside</span>
+        <span class="mono" style="color:var(--green)">+75.3%</span>
+      </div>
+    </div>
+    <div class="panel" style="padding:16px">
+      <div class="ptitle">12-Month Price + Analyst Target</div>
+      <div style="position:relative;height:200px"><canvas id="c_QBTS"></canvas></div>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top:14px;overflow-x:auto">
+    <div class="ptitle">Quarterly Trend</div>
+    <table><thead><tr><th>Quarter</th><th>Rev Act</th><th>Rev Est</th><th>Rev Δ</th><th>EPS Act</th><th>EPS Est</th><th>EPS Δ</th><th>Result</th></tr></thead>
+    <tbody><tr><td>Q4 2025</td><td>$6.9M</td><td>$6.0M</td><td class='beat-cell'>+15.0%</td><td>-$0.28</td><td>-$0.22</td><td class='miss-cell'>-$0.06</td><td><span class="badge caution">CAUTION</span></td></tr>
+<tr><td>Q3 2025</td><td>$6.0M</td><td>$5.5M</td><td class='beat-cell'>+9.1%</td><td>-$0.22</td><td>-$0.20</td><td class='miss-cell'>-$0.02</td><td><span class="badge caution">CAUTION</span></td></tr>
+<tr><td>Q2 2025</td><td>$5.9M</td><td>$5.4M</td><td class='beat-cell'>+9.3%</td><td>-$0.27</td><td>-$0.25</td><td class='miss-cell'>-$0.02</td><td><span class="badge caution">CAUTION</span></td></tr>
+<tr><td>Q1 2025</td><td>$5.8M</td><td>$5.2M</td><td class='beat-cell'>+11.5%</td><td>-$0.34</td><td>-$0.30</td><td class='miss-cell'>-$0.04</td><td><span class="badge caution">CAUTION</span></td></tr>
+</tbody></table>
+  </div>
+
+  
+<div class="panel analyst-panel" style="margin-top:14px">
+  <div class="ptitle" style="color:#a855f7">📊 Analyst Predictions</div>
+  <div class="ap-grid">
+    <div class="ap-left">
+      <div style="margin-bottom:12px">
+        <span class="vbadge" style="background:#f59e0b15;color:#f59e0b;border-color:#f59e0b45;font-size:11px">MODERATE BUY</span>
+        <span style="font-size:10px;color:var(--muted);margin-left:8px">9 analysts</span>
+      </div>
+      <div style="margin-bottom:12px">
+        <div style="display:flex;border-radius:6px;overflow:hidden;height:26px;gap:2px">
+          <div style="width:56%;background:rgba(34,197,94,.25);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--green)">BUY 5</div>
+          <div style="width:33%;background:rgba(245,158,11,.2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--amber)">HOLD 3</div>
+          <div style="width:11%;background:rgba(239,68,68,.2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--red)">SELL 1</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:3px">
+          <span>56% bullish</span><span>33% neutral</span><span style="color:var(--red)">11% bearish</span>
+        </div>
+      </div>
+      <div style="font-size:10px;color:var(--muted);margin-bottom:5px">12-Month Price Target Range</div>
+      <div style="position:relative;height:28px;margin-bottom:4px">
+        <div style="position:absolute;top:11px;left:0;right:0;height:6px;background:#1a1e2a;border-radius:3px"></div>
+        <div style="position:absolute;top:11px;left:17.2%;width:3px;height:6px;background:#fff;transform:translateX(-50%)"></div>
+        <div style="position:absolute;top:2px;left:49.0%;transform:translateX(-50%);background:var(--purple);color:#fff;font-size:8px;font-family:'JetBrains Mono',monospace;padding:1px 5px;border-radius:4px;white-space:nowrap">▼ $36</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted)">
+        <span>Low $12</span>
+        <span class="mono" style="font-weight:700;color:#22c55e">+75.3% upside</span>
+        <span>High $60</span>
+      </div>
+    </div>
+    <div class="ap-right">
+      <div style="font-size:10px;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em">Key Metrics</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+        <div class="pc-stat"><div class="lbl">Avg Target</div><div class="val mono" style="color:var(--purple)">$36</div></div>
+        <div class="pc-stat"><div class="lbl">High Target</div><div class="val mono" style="color:var(--green)">$60</div></div>
+        <div class="pc-stat"><div class="lbl">Low Target</div><div class="val mono" style="color:var(--muted)">$12</div></div>
+        <div class="pc-stat"><div class="lbl">Analysts</div><div class="val mono">9</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="row2" style="margin-top:14px">
+    <div class="panel"><div class="ptitle" style="color:var(--green)">⚡ Bull Case</div><ul class="blist bull"><li>Revenue +179% — fastest growth of the annealing segment</li><li>Sales pipeline expanded 1,500% YoY — enterprise demand exploding</li><li>Advantage2 system: only commercial quantum computer running live today</li><li>Acquired Quantum Circuits — adds gate-model to portfolio</li><li>2026 EPS improvement: -$0.19 consensus vs -$1.11 TTM</li></ul></div>
+    <div class="panel"><div class="ptitle" style="color:var(--red)">⚠️ Bear Case</div><ul class="blist bear"><li>Annealing is considered less universal than gate-model quantum</li><li>P/S 309× on $24.6M revenue — absurd multiple</li><li>Every quarter is a GAAP miss on bottom line despite revenue beats</li><li>IBM, Google building gate-model that could make annealing irrelevant</li><li>Insider selling has been consistent throughout 2025–2026</li></ul></div>
+  </div>
+
+  <div class="panel" style="margin-top:14px">
+    <div class="ptitle">Verdict</div>
+    <div class="rating-bar"><div class="rating-pin" style="left:55%"></div></div>
+    <div class="rating-lbs"><span>Strong Buy</span><span>Buy</span><span>Hold</span><span>Sell</span><span>Strong Sell</span></div>
+    <div style="margin-top:10px"><span class="vbadge" style="background:rgba(245,158,11,.12);color:var(--amber);border-color:rgba(245,158,11,.4)">SPECULATIVE HOLD</span></div>
+    <p class="vsummary">D-Wave is the only quantum company with a real commercial product deployed today. The 1,500% YoY pipeline expansion and Advantage2 system running live optimization workloads for clients like NTT Docomo and Volkswagen is genuinely impressive. But P/S 309× and GAAP margins of -1443% make this a faith-based investment in quantum annealing's commercial future. Risk score 82.</p>
+  </div>
+
+  <script>(function(){
+    var ctx=document.getElementById('c_QBTS').getContext('2d');
+    var gr=ctx.createLinearGradient(0,0,0,200);
+    gr.addColorStop(0,'rgba(34,197,94,0.28)');gr.addColorStop(1,'rgba(34,197,94,0)');
+    new Chart(ctx,{type:'line',data:{labels:['May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26','Apr 26','May 26'],datasets:[
+      {data:[12, 14, 18, 28, 22, 18, 14, 16, 22, 24, 20, 18, 20],borderColor:'#22c55e',borderWidth:2,backgroundColor:gr,fill:true,tension:0.35,pointRadius:3,pointBackgroundColor:'#22c55e',label:'Price'},
+      {data:[35.53,35.53,35.53,35.53,35.53,35.53,35.53,35.53,35.53,35.53,35.53,35.53,35.53],borderColor:'rgba(168,85,247,.6)',borderWidth:1.5,borderDash:[5,4],backgroundColor:'transparent',fill:false,pointRadius:0,label:'Analyst Target'}
+    ]},options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,position:'top',labels:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},boxWidth:20}},
+        tooltip:{backgroundColor:'#12151c',borderColor:'#1e2330',borderWidth:1,titleColor:'#e8eaf0',bodyColor:'#a0b0c8',callbacks:{label:c=>` $`+c.raw}}},
+      scales:{x:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'}}},
+        y:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},callback:v=>'$'+v}}}}
+    });})();
+  </script>
+</section>
+<section id="QUBT" class="stock-section fade-in" style="background:rgba(245,158,11,.04);border:1px solid rgba(245,158,11,.2);border-radius:20px;padding:24px;margin-bottom:20px">
+  <div class="s-topbar">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="s-logo" style="background:linear-gradient(135deg,#f59e0b,#0a0c10)">Q</div>
+      <div>
+        <h2 class="s-name">Quantum Computing Inc. <span>(QUBT)</span></h2>
+        <span class="s-sub">Photonic / Nanophotonic Chips</span>
+      </div>
+    </div>
+    <div class="s-pblock">
+      <div class="s-price">$9.17</div>
+      <div class="s-chg down">▼ -42% YTD</div>
+    </div>
+  </div>
+
+  <div class="row3">
+    <div class="panel" style="display:flex;flex-direction:column;align-items:center;padding:16px">
+      <div style="font-size:11px;text-transform:uppercase;color:var(--muted);letter-spacing:.06em;margin-bottom:10px">Risk Score</div>
+      <svg viewBox="0 0 200 120" width="180" height="120">
+        <defs><linearGradient id="grdQUBT" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:#22c55e"/><stop offset="40%" style="stop-color:#f59e0b"/>
+          <stop offset="100%" style="stop-color:#ef4444"/>
+        </linearGradient></defs>
+        <path d="M 10 100 A 90 90 0 0 1 190 100" fill="none" stroke="#1e2330" stroke-width="14" stroke-linecap="round"/>
+        <path d="M 10 100 A 90 90 0 0 1 190 100" fill="none" stroke="url(#grdQUBT)" stroke-width="14" stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="17.0"/>
+        <line x1="100" y1="100" x2="100" y2="22" stroke="white" stroke-width="2" stroke-linecap="round" transform="rotate(79.2 100 100)"/>
+        <circle cx="100" cy="100" r="5" fill="#f59e0b"/>
+        <text x="100" y="88" fill="#ef4444" font-size="20" font-weight="bold" font-family="JetBrains Mono" text-anchor="middle">94</text>
+        <text x="100" y="112" fill="#7b8299" font-size="8" font-family="DM Sans" text-anchor="middle">HIGH RISK</text>
+      </svg>
+      <div style="width:100%;margin-top:6px">
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Valuation</b><span class="mono" style="font-size:10px">90/100</span></div>
+          <div class="br-track"><div class="br-fill fill-r" style="width:90%"></div></div></div>
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Execution</b><span class="mono" style="font-size:10px">88/100</span></div>
+          <div class="br-track"><div class="br-fill fill-r" style="width:88%"></div></div></div>
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Macro</b><span class="mono" style="font-size:10px">85/100</span></div>
+          <div class="br-track"><div class="br-fill fill-r" style="width:85%"></div></div></div>
+      </div>
+    </div>
+    <div class="panel kpi-v">
+      <div class="ptitle">Key Metrics</div>
+      <div class="kv"><span>Market Cap</span><span class="mono">$1.6B</span></div>
+      <div class="kv"><span>P/E (TTM)</span><span class="mono">N/A (loss)</span></div>
+      <div class="kv"><span>Revenue (TTM)</span><span class="mono">$0.19M</span></div>
+      <div class="kv"><span>Rev Growth</span><span class="mono" style="color:var(--green)">+207%</span></div>
+      <div class="kv"><span>EPS</span><span class="mono">-$0.01</span></div>
+      <div class="kv"><span>FCF Margin</span><span class="mono">-90%</span></div>
+      <div class="kv"><span>Op Margin</span><span class="mono">-8300%</span></div>
+      <div class="kv"><span>Dividend</span><span class="mono">0%</span></div>
+      <div class="kv" style="background:var(--purple-dim);border-radius:4px;padding:4px 6px;margin-top:4px">
+        <span style="color:var(--purple);font-weight:600">Analyst Target</span>
+        <span class="mono" style="color:var(--purple)">$18</span>
+      </div>
+      <div class="kv"><span style="color:var(--muted)">Implied Upside</span>
+        <span class="mono" style="color:var(--green)">+90.8%</span>
+      </div>
+    </div>
+    <div class="panel" style="padding:16px">
+      <div class="ptitle">12-Month Price + Analyst Target</div>
+      <div style="position:relative;height:200px"><canvas id="c_QUBT"></canvas></div>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top:14px;overflow-x:auto">
+    <div class="ptitle">Quarterly Trend</div>
+    <table><thead><tr><th>Quarter</th><th>Rev Act</th><th>Rev Est</th><th>Rev Δ</th><th>EPS Act</th><th>EPS Est</th><th>EPS Δ</th><th>Result</th></tr></thead>
+    <tbody><tr><td>Q4 2025</td><td>$0.19M</td><td>$0.39M</td><td class='miss-cell'>-51.3%</td><td>-$0.01</td><td>-$0.04</td><td class='beat-cell'>+$0.03</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q3 2025</td><td>$0.04M</td><td>$0.04M</td><td class='caution-cell'>0%</td><td>$0.01</td><td>-$0.05</td><td class='beat-cell'>+$0.06</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q2 2025</td><td>$0.04M</td><td>$0.03M</td><td class='beat-cell'>+33%</td><td>-$0.06</td><td>-$0.06</td><td class='caution-cell'>0</td><td><span class="badge caution">CAUTION</span></td></tr>
+<tr><td>Q1 2025</td><td>$0.04M</td><td>$0.1M</td><td class='miss-cell'>-60%</td><td>$0.11</td><td>-$0.07</td><td class='beat-cell'>+$0.18</td><td><span class="badge beat">BEAT</span></td></tr>
+</tbody></table>
+  </div>
+
+  
+<div class="panel analyst-panel" style="margin-top:14px">
+  <div class="ptitle" style="color:#a855f7">📊 Analyst Predictions</div>
+  <div class="ap-grid">
+    <div class="ap-left">
+      <div style="margin-bottom:12px">
+        <span class="vbadge" style="background:#86efac15;color:#86efac;border-color:#86efac45;font-size:11px">BUY</span>
+        <span style="font-size:10px;color:var(--muted);margin-left:8px">6 analysts</span>
+      </div>
+      <div style="margin-bottom:12px">
+        <div style="display:flex;border-radius:6px;overflow:hidden;height:26px;gap:2px">
+          <div style="width:67%;background:rgba(34,197,94,.25);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--green)">BUY 4</div>
+          <div style="width:33%;background:rgba(245,158,11,.2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--amber)">HOLD 2</div>
+          
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:3px">
+          <span>67% bullish</span><span>33% neutral</span><span style="color:transparent">0% bearish</span>
+        </div>
+      </div>
+      <div style="font-size:10px;color:var(--muted);margin-bottom:5px">12-Month Price Target Range</div>
+      <div style="position:relative;height:28px;margin-bottom:4px">
+        <div style="position:absolute;top:11px;left:0;right:0;height:6px;background:#1a1e2a;border-radius:3px"></div>
+        <div style="position:absolute;top:11px;left:2%;width:3px;height:6px;background:#fff;transform:translateX(-50%)"></div>
+        <div style="position:absolute;top:2px;left:50.0%;transform:translateX(-50%);background:var(--purple);color:#fff;font-size:8px;font-family:'JetBrains Mono',monospace;padding:1px 5px;border-radius:4px;white-space:nowrap">▼ $18</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted)">
+        <span>Low $10</span>
+        <span class="mono" style="font-weight:700;color:#22c55e">+90.8% upside</span>
+        <span>High $25</span>
+      </div>
+    </div>
+    <div class="ap-right">
+      <div style="font-size:10px;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em">Key Metrics</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+        <div class="pc-stat"><div class="lbl">Avg Target</div><div class="val mono" style="color:var(--purple)">$18</div></div>
+        <div class="pc-stat"><div class="lbl">High Target</div><div class="val mono" style="color:var(--green)">$25</div></div>
+        <div class="pc-stat"><div class="lbl">Low Target</div><div class="val mono" style="color:var(--muted)">$10</div></div>
+        <div class="pc-stat"><div class="lbl">Analysts</div><div class="val mono">6</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="row2" style="margin-top:14px">
+    <div class="panel"><div class="ptitle" style="color:var(--green)">⚡ Bull Case</div><ul class="blist bull"><li>Fab 1 foundry opened — only photonic quantum chip foundry in US</li><li>Lumina Semiconductor acquisition adds $20–25M annual revenue (2026)</li><li>Raised $1.55B in 2025 — massive capital war chest for tiny company</li><li>Q1 2026 earnings May 7 — Lumina revenue consolidation catalyst</li><li>Photonic approach: room temperature qubits = massive cost advantage</li></ul></div>
+    <div class="panel"><div class="ptitle" style="color:var(--red)">⚠️ Bear Case</div><ul class="blist bear"><li>Revenue $190K per quarter — pre-revenue stage effectively</li><li>Market cap $1.6B on sub-$1M revenue = 8,400× P/S</li><li>Q4 2025 revenue missed by 51% — execution not there yet</li><li>Photonic quantum computing is years from commercial readiness</li><li>Share dilution risk — raised $1.55B via share issuances in 2025</li></ul></div>
+  </div>
+
+  <div class="panel" style="margin-top:14px">
+    <div class="ptitle">Verdict</div>
+    <div class="rating-bar"><div class="rating-pin" style="left:78%"></div></div>
+    <div class="rating-lbs"><span>Strong Buy</span><span>Buy</span><span>Hold</span><span>Sell</span><span>Strong Sell</span></div>
+    <div style="margin-top:10px"><span class="vbadge" style="background:rgba(239,68,68,.1);color:var(--red);border-color:rgba(239,68,68,.35)">AVOID</span></div>
+    <p class="vsummary">Quantum Computing Inc. is at the extreme end of speculative — $190K quarterly revenue against a $1.6B market cap is purely narrative-driven. The Fab 1 foundry and Lumina Semiconductor acquisition are real strategic moves, and $1.55B raised gives years of runway. But this is a pre-revenue deep-tech bet on photonic quantum chips that are 3–5 years from meaningful commercialization. Highest risk in this cohort at 94.</p>
+  </div>
+
+  <script>(function(){
+    var ctx=document.getElementById('c_QUBT').getContext('2d');
+    var gr=ctx.createLinearGradient(0,0,0,200);
+    gr.addColorStop(0,'rgba(245,158,11,0.28)');gr.addColorStop(1,'rgba(245,158,11,0)');
+    new Chart(ctx,{type:'line',data:{labels:['May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26','Apr 26','May 26'],datasets:[
+      {data:[22, 20, 18, 28, 20, 15, 10, 14, 18, 14, 10, 9, 9],borderColor:'#f59e0b',borderWidth:2,backgroundColor:gr,fill:true,tension:0.35,pointRadius:3,pointBackgroundColor:'#f59e0b',label:'Price'},
+      {data:[17.5,17.5,17.5,17.5,17.5,17.5,17.5,17.5,17.5,17.5,17.5,17.5,17.5],borderColor:'rgba(168,85,247,.6)',borderWidth:1.5,borderDash:[5,4],backgroundColor:'transparent',fill:false,pointRadius:0,label:'Analyst Target'}
+    ]},options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,position:'top',labels:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},boxWidth:20}},
+        tooltip:{backgroundColor:'#12151c',borderColor:'#1e2330',borderWidth:1,titleColor:'#e8eaf0',bodyColor:'#a0b0c8',callbacks:{label:c=>` $`+c.raw}}},
+      scales:{x:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'}}},
+        y:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},callback:v=>'$'+v}}}}
+    });})();
+  </script>
+</section>
+<section id="IBM" class="stock-section fade-in" style="background:rgba(59,130,246,.04);border:1px solid rgba(59,130,246,.2);border-radius:20px;padding:24px;margin-bottom:20px">
+  <div class="s-topbar">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="s-logo" style="background:linear-gradient(135deg,#3b82f6,#0a0c10)">I</div>
+      <div>
+        <h2 class="s-name">IBM Corp. <span>(IBM)</span></h2>
+        <span class="s-sub">Quantum-Classic Hybrid / Heron QPU</span>
+      </div>
+    </div>
+    <div class="s-pblock">
+      <div class="s-price">$247.30</div>
+      <div class="s-chg up">▲ +18% YTD</div>
+    </div>
+  </div>
+
+  <div class="row3">
+    <div class="panel" style="display:flex;flex-direction:column;align-items:center;padding:16px">
+      <div style="font-size:11px;text-transform:uppercase;color:var(--muted);letter-spacing:.06em;margin-bottom:10px">Risk Score</div>
+      <svg viewBox="0 0 200 120" width="180" height="120">
+        <defs><linearGradient id="grdIBM" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:#22c55e"/><stop offset="40%" style="stop-color:#f59e0b"/>
+          <stop offset="100%" style="stop-color:#ef4444"/>
+        </linearGradient></defs>
+        <path d="M 10 100 A 90 90 0 0 1 190 100" fill="none" stroke="#1e2330" stroke-width="14" stroke-linecap="round"/>
+        <path d="M 10 100 A 90 90 0 0 1 190 100" fill="none" stroke="url(#grdIBM)" stroke-width="14" stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="184.0"/>
+        <line x1="100" y1="100" x2="100" y2="22" stroke="white" stroke-width="2" stroke-linecap="round" transform="rotate(-27.0 100 100)"/>
+        <circle cx="100" cy="100" r="5" fill="#3b82f6"/>
+        <text x="100" y="88" fill="#22c55e" font-size="20" font-weight="bold" font-family="JetBrains Mono" text-anchor="middle">35</text>
+        <text x="100" y="112" fill="#7b8299" font-size="8" font-family="DM Sans" text-anchor="middle">LOW RISK</text>
+      </svg>
+      <div style="width:100%;margin-top:6px">
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Valuation</b><span class="mono" style="font-size:10px">38/100</span></div>
+          <div class="br-track"><div class="br-fill fill-a" style="width:38%"></div></div></div>
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Execution</b><span class="mono" style="font-size:10px">30/100</span></div>
+          <div class="br-track"><div class="br-fill fill-g" style="width:30%"></div></div></div>
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Macro</b><span class="mono" style="font-size:10px">32/100</span></div>
+          <div class="br-track"><div class="br-fill fill-g" style="width:32%"></div></div></div>
+      </div>
+    </div>
+    <div class="panel kpi-v">
+      <div class="ptitle">Key Metrics</div>
+      <div class="kv"><span>Market Cap</span><span class="mono">$230B</span></div>
+      <div class="kv"><span>P/E (TTM)</span><span class="mono">38×</span></div>
+      <div class="kv"><span>Revenue (TTM)</span><span class="mono">$63.4B</span></div>
+      <div class="kv"><span>Rev Growth</span><span class="mono" style="color:var(--green)">+1%</span></div>
+      <div class="kv"><span>EPS</span><span class="mono">$6.52</span></div>
+      <div class="kv"><span>FCF Margin</span><span class="mono">12%</span></div>
+      <div class="kv"><span>Op Margin</span><span class="mono">12%</span></div>
+      <div class="kv"><span>Dividend</span><span class="mono">2.6%</span></div>
+      <div class="kv" style="background:var(--purple-dim);border-radius:4px;padding:4px 6px;margin-top:4px">
+        <span style="color:var(--purple);font-weight:600">Analyst Target</span>
+        <span class="mono" style="color:var(--purple)">$270</span>
+      </div>
+      <div class="kv"><span style="color:var(--muted)">Implied Upside</span>
+        <span class="mono" style="color:var(--amber)">+9.2%</span>
+      </div>
+    </div>
+    <div class="panel" style="padding:16px">
+      <div class="ptitle">12-Month Price + Analyst Target</div>
+      <div style="position:relative;height:200px"><canvas id="c_IBM"></canvas></div>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top:14px;overflow-x:auto">
+    <div class="ptitle">Quarterly Trend</div>
+    <table><thead><tr><th>Quarter</th><th>Rev Act</th><th>Rev Est</th><th>Rev Δ</th><th>EPS Act</th><th>EPS Est</th><th>EPS Δ</th><th>Result</th></tr></thead>
+    <tbody><tr><td>Q4 2025 (Dec)</td><td>$17.6B</td><td>$17.5B</td><td class='beat-cell'>+0.6%</td><td>$3.92</td><td>$3.75</td><td class='beat-cell'>+$0.17</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q3 2025 (Sep)</td><td>$14.5B</td><td>$14.4B</td><td class='beat-cell'>+0.7%</td><td>$2.30</td><td>$2.23</td><td class='beat-cell'>+$0.07</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q2 2025 (Jun)</td><td>$15.8B</td><td>$15.7B</td><td class='beat-cell'>+0.6%</td><td>$2.43</td><td>$2.35</td><td class='beat-cell'>+$0.08</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q1 2025 (Mar)</td><td>$14.5B</td><td>$14.2B</td><td class='beat-cell'>+2.1%</td><td>$1.60</td><td>$1.56</td><td class='beat-cell'>+$0.04</td><td><span class="badge beat">BEAT</span></td></tr>
+</tbody></table>
+  </div>
+
+  
+<div class="panel analyst-panel" style="margin-top:14px">
+  <div class="ptitle" style="color:#a855f7">📊 Analyst Predictions</div>
+  <div class="ap-grid">
+    <div class="ap-left">
+      <div style="margin-bottom:12px">
+        <span class="vbadge" style="background:#f59e0b15;color:#f59e0b;border-color:#f59e0b45;font-size:11px">MODERATE BUY</span>
+        <span style="font-size:10px;color:var(--muted);margin-left:8px">19 analysts</span>
+      </div>
+      <div style="margin-bottom:12px">
+        <div style="display:flex;border-radius:6px;overflow:hidden;height:26px;gap:2px">
+          <div style="width:47%;background:rgba(34,197,94,.25);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--green)">BUY 9</div>
+          <div style="width:42%;background:rgba(245,158,11,.2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--amber)">HOLD 8</div>
+          <div style="width:11%;background:rgba(239,68,68,.2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--red)">SELL 2</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:3px">
+          <span>47% bullish</span><span>42% neutral</span><span style="color:var(--red)">11% bearish</span>
+        </div>
+      </div>
+      <div style="font-size:10px;color:var(--muted);margin-bottom:5px">12-Month Price Target Range</div>
+      <div style="position:relative;height:28px;margin-bottom:4px">
+        <div style="position:absolute;top:11px;left:0;right:0;height:6px;background:#1a1e2a;border-radius:3px"></div>
+        <div style="position:absolute;top:11px;left:45.8%;width:3px;height:6px;background:#fff;transform:translateX(-50%)"></div>
+        <div style="position:absolute;top:2px;left:64.0%;transform:translateX(-50%);background:var(--purple);color:#fff;font-size:8px;font-family:'JetBrains Mono',monospace;padding:1px 5px;border-radius:4px;white-space:nowrap">▼ $270</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted)">
+        <span>Low $190</span>
+        <span class="mono" style="font-weight:700;color:#f59e0b">+9.2% upside</span>
+        <span>High $315</span>
+      </div>
+    </div>
+    <div class="ap-right">
+      <div style="font-size:10px;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em">Key Metrics</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+        <div class="pc-stat"><div class="lbl">Avg Target</div><div class="val mono" style="color:var(--purple)">$270</div></div>
+        <div class="pc-stat"><div class="lbl">High Target</div><div class="val mono" style="color:var(--green)">$315</div></div>
+        <div class="pc-stat"><div class="lbl">Low Target</div><div class="val mono" style="color:var(--muted)">$190</div></div>
+        <div class="pc-stat"><div class="lbl">Analysts</div><div class="val mono">19</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="row2" style="margin-top:14px">
+    <div class="panel"><div class="ptitle" style="color:var(--green)">⚡ Bull Case</div><ul class="blist bull"><li>$500M IBM Ventures quantum software investment announced 2026</li><li>Heron QPU 133-qubit processor — industry-leading error rates</li><li>IBM Quantum Network: 250+ global enterprise and research clients</li><li>2.6% dividend yield — defensive income with quantum optionality</li><li>Watsonx AI + quantum hybrid roadmap through 2033 targets utility scale</li></ul></div>
+    <div class="panel"><div class="ptitle" style="color:var(--red)">⚠️ Bear Case</div><ul class="blist bear"><li>Quantum revenue still near $0 — no meaningful monetisation</li><li>Overall revenue growth only 1% — legacy business drags</li><li>Competing with Google, Microsoft internally on quantum research</li><li>Hybrid quantum-classical not yet proven at commercial scale</li><li>P/E 38× expensive for 1% growth company</li></ul></div>
+  </div>
+
+  <div class="panel" style="margin-top:14px">
+    <div class="ptitle">Verdict</div>
+    <div class="rating-bar"><div class="rating-pin" style="left:42%"></div></div>
+    <div class="rating-lbs"><span>Strong Buy</span><span>Buy</span><span>Hold</span><span>Sell</span><span>Strong Sell</span></div>
+    <div style="margin-top:10px"><span class="vbadge" style="background:rgba(245,158,11,.12);color:var(--amber);border-color:rgba(245,158,11,.4)">HOLD / SAFE EXPOSURE</span></div>
+    <p class="vsummary">IBM is the safest way to own quantum exposure. The world's most mature quantum computing program — 250+ enterprise clients on the Quantum Network, Heron QPU leading on error rates, and $500M fresh investment in quantum software. Revenue contribution is negligible today but IBM's hybrid quantum-classical roadmap through 2033 is the most credible in the industry. The 2.6% dividend cushions the wait. Risk score 35 — lowest in cohort.</p>
+  </div>
+
+  <script>(function(){
+    var ctx=document.getElementById('c_IBM').getContext('2d');
+    var gr=ctx.createLinearGradient(0,0,0,200);
+    gr.addColorStop(0,'rgba(59,130,246,0.28)');gr.addColorStop(1,'rgba(59,130,246,0)');
+    new Chart(ctx,{type:'line',data:{labels:['May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26','Apr 26','May 26'],datasets:[
+      {data:[198, 210, 225, 240, 230, 215, 210, 220, 230, 240, 245, 246, 247],borderColor:'#3b82f6',borderWidth:2,backgroundColor:gr,fill:true,tension:0.35,pointRadius:3,pointBackgroundColor:'#3b82f6',label:'Price'},
+      {data:[270.0,270.0,270.0,270.0,270.0,270.0,270.0,270.0,270.0,270.0,270.0,270.0,270.0],borderColor:'rgba(168,85,247,.6)',borderWidth:1.5,borderDash:[5,4],backgroundColor:'transparent',fill:false,pointRadius:0,label:'Analyst Target'}
+    ]},options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,position:'top',labels:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},boxWidth:20}},
+        tooltip:{backgroundColor:'#12151c',borderColor:'#1e2330',borderWidth:1,titleColor:'#e8eaf0',bodyColor:'#a0b0c8',callbacks:{label:c=>` $`+c.raw}}},
+      scales:{x:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'}}},
+        y:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},callback:v=>'$'+v}}}}
+    });})();
+  </script>
+</section>
+<section id="GOOGL" class="stock-section fade-in" style="background:rgba(239,68,68,.04);border:1px solid rgba(239,68,68,.2);border-radius:20px;padding:24px;margin-bottom:20px">
+  <div class="s-topbar">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="s-logo" style="background:linear-gradient(135deg,#ef4444,#0a0c10)">G</div>
+      <div>
+        <h2 class="s-name">Alphabet (Google) <span>(GOOGL)</span></h2>
+        <span class="s-sub">Willow Quantum Chip / Superconducting</span>
+      </div>
+    </div>
+    <div class="s-pblock">
+      <div class="s-price">$158.50</div>
+      <div class="s-chg down">▼ -18% YTD</div>
+    </div>
+  </div>
+
+  <div class="row3">
+    <div class="panel" style="display:flex;flex-direction:column;align-items:center;padding:16px">
+      <div style="font-size:11px;text-transform:uppercase;color:var(--muted);letter-spacing:.06em;margin-bottom:10px">Risk Score</div>
+      <svg viewBox="0 0 200 120" width="180" height="120">
+        <defs><linearGradient id="grdGOOGL" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:#22c55e"/><stop offset="40%" style="stop-color:#f59e0b"/>
+          <stop offset="100%" style="stop-color:#ef4444"/>
+        </linearGradient></defs>
+        <path d="M 10 100 A 90 90 0 0 1 190 100" fill="none" stroke="#1e2330" stroke-width="14" stroke-linecap="round"/>
+        <path d="M 10 100 A 90 90 0 0 1 190 100" fill="none" stroke="url(#grdGOOGL)" stroke-width="14" stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="198.1"/>
+        <line x1="100" y1="100" x2="100" y2="22" stroke="white" stroke-width="2" stroke-linecap="round" transform="rotate(-36.0 100 100)"/>
+        <circle cx="100" cy="100" r="5" fill="#ef4444"/>
+        <text x="100" y="88" fill="#22c55e" font-size="20" font-weight="bold" font-family="JetBrains Mono" text-anchor="middle">30</text>
+        <text x="100" y="112" fill="#7b8299" font-size="8" font-family="DM Sans" text-anchor="middle">LOW RISK</text>
+      </svg>
+      <div style="width:100%;margin-top:6px">
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Valuation</b><span class="mono" style="font-size:10px">25/100</span></div>
+          <div class="br-track"><div class="br-fill fill-g" style="width:25%"></div></div></div>
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Execution</b><span class="mono" style="font-size:10px">25/100</span></div>
+          <div class="br-track"><div class="br-fill fill-g" style="width:25%"></div></div></div>
+        <div class="br-row"><div class="br-hd"><b style="font-size:10px">Macro</b><span class="mono" style="font-size:10px">35/100</span></div>
+          <div class="br-track"><div class="br-fill fill-g" style="width:35%"></div></div></div>
+      </div>
+    </div>
+    <div class="panel kpi-v">
+      <div class="ptitle">Key Metrics</div>
+      <div class="kv"><span>Market Cap</span><span class="mono">$1.95T</span></div>
+      <div class="kv"><span>P/E (TTM)</span><span class="mono">19×</span></div>
+      <div class="kv"><span>Revenue (TTM)</span><span class="mono">$350B</span></div>
+      <div class="kv"><span>Rev Growth</span><span class="mono" style="color:var(--green)">+14%</span></div>
+      <div class="kv"><span>EPS</span><span class="mono">$8.35</span></div>
+      <div class="kv"><span>FCF Margin</span><span class="mono">27%</span></div>
+      <div class="kv"><span>Op Margin</span><span class="mono">27%</span></div>
+      <div class="kv"><span>Dividend</span><span class="mono">0.5%</span></div>
+      <div class="kv" style="background:var(--purple-dim);border-radius:4px;padding:4px 6px;margin-top:4px">
+        <span style="color:var(--purple);font-weight:600">Analyst Target</span>
+        <span class="mono" style="color:var(--purple)">$210</span>
+      </div>
+      <div class="kv"><span style="color:var(--muted)">Implied Upside</span>
+        <span class="mono" style="color:var(--green)">+32.5%</span>
+      </div>
+    </div>
+    <div class="panel" style="padding:16px">
+      <div class="ptitle">12-Month Price + Analyst Target</div>
+      <div style="position:relative;height:200px"><canvas id="c_GOOGL"></canvas></div>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top:14px;overflow-x:auto">
+    <div class="ptitle">Quarterly Trend</div>
+    <table><thead><tr><th>Quarter</th><th>Rev Act</th><th>Rev Est</th><th>Rev Δ</th><th>EPS Act</th><th>EPS Est</th><th>EPS Δ</th><th>Result</th></tr></thead>
+    <tbody><tr><td>Q4 2025 (Dec)</td><td>$96.5B</td><td>$95.3B</td><td class='beat-cell'>+1.3%</td><td>$2.15</td><td>$2.01</td><td class='beat-cell'>+$0.14</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q3 2025 (Sep)</td><td>$88.3B</td><td>$86.4B</td><td class='beat-cell'>+2.2%</td><td>$2.12</td><td>$2.04</td><td class='beat-cell'>+$0.08</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q2 2025 (Jun)</td><td>$96.4B</td><td>$92.7B</td><td class='beat-cell'>+4.0%</td><td>$2.28</td><td>$2.16</td><td class='beat-cell'>+$0.12</td><td><span class="badge beat">BEAT</span></td></tr>
+<tr><td>Q1 2025 (Mar)</td><td>$90.2B</td><td>$88.9B</td><td class='beat-cell'>+1.5%</td><td>$2.81</td><td>$2.01</td><td class='beat-cell'>+$0.80</td><td><span class="badge beat">BEAT</span></td></tr>
+</tbody></table>
+  </div>
+
+  
+<div class="panel analyst-panel" style="margin-top:14px">
+  <div class="ptitle" style="color:#a855f7">📊 Analyst Predictions</div>
+  <div class="ap-grid">
+    <div class="ap-left">
+      <div style="margin-bottom:12px">
+        <span class="vbadge" style="background:#22c55e15;color:#22c55e;border-color:#22c55e45;font-size:11px">STRONG BUY</span>
+        <span style="font-size:10px;color:var(--muted);margin-left:8px">42 analysts</span>
+      </div>
+      <div style="margin-bottom:12px">
+        <div style="display:flex;border-radius:6px;overflow:hidden;height:26px;gap:2px">
+          <div style="width:83%;background:rgba(34,197,94,.25);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--green)">BUY 35</div>
+          <div style="width:14%;background:rgba(245,158,11,.2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--amber)">HOLD 6</div>
+          <div style="width:3%;background:rgba(239,68,68,.2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--red)">SELL 1</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:3px">
+          <span>83% bullish</span><span>14% neutral</span><span style="color:var(--red)">3% bearish</span>
+        </div>
+      </div>
+      <div style="font-size:10px;color:var(--muted);margin-bottom:5px">12-Month Price Target Range</div>
+      <div style="position:relative;height:28px;margin-bottom:4px">
+        <div style="position:absolute;top:11px;left:0;right:0;height:6px;background:#1a1e2a;border-radius:3px"></div>
+        <div style="position:absolute;top:11px;left:2%;width:3px;height:6px;background:#fff;transform:translateX(-50%)"></div>
+        <div style="position:absolute;top:2px;left:54.5%;transform:translateX(-50%);background:var(--purple);color:#fff;font-size:8px;font-family:'JetBrains Mono',monospace;padding:1px 5px;border-radius:4px;white-space:nowrap">▼ $210</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted)">
+        <span>Low $162</span>
+        <span class="mono" style="font-weight:700;color:#22c55e">+32.5% upside</span>
+        <span>High $250</span>
+      </div>
+    </div>
+    <div class="ap-right">
+      <div style="font-size:10px;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em">Key Metrics</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+        <div class="pc-stat"><div class="lbl">Avg Target</div><div class="val mono" style="color:var(--purple)">$210</div></div>
+        <div class="pc-stat"><div class="lbl">High Target</div><div class="val mono" style="color:var(--green)">$250</div></div>
+        <div class="pc-stat"><div class="lbl">Low Target</div><div class="val mono" style="color:var(--muted)">$162</div></div>
+        <div class="pc-stat"><div class="lbl">Analysts</div><div class="val mono">42</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="row2" style="margin-top:14px">
+    <div class="panel"><div class="ptitle" style="color:var(--green)">⚡ Bull Case</div><ul class="blist bull"><li>Willow chip: completed computation in 5 min that would take classical computers 10 septillion years</li><li>Google Quantum AI targeting fault-tolerant quantum by ~2029</li><li>Stock down 18% YTD creating rare Mag-7 value opportunity</li><li>P/E 19× — cheapest Mag-7 mega-cap with quantum optionality</li><li>Quantum + AI integration: AlphaFold quantum chemistry roadmap</li></ul></div>
+    <div class="panel"><div class="ptitle" style="color:var(--red)">⚠️ Bear Case</div><ul class="blist bear"><li>Quantum contributes 0% to revenue today</li><li>Willow milestone is impressive but commercial timeline is 2029+</li><li>DOJ antitrust search monopoly case ongoing — existential risk</li><li>Ad revenue cyclicality vs AI competition from ChatGPT/Perplexity</li><li>10 septillion year benchmark disputed by classical computing skeptics</li></ul></div>
+  </div>
+
+  <div class="panel" style="margin-top:14px">
+    <div class="ptitle">Verdict</div>
+    <div class="rating-bar"><div class="rating-pin" style="left:28%"></div></div>
+    <div class="rating-lbs"><span>Strong Buy</span><span>Buy</span><span>Hold</span><span>Sell</span><span>Strong Sell</span></div>
+    <div style="margin-top:10px"><span class="vbadge" style="background:rgba(34,197,94,.12);color:var(--green);border-color:rgba(34,197,94,.4)">BUY (Quantum Optionality)</span></div>
+    <p class="vsummary">Google is the most credible quantum computing researcher in the world, and you get it free with one of the cheapest Mag-7 stocks at P/E 19×. Willow's milestone genuinely shocked the physics community. The commercial timeline is 2029+, but investors buying GOOGL today get search/cloud/YouTube cashflows plus a free quantum lottery ticket. Down 18% YTD. Buy.</p>
+  </div>
+
+  <script>(function(){
+    var ctx=document.getElementById('c_GOOGL').getContext('2d');
+    var gr=ctx.createLinearGradient(0,0,0,200);
+    gr.addColorStop(0,'rgba(239,68,68,0.28)');gr.addColorStop(1,'rgba(239,68,68,0)');
+    new Chart(ctx,{type:'line',data:{labels:['May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26','Apr 26','May 26'],datasets:[
+      {data:[185, 195, 205, 210, 195, 175, 165, 175, 185, 178, 165, 160, 158],borderColor:'#ef4444',borderWidth:2,backgroundColor:gr,fill:true,tension:0.35,pointRadius:3,pointBackgroundColor:'#ef4444',label:'Price'},
+      {data:[210.0,210.0,210.0,210.0,210.0,210.0,210.0,210.0,210.0,210.0,210.0,210.0,210.0],borderColor:'rgba(168,85,247,.6)',borderWidth:1.5,borderDash:[5,4],backgroundColor:'transparent',fill:false,pointRadius:0,label:'Analyst Target'}
+    ]},options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,position:'top',labels:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},boxWidth:20}},
+        tooltip:{backgroundColor:'#12151c',borderColor:'#1e2330',borderWidth:1,titleColor:'#e8eaf0',bodyColor:'#a0b0c8',callbacks:{label:c=>` $`+c.raw}}},
+      scales:{x:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'}}},
+        y:{grid:{color:'rgba(30,35,48,.5)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'},callback:v=>'$'+v}}}}
+    });})();
+  </script>
+</section>
+</div>
+
+</div>
+<button id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')}),{threshold:.07});
+document.querySelectorAll('.fade-in').forEach(el=>io.observe(el));
+
+const baseOpts={responsive:true,maintainAspectRatio:false,
+  plugins:{legend:{display:false},tooltip:{backgroundColor:'#12151c',borderColor:'#1e2330',borderWidth:1,titleColor:'#e8eaf0',bodyColor:'#a0b0c8'}},
+  scales:{x:{grid:{color:'rgba(30,35,48,.4)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'}}},
+    y:{grid:{color:'rgba(30,35,48,.4)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'}}}}
+};
+
+new Chart(document.getElementById('growthChart').getContext('2d'),{
+  type:'bar',data:{labels:['IONQ', 'RGTI', 'QBTS', 'QUBT', 'IBM', 'GOOGL'],datasets:[{data:[202, 198, 179, 207, 1, 14],backgroundColor:['#a855f7bb', '#06b6d4bb', '#22c55ebb', '#f59e0bbb', '#3b82f6bb', '#ef4444bb'],borderColor:['#a855f7bb', '#06b6d4bb', '#22c55ebb', '#f59e0bbb', '#3b82f6bb', '#ef4444bb'],borderWidth:1,borderRadius:5}]},
+  options:{...baseOpts,plugins:{...baseOpts.plugins,tooltip:{...baseOpts.plugins.tooltip,callbacks:{label:c=>` +${c.raw}% YoY`}}},
+    scales:{...baseOpts.scales,y:{...baseOpts.scales.y,ticks:{...baseOpts.scales.y.ticks,callback:v=>v+'%'}}}}
+});
+new Chart(document.getElementById('riskChart').getContext('2d'),{
+  type:'bar',data:{labels:['IONQ', 'RGTI', 'QBTS', 'QUBT', 'IBM', 'GOOGL'],datasets:[{data:[72, 88, 82, 94, 35, 30],backgroundColor:['#ef4444', '#ef4444', '#ef4444', '#ef4444', '#22c55e', '#22c55e'],borderColor:['#ef4444', '#ef4444', '#ef4444', '#ef4444', '#22c55e', '#22c55e'],borderWidth:1,borderRadius:5}]},
+  options:{...baseOpts,plugins:{...baseOpts.plugins,tooltip:{...baseOpts.plugins.tooltip,callbacks:{label:c=>` Risk: ${c.raw}/100`}}},
+    scales:{...baseOpts.scales,y:{min:0,max:100,grid:{color:'rgba(30,35,48,.4)'},ticks:{color:'#7b8299',font:{size:9,family:'JetBrains Mono'}}}}}
+});
+new Chart(document.getElementById('upsideChart').getContext('2d'),{
+  type:'bar',data:{labels:['IONQ', 'RGTI', 'QBTS', 'QUBT', 'IBM', 'GOOGL'],datasets:[{data:[26.0, 131.4, 75.3, 90.8, 9.2, 32.5],backgroundColor:['#22c55e', '#22c55e', '#22c55e', '#22c55e', '#f59e0b', '#22c55e'],borderColor:['#22c55e', '#22c55e', '#22c55e', '#22c55e', '#f59e0b', '#22c55e'],borderWidth:1,borderRadius:5}]},
+  options:{...baseOpts,plugins:{...baseOpts.plugins,tooltip:{...baseOpts.plugins.tooltip,callbacks:{label:c=>` +${c.raw}% upside`}}},
+    scales:{...baseOpts.scales,y:{...baseOpts.scales.y,ticks:{...baseOpts.scales.y.ticks,callback:v=>v+'%'}}}}
+});
+</script>
+</body>
+</html>
